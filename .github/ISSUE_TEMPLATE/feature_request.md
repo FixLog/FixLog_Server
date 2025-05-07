@@ -7,14 +7,6 @@ assignees: ''
 
 ---
 
----
-name: Feature request
-about: 기능 추가 이슈 템플릿
-title: "[FEATURE] 구현해야 할 내용 작성"
-labels: ''
-assignees: ''
-
----
 
 ## 어떤 기능인가요?
 
