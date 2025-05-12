@@ -13,11 +13,14 @@ public class BookmarkTagMap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "map_id", nullable = false)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bookmark_id", nullable = false)
     private Bookmark bookmark;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bookmark_tag_id", nullable = false)
     private BookmarkTag bookmarkTag;
 }
