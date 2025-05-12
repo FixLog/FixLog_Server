@@ -15,11 +15,11 @@ public class BookmarkTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bookmark_tag_id",nullable = false)
+    @Column(name = "bookmarkTagId",nullable = false)
     private Long id;
 
     @Column(length = 20, nullable = false)
-    private String tag_name;
+    private String tagName;
 
     @Enumerated(EnumType.STRING)
     private TagCategory tagCategory;

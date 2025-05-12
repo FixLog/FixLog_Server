@@ -13,14 +13,14 @@ public class PostTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_tag_id",nullable = false)
+    @Column(name = "postTagId",nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "postId", nullable = false)
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tag_id", nullable = false)
+    @JoinColumn(name = "tagId", nullable = false)
     private Tag tag;
 }

@@ -12,7 +12,7 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id",nullable = false)
+    @Column(name = "tagId",nullable = false)
     private Long id;
 
     @Enumerated(EnumType.STRING)

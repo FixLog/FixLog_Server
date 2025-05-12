@@ -17,7 +17,7 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id", nullable = false)
+    @Column(name = "postId", nullable = false)
     private Long id;
 
     @Column(length = 20, nullable = false)
@@ -27,7 +27,7 @@ public class Post {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private Member member;
 
     private LocalDateTime createdAt;
