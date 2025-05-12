@@ -23,7 +23,7 @@ public class Fork {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", nullable = false)
-    private Post originalpost;
+    private Post originalPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "forkPostId", nullable = false)
