@@ -16,11 +16,14 @@ public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="bookmark_id")
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private Member member;
 
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 }

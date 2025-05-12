@@ -12,11 +12,12 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tag_id",nullable = false)
     private Long id;
 
     @Enumerated(EnumType.STRING)
     private TagCategory tagCategory;
 
-    @Column(nullable = false)
-    private String tagName;
+    @Column(length = 20, nullable = false)
+    private String tag_name;
 }

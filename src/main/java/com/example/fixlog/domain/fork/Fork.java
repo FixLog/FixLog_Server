@@ -14,6 +14,7 @@ public class Fork {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "fork_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -21,10 +22,10 @@ public class Fork {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fork_post_id", nullable = false)
-    private Post forkedPost;
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post originalpost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_post_id", nullable = false)
-    private Post originPost;
+    @JoinColumn(name = "fork_post_id", nullable = false)
+    private Post forkedPost;
 }
