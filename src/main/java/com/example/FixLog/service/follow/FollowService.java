@@ -16,6 +16,7 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
 
+    // 팔로우하기
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
         Member follower = memberRepository.findByEmail(requesterEmail)
@@ -38,4 +39,25 @@ public class FollowService {
 
         return new FollowResponseDto(saved.getId(), following.getId(), following.getNickname());
     }
+
+    // 언팔로우하기
+    @Transactional
+    public void unfollow(String requesterEmail, Long targetMemberId) {
+        Member follower = memberRepository.findByEmail(requesterEmail)
+                .orElseThrow(() -> new IllegalArgumentException("요청자 회원 없음"));
+
+        Member following = memberRepository.findById(targetMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("언팔로우 대상 없음"));
+
+        // 자기 자신은 팔로우 불가
+        if (follower.getId().equals(following.getId())) {
+            throw new IllegalArgumentException("자기 자신은 팔로우할 수 없음");
+        }
+
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
+                .orElseThrow(() -> new IllegalArgumentException("팔로우 관계가 존재하지 않음"));
+
+        followRepository.delete(follow);
+    }
+
 }
