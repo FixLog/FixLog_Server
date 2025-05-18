@@ -2,8 +2,8 @@ package com.example.fixlog.service;
 
 import com.example.fixlog.domain.member.Member;
 import com.example.fixlog.domain.post.Post;
-import com.example.fixlog.dto.PostRequestDto;
-import com.example.fixlog.repository.PostRepository;
+import com.example.fixlog.dto.post.PostRequestDto;
+import com.example.fixlog.repository.post.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 

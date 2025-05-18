@@ -1,4 +1,4 @@
-package com.example.fixlog.repository;
+package com.example.fixlog.repository.post;
 
 import com.example.fixlog.domain.post.Post;
 import org.springframework.data.jpa.repository.JpaRepository;

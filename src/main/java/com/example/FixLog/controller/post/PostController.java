@@ -1,7 +1,7 @@
-package com.example.fixlog.controller;
+package com.example.fixlog.controller.post;
 
 import com.example.fixlog.domain.member.Member;
-import com.example.fixlog.dto.PostRequestDto;
+import com.example.fixlog.dto.post.PostRequestDto;
 import com.example.fixlog.dto.Response;
 import com.example.fixlog.service.PostService;
 import org.springframework.web.bind.annotation.*;

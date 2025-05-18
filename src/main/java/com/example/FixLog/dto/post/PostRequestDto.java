@@ -1,8 +1,6 @@
-package com.example.fixlog.dto;
+package com.example.fixlog.dto.post;
 
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 public class PostRequestDto {
