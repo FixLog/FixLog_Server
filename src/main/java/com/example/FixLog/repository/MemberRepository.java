@@ -1,7 +1,7 @@
 package com.example.FixLog.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.fixlog.domain.member.Member;
+import com.example.FixLog.domain.member.Member;
 
 import java.util.Optional;
 

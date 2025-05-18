@@ -1,4 +1,4 @@
-package com.example.fixlog;
+package com.example.FixLog;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

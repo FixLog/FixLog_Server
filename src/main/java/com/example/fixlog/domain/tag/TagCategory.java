@@ -1,4 +1,4 @@
-package com.example.fixlog.domain.tag;
+package com.example.FixLog.domain.tag;
 
 public enum TagCategory {
     STYLE,

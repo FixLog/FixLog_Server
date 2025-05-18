@@ -1,4 +1,4 @@
-package com.example.fixlog.domain.post;
+package com.example.FixLog.domain.post;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

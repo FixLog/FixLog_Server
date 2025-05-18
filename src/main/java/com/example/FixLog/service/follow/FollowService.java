@@ -6,8 +6,8 @@ import com.example.FixLog.dto.follow.response.FollowingListResponseDto;
 import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.follow.FollowRepository;
 import lombok.RequiredArgsConstructor;
-import com.example.fixlog.domain.member.Member;
-import com.example.fixlog.domain.follow.Follow;
+import com.example.FixLog.domain.member.Member;
+import com.example.FixLog.domain.follow.Follow;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

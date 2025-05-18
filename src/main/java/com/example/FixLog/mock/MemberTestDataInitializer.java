@@ -4,8 +4,8 @@ import com.example.FixLog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import com.example.fixlog.domain.member.Member;
-import com.example.fixlog.domain.member.SocialType;
+import com.example.FixLog.domain.member.Member;
+import com.example.FixLog.domain.member.SocialType;
 
 import java.util.List;
 
