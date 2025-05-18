@@ -55,7 +55,7 @@ public class FollowService {
 
         // 자기 자신은 팔로우 불가
         if (follower.getId().equals(following.getId())) {
-            throw new IllegalArgumentException("자기 자신은 팔로우할 수 없음");
+            throw new IllegalArgumentException("자기 자신은 언팔로우할 수 없음");
         }
 
         Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
