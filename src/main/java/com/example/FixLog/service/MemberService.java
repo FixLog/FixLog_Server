@@ -1,4 +1,4 @@
-package com.example.FixLog.service;
+package com.example.fixlog.service;
 
 public class MemberService {
 }

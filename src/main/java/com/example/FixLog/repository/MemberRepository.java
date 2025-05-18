@@ -1,4 +1,4 @@
-package com.example.FixLog.repository;
+package com.example.fixlog.repository;
 
 public interface MemberRepository {
 }

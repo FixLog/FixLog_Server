@@ -1,4 +1,4 @@
-package com.example.FixLog.controller;
+package com.example.fixlog.controller;
 
 public class MemberController {
 }
