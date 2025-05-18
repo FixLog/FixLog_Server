@@ -8,9 +8,13 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     ID_DUPLICATED(HttpStatus.CONFLICT, "중복된 아이디입니다"),
-    EMAIL_DUPLICATED(HttpStatus.CONFLICT, "중복된 이메일입니다");
-    // 위 작성해둔 코드는 예시이니 필요시 수정 후 사용해주세요. 그때 이 주석도 지워주세요!
-    // 이어서 필요한 에러 코드 작성 후 사용해주시면 됩니다.
+    EMAIL_DUPLICATED(HttpStatus.CONFLICT, "중복된 이메일입니다"),
+    MEMBERID_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 ID를 찾을 수 없습니다"),
+    MEMBEREMAIL_NOT_FOUNT(HttpStatus.NOT_FOUND, "회원 이메일을 찾을 수 없습니다."),
+    CANNOT_FOLLOW_SELF(HttpStatus.BAD_REQUEST, "자기 자신은 팔로우할 수 없습니다"),
+    CANNOT_UNFOLLOW_SELF(HttpStatus.BAD_REQUEST, "자기 자신은 언팔로우할 수 없습니다"),
+    ALREADY_FOLLOWING(HttpStatus.CONFLICT, "이미 팔로우 중입니다"),
+    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "팔로우 관계가 존재하지 않습니다");
 
     private final HttpStatus status;
     private final String message;

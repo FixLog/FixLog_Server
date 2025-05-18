@@ -3,6 +3,8 @@ package com.example.fixlog.service.follow;
 import com.example.fixlog.dto.follow.response.FollowResponseDto;
 import com.example.fixlog.dto.follow.response.FollowerListResponseDto;
 import com.example.fixlog.dto.follow.response.FollowingListResponseDto;
+import com.example.fixlog.exception.CustomException;
+import com.example.fixlog.exception.ErrorCode;
 import com.example.fixlog.repository.MemberRepository;
 import com.example.fixlog.repository.follow.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +26,18 @@ public class FollowService {
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
         Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 대상 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBERID_NOT_FOUND));
 
         // 자기 자신은 팔로우 불가
         if (follower.getId().equals(following.getId())) {
-            throw new IllegalArgumentException("자기 자신은 팔로우할 수 없음");
+            throw new CustomException(ErrorCode.CANNOT_FOLLOW_SELF);
         }
 
         // 중복 팔로우 방지
         if (followRepository.existsByFollowerAndFollowing(follower, following)) {
-            throw new IllegalStateException("이미 팔로우 중");
+            throw new CustomException(ErrorCode.ALREADY_FOLLOWING);
         }
 
         Follow follow = new Follow(follower, following);
@@ -48,18 +50,18 @@ public class FollowService {
     @Transactional
     public void unfollow(String requesterEmail, Long targetMemberId) {
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new IllegalArgumentException("요청자 회원 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
 
         Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("언팔로우 대상 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBERID_NOT_FOUND));
 
         // 자기 자신은 팔로우 불가
         if (follower.getId().equals(following.getId())) {
-            throw new IllegalArgumentException("자기 자신은 언팔로우할 수 없음");
+            throw new CustomException(ErrorCode.CANNOT_FOLLOW_SELF);
         }
 
         Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 관계가 존재하지 않음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.CANNOT_UNFOLLOW_SELF));
 
         followRepository.delete(follow);
     }
@@ -68,7 +70,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new IllegalArgumentException("요청자 정보를 찾을 수 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
 
         List<Follow> follows = followRepository.findByFollowing(me);
 
@@ -85,7 +87,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowingListResponseDto> getMyFollowings(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new IllegalArgumentException("요청자 회원 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
 
         List<Follow> follows = followRepository.findByFollower(me);
 
