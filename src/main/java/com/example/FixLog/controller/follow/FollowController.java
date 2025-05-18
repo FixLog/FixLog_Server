@@ -5,6 +5,7 @@ import com.example.FixLog.dto.follow.request.FollowRequestDto;
 import com.example.FixLog.dto.follow.request.UnfollowRequestDto;
 import com.example.FixLog.dto.follow.response.FollowResponseDto;
 import com.example.FixLog.dto.follow.response.FollowerListResponseDto;
+import com.example.FixLog.dto.follow.response.FollowingListResponseDto;
 import com.example.FixLog.service.follow.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -47,4 +48,12 @@ public class FollowController {
         return ResponseEntity.ok(Response.success("나를 팔로우하는 목록 조회 성공", followers));
     }
 
+    // 내가 팔로우하는 목록 조회
+    @GetMapping("/followings")
+    public ResponseEntity<Response<List<FollowingListResponseDto>>> getMyFollowings(
+            @RequestParam String requesterEmail) {
+
+        List<FollowingListResponseDto> followings = followService.getMyFollowings(requesterEmail);
+        return ResponseEntity.ok(Response.success("내가 팔로우 중인 목록 조회 성공", followings));
+    }
 }

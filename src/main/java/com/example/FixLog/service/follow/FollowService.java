@@ -2,6 +2,7 @@ package com.example.FixLog.service.follow;
 
 import com.example.FixLog.dto.follow.response.FollowResponseDto;
 import com.example.FixLog.dto.follow.response.FollowerListResponseDto;
+import com.example.FixLog.dto.follow.response.FollowingListResponseDto;
 import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.follow.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class FollowService {
         followRepository.delete(follow);
     }
 
-    // 나를 팔로우하는 목록 조회
+    // 나를 팔로우하는 목록 조회 (팔로워들)
     @Transactional(readOnly = true)
     public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
@@ -76,6 +77,23 @@ public class FollowService {
                         follow.getId(),
                         follow.getFollower().getId(),
                         follow.getFollower().getNickname()
+                ))
+                .toList();
+    }
+
+    // 내가 팔로우하는 목록 조회 (팔로잉들)
+    @Transactional(readOnly = true)
+    public List<FollowingListResponseDto> getMyFollowings(String requesterEmail) {
+        Member me = memberRepository.findByEmail(requesterEmail)
+                .orElseThrow(() -> new IllegalArgumentException("요청자 회원 없음"));
+
+        List<Follow> follows = followRepository.findByFollower(me);
+
+        return follows.stream()
+                .map(follow -> new FollowingListResponseDto(
+                        follow.getId(),
+                        follow.getFollowing().getId(),
+                        follow.getFollowing().getNickname()
                 ))
                 .toList();
     }
