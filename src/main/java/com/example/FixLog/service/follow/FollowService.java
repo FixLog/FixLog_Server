@@ -1,6 +1,7 @@
 package com.example.FixLog.service.follow;
 
 import com.example.FixLog.dto.follow.response.FollowResponseDto;
+import com.example.FixLog.dto.follow.response.FollowerListResponseDto;
 import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.follow.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import com.example.fixlog.domain.member.Member;
 import com.example.fixlog.domain.follow.Follow;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +61,23 @@ public class FollowService {
                 .orElseThrow(() -> new IllegalArgumentException("팔로우 관계가 존재하지 않음"));
 
         followRepository.delete(follow);
+    }
+
+    // 나를 팔로우하는 목록 조회
+    @Transactional(readOnly = true)
+    public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
+        Member me = memberRepository.findByEmail(requesterEmail)
+                .orElseThrow(() -> new IllegalArgumentException("요청자 정보를 찾을 수 없음"));
+
+        List<Follow> follows = followRepository.findByFollowing(me);
+
+        return follows.stream()
+                .map(follow -> new FollowerListResponseDto(
+                        follow.getId(),
+                        follow.getFollower().getId(),
+                        follow.getFollower().getNickname()
+                ))
+                .toList();
     }
 
 }

@@ -4,10 +4,13 @@ import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.follow.request.FollowRequestDto;
 import com.example.FixLog.dto.follow.request.UnfollowRequestDto;
 import com.example.FixLog.dto.follow.response.FollowResponseDto;
+import com.example.FixLog.dto.follow.response.FollowerListResponseDto;
 import com.example.FixLog.service.follow.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/follow")
@@ -34,4 +37,14 @@ public class FollowController {
         followService.unfollow(requesterEmail, requestDto.getTargetMemberId());
         return ResponseEntity.ok(Response.success("언팔로우 완료", null));
     }
+
+    // 나를 팔로우하는 목록 조회
+    @GetMapping("/followers")
+    public ResponseEntity<Response<List<FollowerListResponseDto>>> getMyFollowers(
+            @RequestParam String requesterEmail) {
+
+        List<FollowerListResponseDto> followers = followService.getMyFollowers(requesterEmail);
+        return ResponseEntity.ok(Response.success("나를 팔로우하는 목록 조회 성공", followers));
+    }
+
 }
