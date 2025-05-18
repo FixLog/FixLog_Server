@@ -1,11 +1,11 @@
-package com.example.FixLog.mock;
+package com.example.fixLog.mock;
 
-import com.example.FixLog.repository.MemberRepository;
+import com.example.fixLog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import com.example.FixLog.domain.member.Member;
-import com.example.FixLog.domain.member.SocialType;
+import com.example.fixLog.domain.member.Member;
+import com.example.fixLog.domain.member.SocialType;
 
 import java.util.List;
 

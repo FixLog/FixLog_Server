@@ -1,4 +1,4 @@
-package com.example.FixLog.exception;
+package com.example.fixLog.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

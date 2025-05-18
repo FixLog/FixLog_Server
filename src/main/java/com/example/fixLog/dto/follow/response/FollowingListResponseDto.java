@@ -1,4 +1,4 @@
-package com.example.FixLog.dto.follow.response;
+package com.example.fixLog.dto.follow.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -6,12 +6,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FollowerListResponseDto {
+public class FollowingListResponseDto {
     @JsonProperty("follow_id")
     private Long followId;
 
-    @JsonProperty("follower_id")
-    private Long followerId;
+    @JsonProperty("following_id")
+    private Long followingId;
 
     private String nickname;
 }

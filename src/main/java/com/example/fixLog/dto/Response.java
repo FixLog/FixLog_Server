@@ -1,4 +1,4 @@
-package com.example.FixLog.dto;
+package com.example.fixLog.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

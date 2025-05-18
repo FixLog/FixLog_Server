@@ -1,6 +1,6 @@
-package com.example.FixLog.domain.bookmark;
+package com.example.fixLog.domain.bookmark;
 
-import com.example.FixLog.domain.tag.TagCategory;
+import com.example.fixLog.domain.tag.TagCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

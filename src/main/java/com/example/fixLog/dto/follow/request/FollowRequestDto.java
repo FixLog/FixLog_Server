@@ -1,4 +1,4 @@
-package com.example.FixLog.dto.follow.request;
+package com.example.fixLog.dto.follow.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UnfollowRequestDto {
+public class FollowRequestDto {
     @JsonProperty("target_member_id")
-    private Long targetMemberId;
+    private Long targetMemberId;  // 팔로우 대상 ID
 }

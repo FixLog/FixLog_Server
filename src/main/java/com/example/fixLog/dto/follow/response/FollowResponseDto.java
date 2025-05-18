@@ -1,4 +1,4 @@
-package com.example.FixLog.dto.follow.response;
+package com.example.fixLog.dto.follow.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

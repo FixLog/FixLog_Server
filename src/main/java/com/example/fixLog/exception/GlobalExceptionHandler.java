@@ -1,6 +1,6 @@
-package com.example.FixLog.exception;
+package com.example.fixLog.exception;
 
-import com.example.FixLog.dto.Response;
+import com.example.fixLog.dto.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
