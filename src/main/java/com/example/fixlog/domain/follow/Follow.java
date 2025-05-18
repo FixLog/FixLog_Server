@@ -1,6 +1,6 @@
-package com.example.fixLog.domain.follow;
+package com.example.fixlog.domain.follow;
 
-import com.example.fixLog.domain.member.Member;
+import com.example.fixlog.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

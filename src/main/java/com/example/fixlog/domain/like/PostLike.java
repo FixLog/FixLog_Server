@@ -1,7 +1,7 @@
-package com.example.fixLog.domain.like;
+package com.example.fixlog.domain.like;
 
-import com.example.fixLog.domain.member.Member;
-import com.example.fixLog.domain.post.Post;
+import com.example.fixlog.domain.member.Member;
+import com.example.fixlog.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

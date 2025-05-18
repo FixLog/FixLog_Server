@@ -1,13 +1,13 @@
-package com.example.fixLog.service.follow;
+package com.example.fixlog.service.follow;
 
-import com.example.fixLog.dto.follow.response.FollowResponseDto;
-import com.example.fixLog.dto.follow.response.FollowerListResponseDto;
-import com.example.fixLog.dto.follow.response.FollowingListResponseDto;
-import com.example.fixLog.repository.MemberRepository;
-import com.example.fixLog.repository.follow.FollowRepository;
+import com.example.fixlog.dto.follow.response.FollowResponseDto;
+import com.example.fixlog.dto.follow.response.FollowerListResponseDto;
+import com.example.fixlog.dto.follow.response.FollowingListResponseDto;
+import com.example.fixlog.repository.MemberRepository;
+import com.example.fixlog.repository.follow.FollowRepository;
 import lombok.RequiredArgsConstructor;
-import com.example.fixLog.domain.member.Member;
-import com.example.fixLog.domain.follow.Follow;
+import com.example.fixlog.domain.member.Member;
+import com.example.fixlog.domain.follow.Follow;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

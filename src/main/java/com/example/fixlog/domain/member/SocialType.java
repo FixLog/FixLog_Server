@@ -1,4 +1,4 @@
-package com.example.fixLog.domain.member;
+package com.example.fixlog.domain.member;
 
 public enum SocialType {
     EMAIL,

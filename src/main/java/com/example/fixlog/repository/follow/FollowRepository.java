@@ -1,8 +1,8 @@
-package com.example.fixLog.repository.follow;
+package com.example.fixlog.repository.follow;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.fixLog.domain.follow.Follow;
-import com.example.fixLog.domain.member.Member;
+import com.example.fixlog.domain.follow.Follow;
+import com.example.fixlog.domain.member.Member;
 
 import java.util.List;
 import java.util.Optional;

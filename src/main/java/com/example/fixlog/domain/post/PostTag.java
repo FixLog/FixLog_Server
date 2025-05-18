@@ -1,6 +1,6 @@
-package com.example.fixLog.domain.post;
+package com.example.fixlog.domain.post;
 
-import com.example.fixLog.domain.tag.Tag;
+import com.example.fixlog.domain.tag.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

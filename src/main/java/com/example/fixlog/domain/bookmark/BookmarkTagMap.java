@@ -1,4 +1,4 @@
-package com.example.fixLog.domain.bookmark;
+package com.example.fixlog.domain.bookmark;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
