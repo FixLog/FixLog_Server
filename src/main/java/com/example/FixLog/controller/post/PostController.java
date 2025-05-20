@@ -33,4 +33,10 @@ public class PostController {
         return Response.success("게시글 좋아요 성공", null);
     }
 
+    @DeleteMapping("/{postId}/likes")
+    public Response<Object> postUnlike(@PathVariable("postId") Long postId,
+                                       @RequestBody UserIdDto userIdDto){
+        postService.postUnlike(postId, userIdDto);
+        return Response.success("게시글 좋아요 삭제 성공", null);
+    }
 }

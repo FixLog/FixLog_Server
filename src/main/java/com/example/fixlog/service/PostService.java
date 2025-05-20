@@ -62,8 +62,25 @@ public class PostService {
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
+        if (postLikeRepository.findByMemberAndPost(userId, postId).isPresent())
+                throw new CustomException(ErrorCode.POST_LIKE_ALREADY);
+
         PostLike postLike = new PostLike(userId, postId);
         postLikeRepository.save(postLike);
+    }
+
+    // 게시글 좋아요 삭제
+    public void postUnlike(Long postIdInput, UserIdDto userIdDto){
+        Long userIdInput = userIdDto.getUserId();
+        Member userId = memberRepository.findById(userIdInput)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+
+        Post postId = postRepository.findById(postIdInput)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        PostLike postLike = postLikeRepository.findByMemberAndPost(userId, postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_LIKE_NOT_FOUND));
+        postLikeRepository.delete(postLike);
     }
 
     // 게시글 북마크
