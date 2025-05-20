@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class PostRequestDto {
+    private Long userId; // Fixme : 회원가입 구현 후 삭제 예정
     private String postTitle;
     private String problem;
     private String errorMessage;

@@ -1,6 +1,5 @@
 package com.example.fixlog.controller.post;
 
-import com.example.fixlog.domain.member.Member;
 import com.example.fixlog.dto.post.PostRequestDto;
 import com.example.fixlog.dto.Response;
 import com.example.fixlog.service.PostService;
@@ -16,8 +15,8 @@ public class PostController {
     }
 
     @PostMapping
-    public Response<Object> createPost(@RequestBody Member userId, @RequestBody PostRequestDto postRequestDto){
-        postService.createPost(userId, postRequestDto);
+    public Response<Object> createPost(@RequestBody PostRequestDto postRequestDto){
+        postService.createPost(postRequestDto);
         return Response.success("게시글 작성 성공.", null);
     }
 
