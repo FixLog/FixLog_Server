@@ -8,7 +8,6 @@ import lombok.Getter;
 public class Response<T> {
     private boolean success;
     private String message;
-    @JsonInclude(JsonInclude.Include.ALWAYS)
     private T data;
 
     private Response(boolean success, String message, T data) {
