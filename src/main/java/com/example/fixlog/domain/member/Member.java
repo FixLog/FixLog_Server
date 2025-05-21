@@ -48,10 +48,17 @@ public class Member {
     @Column
     private LocalDateTime updatedAt;
 
+    // 프로필 사진 url, 지금은 nullable 이지만 나중에 기본값 설정
+    @Column
+    private String profileImageUrl;
+
+    @Column(length = 200)
+    private String bio;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
-    // Member 객체를 정적 팩토리 방식으로 생성하는 메서드
+    // Member 객체를 정적 팩토리 방식으로 회원가입 시에 생성하는 메서드
     // Creates a Member object using a static factory method
     public static Member of(String email, String password, String nickname, SocialType socialType) {
         Member member = new Member();
