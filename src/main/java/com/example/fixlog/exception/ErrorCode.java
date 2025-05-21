@@ -14,7 +14,7 @@ public enum ErrorCode {
     ALREADY_FOLLOWING(HttpStatus.CONFLICT, "이미 팔로우 중입니다"),
     FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "팔로우 관계가 존재하지 않습니다"),
     ID_DUPLICATED(HttpStatus.CONFLICT, "중복된 아이디입니다"),
-    EMAIL_DUPLICATED(HttpStatus.CONFLICT, "중복된 이메일입니다"),
+    NICKNAME_DUPLICATED(HttpStatus.CONFLICT, "중복된 닉네임입니다"),
     USER_ID_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 사용자 아이디입니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
 
