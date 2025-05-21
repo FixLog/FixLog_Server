@@ -24,4 +24,16 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", nullable = false)
     private Post post;
+
+    private boolean isLiked;
+
+    public PostLike(Member userId, Post postId){
+        this.member = userId;
+        this.post = postId;
+        this.isLiked = true; // 객체 생성 시 true
+    }
+
+    public void ToggleLike(boolean state){
+        this.isLiked = state;
+    }
 }

@@ -26,4 +26,15 @@ public class Bookmark {
     @ManyToOne
     @JoinColumn(name = "postId")
     private Post post;
+
+    private boolean isMarked;
+
+    public Bookmark(Member userId, Post postId){
+        this.member = userId;
+        this.post = postId;
+    }
+
+    public void ToggleBookmark(boolean state){
+        this.isMarked = state;
+    }
 }
