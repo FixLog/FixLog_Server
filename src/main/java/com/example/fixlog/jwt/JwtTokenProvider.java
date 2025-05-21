@@ -2,6 +2,7 @@ package com.example.fixlog.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -9,21 +10,29 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private static final String SECRET_KEY = "fixlogfixlogfixlogfixlogfixlog1234"; // 32자 이상
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1일
+    private final String secretKey;
+    private final long expirationTime;
+
+    public JwtTokenProvider(
+            @Value("${jwt.secret-key}") String secretKey,
+            @Value("${jwt.expiration-time:86400000}") long expirationTime // 기본 1일
+    ) {
+        this.secretKey = secretKey;
+        this.expirationTime = expirationTime;
+    }
 
     public String createToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY.getBytes())
+                .setSigningKey(secretKey.getBytes())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -32,7 +41,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(SECRET_KEY.getBytes()).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
             return false;
