@@ -26,17 +26,12 @@ public class PostController {
 //        return Response.success("게시글 조회하기 성공", postService.viewPost(postId));
 //    }
 
-    @PostMapping("/{postId}/likes")
-    public Response<Object> postLike(@PathVariable("postId") Long postId,
-                                     @RequestBody UserIdDto userIdDto){
-        postService.postLike(postId, userIdDto);
-        return Response.success("게시글 좋아요 성공", null);
+    @PostMapping("/{postId}/like")
+    public Response<Object> togglePostLike(@PathVariable("postId") Long postId,
+                                           @RequestBody UserIdDto userIdDto){
+        postService.togglePostLike(postId, userIdDto);
+        return Response.success("게시글 좋아요 변경 성공", null);
     }
 
-    @DeleteMapping("/{postId}/likes")
-    public Response<Object> postUnlike(@PathVariable("postId") Long postId,
-                                       @RequestBody UserIdDto userIdDto){
-        postService.postUnlike(postId, userIdDto);
-        return Response.success("게시글 좋아요 삭제 성공", null);
     }
 }
