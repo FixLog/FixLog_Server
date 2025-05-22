@@ -1,5 +1,6 @@
 package com.example.fixlog.domain.member;
 
+import com.example.fixlog.domain.bookmark.BookmarkFolder;
 import com.example.fixlog.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -48,6 +49,10 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+
+    // 북마크 폴더
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookmarkFolder> bookmarkFolders = new ArrayList<>();
 
     // Member 객체를 정적 팩토리 방식으로 생성하는 메서드
     // Creates a Member object using a static factory method
