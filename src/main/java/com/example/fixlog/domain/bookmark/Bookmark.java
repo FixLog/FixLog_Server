@@ -20,10 +20,6 @@ public class Bookmark {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private Member member;
-
-    @ManyToOne
     @JoinColumn(name = "postId")
     private Post post;
 
