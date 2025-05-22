@@ -1,5 +1,6 @@
 package com.example.fixlog.domain.post;
 
+import com.example.fixlog.domain.bookmark.Bookmark;
 import com.example.fixlog.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -65,6 +66,10 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
+
+    // 북마크와의 관계
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     // Todo : tags 도 postImage 처럼 join 해와야 하는 거 아닌가?
 

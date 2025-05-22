@@ -27,6 +27,10 @@ public class Bookmark {
     @JoinColumn(name = "postId")
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folderId")
+    private BookmarkFolder folder;
+
     private boolean isMarked;
 
     public Bookmark(Member userId, Post postId){
