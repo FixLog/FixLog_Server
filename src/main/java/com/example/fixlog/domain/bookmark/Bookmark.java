@@ -29,8 +29,8 @@ public class Bookmark {
 
     private boolean isMarked;
 
-    public Bookmark(Member userId, Post postId){
-        this.member = userId;
+    public Bookmark(BookmarkFolder folderId, Post postId){
+        this.folder = folderId;
         this.post = postId;
     }
 

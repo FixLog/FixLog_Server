@@ -1,4 +1,4 @@
-package com.example.fixlog.service.follow;
+package com.example.fixlog.service;
 
 import com.example.fixlog.dto.follow.response.FollowResponseDto;
 import com.example.fixlog.dto.follow.response.FollowerListResponseDto;

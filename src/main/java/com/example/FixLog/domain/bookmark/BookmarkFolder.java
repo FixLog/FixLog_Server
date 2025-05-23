@@ -22,10 +22,15 @@ public class BookmarkFolder {
     @Column(name = "folderName", nullable = false)
     private String name; // 폴더 이름
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
     private Member owner;
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
+
+    public BookmarkFolder(Member userId){
+        this.owner = userId;
+        this.name = "default folder";
+    }
 }

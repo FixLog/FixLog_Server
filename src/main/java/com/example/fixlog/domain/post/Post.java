@@ -28,6 +28,9 @@ public class Post {
     @Column(length = 100, nullable = false)
     private String postTitle;
 
+    @Column(columnDefinition = "TEXT")
+    private String coverImage;
+
     @Lob // 텍스트가 길어질 수 있는 필드에 사용
     @Column(nullable = false)
     private String problem;
@@ -55,7 +58,6 @@ public class Post {
     private String referenceLink;
 
     @Lob
-    @Column(columnDefinition = "TEXT")
     private String extraContent;
 
     @Column(nullable = false)
@@ -64,20 +66,22 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime editedAt;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostImage> postImages = new ArrayList<>();
+//    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private CoverImage coverImage;
 
     // 북마크와의 관계
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    // Todo : tags 도 postImage 처럼 join 해와야 하는 거 아닌가?
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostTag> postTags = new ArrayList<>();
 
-    public Post(Member userId, String postTitle, String problem, String errorMessage, String environment,
-                String reproduceCode, String solutionCode, String causeAnalysis, String referenceLink,
-                String extraContent, LocalDateTime createdAt, LocalDateTime editedAt){
+    public Post(Member userId, String postTitle, String coverImage, String problem, String errorMessage,
+                String environment, String reproduceCode, String solutionCode, String causeAnalysis,
+                String referenceLink, String extraContent, LocalDateTime createdAt, LocalDateTime editedAt){
         this.member = userId;
         this.postTitle = postTitle;
+        this.coverImage = coverImage;
         this.problem = problem;
         this.errorMessage = errorMessage;
         this.environment = environment;
