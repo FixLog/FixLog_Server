@@ -22,8 +22,8 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
-    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(nullable = false)
     private String email;
@@ -56,12 +56,15 @@ public class Member {
     @Column(length = 200)
     private String bio;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
-  // 북마크 폴더
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookmarkFolder> bookmarkFolders = new ArrayList<>();
+    // 북마크 폴더
+    @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private BookmarkFolder bookmarkFolderId;
+    // 우선은 계정 당 폴더 하나만 있는 걸로 생성
+    // @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private List<BookmarkFolder> bookmarkFolders = new ArrayList<>();
 
     // Member 객체를 정적 팩토리 방식으로 회원가입 시에 생성하는 메서드
     // Member 객체를 정적 팩토리 방식으로 생성하는 메서드
