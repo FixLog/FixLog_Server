@@ -1,4 +1,4 @@
-package com.example.fixlog.service.follow;
+package com.example.fixlog.service;
 
 import com.example.fixlog.dto.follow.response.FollowResponseDto;
 import com.example.fixlog.dto.follow.response.FollowerListResponseDto;
@@ -26,42 +26,55 @@ public class FollowService {
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
         Member follower = memberRepository.findByEmail(requesterEmail)
+<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_ID_NOT_FOUND));
+=======
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+        Member following = memberRepository.findById(targetMemberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+>>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
         // 자기 자신은 팔로우 불가
-        if (follower.getId().equals(following.getId())) {
-            throw new CustomException(ErrorCode.CANNOT_FOLLOW_SELF);
+        if (follower.getUserId().equals(following.getUserId())) {
+            throw new CustomException(ErrorCode.SELF_FOLLOW_NOT_ALLOWED);
         }
 
         // 중복 팔로우 방지
-        if (followRepository.existsByFollowerAndFollowing(follower, following)) {
+        if (followRepository.existsByFollowerIdAndFollowingId(follower, following)) {
             throw new CustomException(ErrorCode.ALREADY_FOLLOWING);
         }
 
         Follow follow = new Follow(follower, following);
         Follow saved = followRepository.save(follow);
 
-        return new FollowResponseDto(saved.getId(), following.getId(), following.getNickname());
+        return new FollowResponseDto(saved.getFollowId(), following.getUserId(), following.getNickname());
     }
 
     // 언팔로우하기
     @Transactional
     public void unfollow(String requesterEmail, Long targetMemberId) {
         Member follower = memberRepository.findByEmail(requesterEmail)
+<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
 
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_ID_NOT_FOUND));
+=======
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+
+        Member following = memberRepository.findById(targetMemberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+>>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
         // 자기 자신은 팔로우 불가
-        if (follower.getId().equals(following.getId())) {
-            throw new CustomException(ErrorCode.CANNOT_FOLLOW_SELF);
+        if (follower.getUserId().equals(following.getUserId())) {
+            throw new CustomException(ErrorCode.SELF_FOLLOW_NOT_ALLOWED);
         }
 
-        Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
-                .orElseThrow(() -> new CustomException(ErrorCode.CANNOT_UNFOLLOW_SELF));
+        Follow follow = followRepository.findByFollowerIdAndFollowingId(follower, following)
+                .orElseThrow(() -> new CustomException(ErrorCode.SELF_UNFOLLOW_NOT_ALLOWED));
 
         followRepository.delete(follow);
     }
@@ -70,15 +83,19 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
+<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
+=======
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+>>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
-        List<Follow> follows = followRepository.findByFollowing(me);
+        List<Follow> follows = followRepository.findByFollowingId(me);
 
         return follows.stream()
                 .map(follow -> new FollowerListResponseDto(
-                        follow.getId(),
-                        follow.getFollower().getId(),
-                        follow.getFollower().getNickname()
+                        follow.getFollowId(),
+                        follow.getFollowerId().getUserId(),
+                        follow.getFollowerId().getNickname()
                 ))
                 .toList();
     }
@@ -87,15 +104,19 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowingListResponseDto> getMyFollowings(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
+<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
+=======
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+>>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
-        List<Follow> follows = followRepository.findByFollower(me);
+        List<Follow> follows = followRepository.findByFollowerId(me);
 
         return follows.stream()
                 .map(follow -> new FollowingListResponseDto(
-                        follow.getId(),
-                        follow.getFollowing().getId(),
-                        follow.getFollowing().getNickname()
+                        follow.getFollowId(),
+                        follow.getFollowingId().getUserId(),
+                        follow.getFollowingId().getNickname()
                 ))
                 .toList();
     }
