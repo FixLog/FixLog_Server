@@ -1,4 +1,4 @@
-package com.example.fixlog.service;
+package com.example.fixlog.service.follow;
 
 import com.example.fixlog.dto.follow.response.FollowResponseDto;
 import com.example.fixlog.dto.follow.response.FollowerListResponseDto;
@@ -31,19 +31,19 @@ public class FollowService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
 
         // 자기 자신은 팔로우 불가
-        if (follower.getUserId().equals(following.getUserId())) {
+        if (follower.getId().equals(following.getId())) {
             throw new CustomException(ErrorCode.SELF_FOLLOW_NOT_ALLOWED);
         }
 
         // 중복 팔로우 방지
-        if (followRepository.existsByFollowerIdAndFollowingId(follower, following)) {
+        if (followRepository.existsByFollowerAndFollowing(follower, following)) {
             throw new CustomException(ErrorCode.ALREADY_FOLLOWING);
         }
 
         Follow follow = new Follow(follower, following);
         Follow saved = followRepository.save(follow);
 
-        return new FollowResponseDto(saved.getFollowId(), following.getUserId(), following.getNickname());
+        return new FollowResponseDto(saved.getId(), following.getId(), following.getNickname());
     }
 
     // 언팔로우하기
@@ -51,16 +51,15 @@ public class FollowService {
     public void unfollow(String requesterEmail, Long targetMemberId) {
         Member follower = memberRepository.findByEmail(requesterEmail)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
-
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
 
         // 자기 자신은 언팔로우 불가
-        if (follower.getUserId().equals(following.getUserId())) {
+        if (follower.getId().equals(following.getId())) {
             throw new CustomException(ErrorCode.SELF_UNFOLLOW_NOT_ALLOWED);
         }
 
-        Follow follow = followRepository.findByFollowerIdAndFollowingId(follower, following)
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
                 .orElseThrow(() -> new CustomException(ErrorCode.SELF_UNFOLLOW_NOT_ALLOWED));
 
         followRepository.delete(follow);
@@ -72,13 +71,13 @@ public class FollowService {
         Member me = memberRepository.findByEmail(requesterEmail)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
-        List<Follow> follows = followRepository.findByFollowingId(me);
+        List<Follow> follows = followRepository.findByFollowing(me);
 
         return follows.stream()
                 .map(follow -> new FollowerListResponseDto(
-                        follow.getFollowId(),
-                        follow.getFollowerId().getUserId(),
-                        follow.getFollowerId().getNickname()
+                        follow.getId(),
+                        follow.getFollower().getId(),
+                        follow.getFollower().getNickname()
                 ))
                 .toList();
     }
@@ -89,13 +88,13 @@ public class FollowService {
         Member me = memberRepository.findByEmail(requesterEmail)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
-        List<Follow> follows = followRepository.findByFollowerId(me);
+        List<Follow> follows = followRepository.findByFollower(me);
 
         return follows.stream()
                 .map(follow -> new FollowingListResponseDto(
-                        follow.getFollowId(),
-                        follow.getFollowingId().getUserId(),
-                        follow.getFollowingId().getNickname()
+                        follow.getId(),
+                        follow.getFollowing().getId(),
+                        follow.getFollowing().getNickname()
                 ))
                 .toList();
     }
