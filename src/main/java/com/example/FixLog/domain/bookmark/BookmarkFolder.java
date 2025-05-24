@@ -33,6 +33,12 @@ public class BookmarkFolder {
     public void updateName(String newName) {
         this.folderName = newName;
     }
+
+    public BookmarkFolder( Member userId, String name) {
+        this.userId = userId;
+        this.folderName = name;
+    }
+
     public BookmarkFolder(Member userId){
         this.userId = userId;
         this.folderName = "default folder";

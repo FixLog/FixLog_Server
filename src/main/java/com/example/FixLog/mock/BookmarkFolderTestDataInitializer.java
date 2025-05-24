@@ -23,8 +23,8 @@ public class BookmarkFolderTestDataInitializer implements CommandLineRunner {
             Member member = memberRepository.findByEmail("test1@example.com")
                     .orElseThrow(() -> new IllegalStateException("test1@example.com 사용자가 존재하지 않습니다."));
 
-            BookmarkFolder defaultFolder = new BookmarkFolder("기본 폴더", member);
-            BookmarkFolder etcFolder = new BookmarkFolder("그외 폴더", member);
+            BookmarkFolder defaultFolder = new BookmarkFolder(member, "default folder");
+            BookmarkFolder etcFolder = new BookmarkFolder(member,"그외 폴더");
 
             bookmarkFolderRepository.saveAll(List.of(defaultFolder, etcFolder));
 

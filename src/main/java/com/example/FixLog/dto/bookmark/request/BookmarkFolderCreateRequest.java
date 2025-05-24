@@ -1,4 +1,8 @@
 package com.example.fixlog.dto.bookmark.request;
 
-public record BookmarkFolderCreateRequest(String name) {}
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record BookmarkFolderCreateRequest(
+        @JsonProperty("name") String folderName
+) {}
 

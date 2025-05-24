@@ -22,13 +22,13 @@ public class BookmarkService {
     // 북마크 폴더 이동
     public void moveBookmarkToFolder(Long bookmarkId, Long newFolderId, String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
 
         Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOKMARK_NOT_FOUND));
 
         // 폴더 주인만 이동 가능
-        if (!bookmark.getFolder().getOwner().equals(member)) {
+        if (!bookmark.getFolderId().getUserId().equals(member)) {
             throw new CustomException(ErrorCode.ACCESS_DENIED);
         }
 

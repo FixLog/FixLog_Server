@@ -25,7 +25,7 @@ public class BookmarkFolderController {
             @RequestBody BookmarkFolderCreateRequest request,
             @RequestParam String requesterEmail
     ) {
-        BookmarkFolderCreateResponse response = bookmarkFolderService.createFolder(request.name(), requesterEmail);
+        BookmarkFolderCreateResponse response = bookmarkFolderService.createFolder(request.folderName(), requesterEmail);
 
         return ResponseEntity.ok(Response.success("북마크 폴더 생성 성공", response));
     }
@@ -47,7 +47,7 @@ public class BookmarkFolderController {
             @RequestParam String requesterEmail,
             @RequestBody BookmarkFolderUpdateRequest request
     ) {
-        bookmarkFolderService.updateFolderName(folderId, requesterEmail, request.name());
+        bookmarkFolderService.updateFolderName(folderId, requesterEmail, request.folderName());
         return ResponseEntity.ok(Response.success("폴더 이름 수정 완료", null));
     }
 

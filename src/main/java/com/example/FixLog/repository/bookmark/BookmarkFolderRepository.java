@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface BookmarkFolderRepository extends JpaRepository<BookmarkFolder, Long> {
-    Page<BookmarkFolder> findAllByOwner(Member owner, Pageable pageable);
+    Page<BookmarkFolder> findAllByUserId(Member userId, Pageable pageable);
     BookmarkFolder findByUserId(Member userId);
 }
