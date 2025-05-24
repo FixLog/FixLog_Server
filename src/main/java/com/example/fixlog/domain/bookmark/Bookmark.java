@@ -33,6 +33,10 @@ public class Bookmark {
 
     private boolean isMarked;
 
+    public void moveToFolder(BookmarkFolder newFolder) {
+        this.folder = newFolder;
+    }
+
     public Bookmark(Member userId, Post postId){
         this.member = userId;
         this.post = postId;
