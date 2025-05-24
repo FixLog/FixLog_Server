@@ -27,7 +27,7 @@ public class BookmarkFolderService {
     // 북마크 폴더 생성
     public BookmarkFolderCreateResponse createFolder(String folderName, String requesterEmail) {
         Member member = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
 
         BookmarkFolder folder = new BookmarkFolder(folderName, member);
         BookmarkFolder saved = bookmarkFolderRepository.save(folder);
@@ -38,7 +38,7 @@ public class BookmarkFolderService {
     // 북마크 폴더 목록 전체 조회
     public BookmarkFolderPageResponse getFoldersByEmail(String email, int page) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page - 1, 10); // 기본 size = 10
         Page<BookmarkFolder> folderPage = bookmarkFolderRepository.findAllByOwner(member, pageable);
@@ -54,6 +54,23 @@ public class BookmarkFolderService {
                 folderPage.getTotalPages(),
                 folderPage.getTotalElements()
         );
+
+    }
+
+    // 북마크 폴더 이름 수정
+    public void updateFolderName(Long folderId, String email, String newName) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
+
+        BookmarkFolder folder = bookmarkFolderRepository.findById(folderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.FOLDER_NOT_FOUND));
+
+        // 본인만 수정 가능
+        if (!folder.getOwner().equals(member)) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED);
+        }
+
+        folder.updateName(newName);
     }
 
 
