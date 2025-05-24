@@ -1,5 +1,7 @@
 package com.example.fixlog.domain.tag;
 
+import com.example.fixlog.domain.member.Member;
+import com.example.fixlog.domain.member.SocialType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,12 +14,19 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tagId",nullable = false)
-    private Long id;
+    @Column(name = "tag_id",nullable = false)
+    private Long tagId;
 
     @Enumerated(EnumType.STRING)
     private TagCategory tagCategory;
 
     @Column(length = 20, nullable = false)
-    private String tag_name;
+    private String tagName;
+
+    public static Tag of(TagCategory tagCategory, String tagName) {
+        Tag tag = new Tag();
+        tag.tagCategory = tagCategory;
+        tag.tagName = tagName;
+        return tag;
+    }
 }

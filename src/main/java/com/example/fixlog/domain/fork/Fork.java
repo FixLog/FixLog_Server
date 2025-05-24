@@ -14,18 +14,18 @@ public class Fork {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "forkId")
-    private Long id;
+    @Column(name = "fork_id")
+    private Long forkId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private Member member;
+    @JoinColumn(name = "user_id", nullable = false)
+    private Member userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId", nullable = false)
-    private Post originalPost;
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post originalPostId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "forkPostId", nullable = false)
-    private Post forkedPost;
+    @JoinColumn(name = "fork_post_id", nullable = false)
+    private Post forkedPostId;
 }
