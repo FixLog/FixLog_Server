@@ -1,5 +1,6 @@
 package com.example.fixlog.domain.bookmark;
 
+
 import com.example.fixlog.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,24 +14,18 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookmarkFolder {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "folder_id")
-    private Long folderId;
+    @Column(name = "folderId")
+    private Long id;
 
-    @Column(name = "folder_name", nullable = false)
-    private String folderName;
+    @Column(name = "folderName", nullable = false)
+    private String name; // 폴더 이름
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private Member userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", nullable = false)
+    private Member owner;
 
-    @OneToMany(mappedBy = "folderId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
-
-    public BookmarkFolder(Member userId){
-        this.userId = userId;
-        this.folderName = "default folder";
-    }
 }

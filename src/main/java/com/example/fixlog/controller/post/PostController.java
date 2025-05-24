@@ -1,4 +1,4 @@
-package com.example.fixlog.controller;
+package com.example.fixlog.controller.post;
 
 import com.example.fixlog.dto.UserIdDto;
 import com.example.fixlog.dto.post.PostRequestDto;

@@ -1,4 +1,4 @@
-package com.example.fixlog.service;
+package com.example.fixlog.service.follow;
 
 import com.example.fixlog.dto.follow.response.FollowResponseDto;
 import com.example.fixlog.dto.follow.response.FollowerListResponseDto;
@@ -26,42 +26,42 @@ public class FollowService {
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
         Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBERID_NOT_FOUND));
 
         // 자기 자신은 팔로우 불가
-        if (follower.getUserId().equals(following.getUserId())) {
-            throw new CustomException(ErrorCode.SELF_FOLLOW_NOT_ALLOWED);
+        if (follower.getId().equals(following.getId())) {
+            throw new CustomException(ErrorCode.CANNOT_FOLLOW_SELF);
         }
 
         // 중복 팔로우 방지
-        if (followRepository.existsByFollowerIdAndFollowingId(follower, following)) {
+        if (followRepository.existsByFollowerAndFollowing(follower, following)) {
             throw new CustomException(ErrorCode.ALREADY_FOLLOWING);
         }
 
         Follow follow = new Follow(follower, following);
         Follow saved = followRepository.save(follow);
 
-        return new FollowResponseDto(saved.getFollowId(), following.getUserId(), following.getNickname());
+        return new FollowResponseDto(saved.getId(), following.getId(), following.getNickname());
     }
 
     // 언팔로우하기
     @Transactional
     public void unfollow(String requesterEmail, Long targetMemberId) {
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
 
         Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBERID_NOT_FOUND));
 
         // 자기 자신은 팔로우 불가
-        if (follower.getUserId().equals(following.getUserId())) {
-            throw new CustomException(ErrorCode.SELF_FOLLOW_NOT_ALLOWED);
+        if (follower.getId().equals(following.getId())) {
+            throw new CustomException(ErrorCode.CANNOT_FOLLOW_SELF);
         }
 
-        Follow follow = followRepository.findByFollowerIdAndFollowingId(follower, following)
-                .orElseThrow(() -> new CustomException(ErrorCode.SELF_UNFOLLOW_NOT_ALLOWED));
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
+                .orElseThrow(() -> new CustomException(ErrorCode.CANNOT_UNFOLLOW_SELF));
 
         followRepository.delete(follow);
     }
@@ -70,15 +70,15 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
 
-        List<Follow> follows = followRepository.findByFollowingId(me);
+        List<Follow> follows = followRepository.findByFollowing(me);
 
         return follows.stream()
                 .map(follow -> new FollowerListResponseDto(
-                        follow.getFollowId(),
-                        follow.getFollowerId().getUserId(),
-                        follow.getFollowerId().getNickname()
+                        follow.getId(),
+                        follow.getFollower().getId(),
+                        follow.getFollower().getNickname()
                 ))
                 .toList();
     }
@@ -87,15 +87,15 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowingListResponseDto> getMyFollowings(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
 
-        List<Follow> follows = followRepository.findByFollowerId(me);
+        List<Follow> follows = followRepository.findByFollower(me);
 
         return follows.stream()
                 .map(follow -> new FollowingListResponseDto(
-                        follow.getFollowId(),
-                        follow.getFollowingId().getUserId(),
-                        follow.getFollowingId().getNickname()
+                        follow.getId(),
+                        follow.getFollowing().getId(),
+                        follow.getFollowing().getNickname()
                 ))
                 .toList();
     }
