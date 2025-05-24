@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     USER_ID_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 사용자 아이디입니다."),
-    USER_EMAIL_NOT_FOUNT(HttpStatus.NOT_FOUND, "회원 이메일을 찾을 수 없습니다."),
+    USER_EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 이메일을 찾을 수 없습니다."),
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "중복된 이메일입니다"),
     NICKNAME_DUPLICATED(HttpStatus.CONFLICT, "중복된 닉네임입니다"),
     SELF_FOLLOW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "자기 자신은 팔로우할 수 없습니다"),
