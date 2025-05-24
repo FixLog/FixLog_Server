@@ -5,5 +5,5 @@ import com.example.fixlog.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookmarkFolderRepository extends JpaRepository<BookmarkFolder, Long> {
-    BookmarkFolder findByOwner(Member userId);
+    BookmarkFolder findByUserId(Member userId);
 }

@@ -100,7 +100,7 @@ public class PostService {
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Optional<PostLike> optionalLike = postLikeRepository.findByMemberAndPost(userId, postId);
+        Optional<PostLike> optionalLike = postLikeRepository.findByUserIdAndPostId(userId, postId);
 
         if (optionalLike.isEmpty()){ // 객체 없는 경우
             PostLike newLike = new PostLike(userId, postId);
@@ -122,8 +122,8 @@ public class PostService {
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        BookmarkFolder folderId = bookmarkFolderRepository.findByOwner(userId); // 이 코드는 폴더가 하나일 때만 적용됨
-        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByFolderAndPost(folderId, postId);
+        BookmarkFolder folderId = bookmarkFolderRepository.findByUserId(userId); // 이 코드는 폴더가 하나일 때만 적용됨
+        Optional<Bookmark> optionalBookmark = bookmarkRepository.findByFolderIdAndPostId(folderId, postId);
 
         if (optionalBookmark.isEmpty()){ // 객체 없는 경우
             Bookmark newBookmark = new Bookmark(folderId, postId);

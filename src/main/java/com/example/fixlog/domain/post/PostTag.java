@@ -13,19 +13,19 @@ public class PostTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "postTagId",nullable = false)
-    private Long id;
+    @Column(name = "post_tag_id",nullable = false)
+    private Long postTagId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId", nullable = false)
-    private Post post;
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tagId", nullable = false)
-    private Tag tag;
+    @JoinColumn(name = "tag_id", nullable = false)
+    private Tag tagId;
 
     public PostTag(Post postId, Tag tagId){
-        this.post = postId;
-        this.tag = tagId;
+        this.postId = postId;
+        this.tagId = tagId;
     }
 }

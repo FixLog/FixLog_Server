@@ -1,13 +1,11 @@
 package com.example.fixlog.domain.bookmark;
 
-import com.example.fixlog.domain.member.Member;
 import com.example.fixlog.domain.post.Post;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 
 @Entity
 @Getter
@@ -16,22 +14,22 @@ public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="bookmarkId")
-    private Long id;
+    @Column(name="bookmark_id")
+    private Long bookmarkId;
 
     @ManyToOne
-    @JoinColumn(name = "postId")
-    private Post post;
+    @JoinColumn(name = "post_id")
+    private Post postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folderId")
-    private BookmarkFolder folder;
+    @JoinColumn(name = "folder_id")
+    private BookmarkFolder folderId;
 
     private boolean isMarked;
 
     public Bookmark(BookmarkFolder folderId, Post postId){
-        this.folder = folderId;
-        this.post = postId;
+        this.folderId = folderId;
+        this.postId = postId;
     }
 
     public void ToggleBookmark(boolean state){

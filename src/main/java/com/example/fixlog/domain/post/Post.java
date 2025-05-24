@@ -18,12 +18,12 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "postId", nullable = false)
-    private Long id;
+    @Column(name = "post_id", nullable = false)
+    private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private Member member;
+    @JoinColumn(name = "user_id", nullable = false)
+    private Member userId;
 
     @Column(length = 100, nullable = false)
     private String postTitle;
@@ -66,20 +66,17 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime editedAt;
 
-//    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private CoverImage coverImage;
-
     // 북마크와의 관계
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
     public Post(Member userId, String postTitle, String coverImage, String problem, String errorMessage,
                 String environment, String reproduceCode, String solutionCode, String causeAnalysis,
                 String referenceLink, String extraContent, LocalDateTime createdAt, LocalDateTime editedAt){
-        this.member = userId;
+        this.userId = userId;
         this.postTitle = postTitle;
         this.coverImage = coverImage;
         this.problem = problem;
