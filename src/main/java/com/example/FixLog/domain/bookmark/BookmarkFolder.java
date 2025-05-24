@@ -28,4 +28,14 @@ public class BookmarkFolder {
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
+
+    public BookmarkFolder(String name, Member owner) {
+        this.name = name;
+        this.owner = owner;
+    }
+
+    // 폴더 이름 수정 메서드
+    public void updateName(String newName) {
+        this.name = newName;
+    }
 }

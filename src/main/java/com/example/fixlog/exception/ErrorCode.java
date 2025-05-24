@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     MEMBERID_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 ID를 찾을 수 없습니다"),
-    MEMBEREMAIL_NOT_FOUNT(HttpStatus.NOT_FOUND, "회원 이메일을 찾을 수 없습니다."),
+    MEMBEREMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 이메일을 찾을 수 없습니다."),
     CANNOT_FOLLOW_SELF(HttpStatus.BAD_REQUEST, "자기 자신은 팔로우할 수 없습니다"),
     CANNOT_UNFOLLOW_SELF(HttpStatus.BAD_REQUEST, "자기 자신은 언팔로우할 수 없습니다"),
     ALREADY_FOLLOWING(HttpStatus.CONFLICT, "이미 팔로우 중입니다"),

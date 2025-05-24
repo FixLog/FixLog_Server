@@ -26,7 +26,7 @@ public class FollowService {
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUND));
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBERID_NOT_FOUND));
 
@@ -50,7 +50,7 @@ public class FollowService {
     @Transactional
     public void unfollow(String requesterEmail, Long targetMemberId) {
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUND));
 
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBERID_NOT_FOUND));
@@ -70,7 +70,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUND));
 
         List<Follow> follows = followRepository.findByFollowing(me);
 
@@ -87,7 +87,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowingListResponseDto> getMyFollowings(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBEREMAIL_NOT_FOUND));
 
         List<Follow> follows = followRepository.findByFollower(me);
 
