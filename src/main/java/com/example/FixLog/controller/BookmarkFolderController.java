@@ -3,6 +3,7 @@ package com.example.fixlog.controller;
 import com.example.fixlog.dto.Response;
 import com.example.fixlog.dto.bookmark.request.BookmarkFolderCreateRequest;
 import com.example.fixlog.dto.bookmark.response.BookmarkFolderCreateResponse;
+import com.example.fixlog.dto.bookmark.response.BookmarkFolderPageResponse;
 import com.example.fixlog.service.BookmarkFolderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,15 @@ public class BookmarkFolderController {
         return ResponseEntity.ok(Response.success("북마크 폴더 생성 성공", response));
     }
 
-    // 북마크 폴더 
+    // 북마크 폴더 목록 전체 조회
+    @GetMapping
+    public ResponseEntity<Response<BookmarkFolderPageResponse>> getFolders(
+            @RequestParam String requesterEmail,
+            @RequestParam int page
+    ) {
+        BookmarkFolderPageResponse response = bookmarkFolderService.getFoldersByEmail(requesterEmail, page);
+        return ResponseEntity.ok(Response.success("북마크 폴더 목록 전체 조회 성공", response));
+    }
+
 
 }
