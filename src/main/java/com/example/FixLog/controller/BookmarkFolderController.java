@@ -3,9 +3,11 @@ package com.example.fixlog.controller;
 import com.example.fixlog.dto.Response;
 import com.example.fixlog.dto.bookmark.request.BookmarkFolderCreateRequest;
 import com.example.fixlog.dto.bookmark.request.BookmarkFolderUpdateRequest;
+import com.example.fixlog.dto.bookmark.request.BookmarkMoveRequest;
 import com.example.fixlog.dto.bookmark.response.BookmarkFolderCreateResponse;
 import com.example.fixlog.dto.bookmark.response.BookmarkFolderPageResponse;
 import com.example.fixlog.service.BookmarkFolderService;
+import com.example.fixlog.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bookmark-folders")
 public class BookmarkFolderController {
     private final BookmarkFolderService bookmarkFolderService;
+    private final BookmarkService bookmarkService;
 
     // 북마크 폴더 생성
     @PostMapping
@@ -48,6 +51,18 @@ public class BookmarkFolderController {
         return ResponseEntity.ok(Response.success("폴더 이름 수정 완료", null));
     }
 
+    // 북마크 폴더 이동
+    @PatchMapping("/{bookmarkId}/move")
+    public ResponseEntity<Response<Void>> moveBookmark(
+            @PathVariable Long bookmarkId,
+            @RequestParam String requesterEmail,
+            @RequestBody BookmarkMoveRequest request
+    ) {
+        bookmarkService.moveBookmarkToFolder(bookmarkId, request.folderId(), requesterEmail);
+        return ResponseEntity.ok(Response.success("북마크 다른 폴더로 이동 성공", null));
+    }
+
+
     // 북마크 폴더 삭제
     @DeleteMapping("/{folderId}")
     public ResponseEntity<Response<Void>> deleteFolder(
@@ -57,8 +72,6 @@ public class BookmarkFolderController {
         bookmarkFolderService.deleteFolder(folderId, requesterEmail);
         return ResponseEntity.ok(Response.success("북마크 폴더 삭제 완료", null));
     }
-
-
 
 
 }
