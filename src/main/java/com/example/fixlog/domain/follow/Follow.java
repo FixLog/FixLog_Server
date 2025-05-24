@@ -13,19 +13,19 @@ public class Follow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "followId")
-    private Long id;
+    @Column(name = "follow_id")
+    private Long followId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followerId", nullable = false)
-    private Member follower;
+    private Member followerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "followingId", nullable = false)
-    private Member following;
+    @JoinColumn(name = "following_id", nullable = false)
+    private Member followingId;
 
-    public Follow(Member follower, Member following) {
-        this.follower = follower;
-        this.following = following;
+    public Follow(Member followerId, Member followingId) {
+        this.followerId = followerId;
+        this.followingId = followingId;
     }
 }
