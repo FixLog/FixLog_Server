@@ -73,6 +73,24 @@ public class BookmarkFolderService {
         folder.updateName(newName);
     }
 
+    // 북마크 폴더 삭제
+    public void deleteFolder(Long folderId, String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
+
+        BookmarkFolder folder = bookmarkFolderRepository.findById(folderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.FOLDER_NOT_FOUND));
+
+
+        // 본인만 삭제 가능
+        if (!folder.getOwner().equals(member)) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED);
+        }
+
+        bookmarkFolderRepository.delete(folder);
+    }
+
+
 
 
 }

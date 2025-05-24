@@ -48,6 +48,17 @@ public class BookmarkFolderController {
         return ResponseEntity.ok(Response.success("폴더 이름 수정 완료", null));
     }
 
-    
+    // 북마크 폴더 삭제
+    @DeleteMapping("/{folderId}")
+    public ResponseEntity<Response<Void>> deleteFolder(
+            @PathVariable Long folderId,
+            @RequestParam String requesterEmail
+    ) {
+        bookmarkFolderService.deleteFolder(folderId, requesterEmail);
+        return ResponseEntity.ok(Response.success("북마크 폴더 삭제 완료", null));
+    }
+
+
+
 
 }
