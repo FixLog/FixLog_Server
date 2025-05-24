@@ -1,4 +1,4 @@
-package com.example.FixLog;
+package com.example.fixlog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
