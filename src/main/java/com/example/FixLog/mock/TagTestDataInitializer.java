@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.example.fixlog.domain.tag.TagCategory.*;
+
 @Component
 @RequiredArgsConstructor
 public class TagTestDataInitializer implements CommandLineRunner {
@@ -18,10 +20,10 @@ public class TagTestDataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (tagRepository.count() == 0) {
-            Tag tag1 = Tag.of(TagCategory.valueOf("대분류"), "101");
-            Tag tag2 = Tag.of(TagCategory.valueOf("대분류"), "101");
-            Tag tag3 = Tag.of(TagCategory.valueOf("중분류"), "201");
-            Tag tag4 = Tag.of(TagCategory.valueOf("소분류"), "301");
+            Tag tag1 = Tag.of(MAJOR_CATEGORY, "101");
+            Tag tag2 = Tag.of(MAJOR_CATEGORY, "101");
+            Tag tag3 = Tag.of(MIDDLE_CATEGORY, "201");
+            Tag tag4 = Tag.of(MINOR_CATEGORY, "301");
             tagRepository.saveAll(List.of(tag1, tag2, tag3, tag4));
             System.out.println("임시 태그 4개 삽입 완료");
         }
