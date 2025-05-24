@@ -1,11 +1,13 @@
 package com.example.fixlog.domain.bookmark;
 
+import com.example.fixlog.domain.member.Member;
 import com.example.fixlog.domain.post.Post;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Getter
@@ -26,6 +28,10 @@ public class Bookmark {
     private BookmarkFolder folderId;
 
     private boolean isMarked;
+
+    public void moveToFolder(BookmarkFolder newFolder) {
+        this.folderId = newFolder;
+    }
 
     public Bookmark(BookmarkFolder folderId, Post postId){
         this.folderId = folderId;

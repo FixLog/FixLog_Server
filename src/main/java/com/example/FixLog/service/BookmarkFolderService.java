@@ -1,0 +1,96 @@
+package com.example.fixlog.service;
+
+import com.example.fixlog.domain.bookmark.BookmarkFolder;
+import com.example.fixlog.domain.member.Member;
+import com.example.fixlog.dto.bookmark.response.BookmarkFolderCreateResponse;
+import com.example.fixlog.dto.bookmark.response.BookmarkFolderPageResponse;
+import com.example.fixlog.dto.bookmark.response.BookmarkFolderReadResponse;
+import com.example.fixlog.exception.CustomException;
+import com.example.fixlog.exception.ErrorCode;
+import com.example.fixlog.repository.MemberRepository;
+import com.example.fixlog.repository.bookmark.BookmarkFolderRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class BookmarkFolderService {
+
+    private final BookmarkFolderRepository bookmarkFolderRepository;
+    private final MemberRepository memberRepository;
+
+    // 북마크 폴더 생성
+    public BookmarkFolderCreateResponse createFolder(String folderName, String requesterEmail) {
+        Member member = memberRepository.findByEmail(requesterEmail)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+
+        BookmarkFolder folder = new BookmarkFolder(member, folderName);
+        BookmarkFolder saved = bookmarkFolderRepository.save(folder);
+
+        return new BookmarkFolderCreateResponse(saved.getFolderId(), saved.getFolderName()); // 폴더 ID, 폴더 이름 리턴
+    }
+
+    // 북마크 폴더 목록 전체 조회
+    public BookmarkFolderPageResponse getFoldersByEmail(String email, int page) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+
+        Pageable pageable = PageRequest.of(page - 1, 10); // 기본 size = 10
+        Page<BookmarkFolder> folderPage = bookmarkFolderRepository.findAllByUserId(member, pageable);
+
+        List<BookmarkFolderReadResponse> content = folderPage.getContent().stream()
+                .map(folder -> new BookmarkFolderReadResponse(folder.getFolderId(), folder.getFolderName()))
+                .toList();
+
+        return new BookmarkFolderPageResponse(
+                content,
+                folderPage.getNumber() + 1,
+                folderPage.getSize(),
+                folderPage.getTotalPages(),
+                folderPage.getTotalElements()
+        );
+
+    }
+
+    // 북마크 폴더 이름 수정
+    public void updateFolderName(Long folderId, String email, String newName) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+
+        BookmarkFolder folder = bookmarkFolderRepository.findById(folderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.FOLDER_NOT_FOUND));
+
+        // 본인만 수정 가능
+        if (!folder.getUserId().equals(member)) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED);
+        }
+
+        folder.updateName(newName);
+    }
+
+    // 북마크 폴더 삭제 -> 기본 폴더는 삭제 불가인지?
+    public void deleteFolder(Long folderId, String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+
+        BookmarkFolder folder = bookmarkFolderRepository.findById(folderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.FOLDER_NOT_FOUND));
+
+
+        // 본인만 삭제 가능
+        if (!folder.getUserId().equals(member)) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED);
+        }
+
+        bookmarkFolderRepository.delete(folder);
+    }
+
+
+
+
+}
