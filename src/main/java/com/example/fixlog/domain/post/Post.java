@@ -18,18 +18,15 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id", nullable = false)
-    private Long postId;
+    @Column(name = "postId", nullable = false)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private Member userId;
+    @JoinColumn(name = "userId", nullable = false)
+    private Member member;
 
     @Column(length = 100, nullable = false)
     private String postTitle;
-
-    @Column(columnDefinition = "TEXT")
-    private String coverImage;
 
     @Lob // 텍스트가 길어질 수 있는 필드에 사용
     @Column(nullable = false)
@@ -58,6 +55,7 @@ public class Post {
     private String referenceLink;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String extraContent;
 
     @Column(nullable = false)
@@ -66,19 +64,20 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime editedAt;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> postImages = new ArrayList<>();
+
     // 북마크와의 관계
-    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostTag> postTags = new ArrayList<>();
+    // Todo : tags 도 postImage 처럼 join 해와야 하는 거 아닌가?
 
-    public Post(Member userId, String postTitle, String coverImage, String problem, String errorMessage,
-                String environment, String reproduceCode, String solutionCode, String causeAnalysis,
-                String referenceLink, String extraContent, LocalDateTime createdAt, LocalDateTime editedAt){
-        this.userId = userId;
+    public Post(Member userId, String postTitle, String problem, String errorMessage, String environment,
+                String reproduceCode, String solutionCode, String causeAnalysis, String referenceLink,
+                String extraContent, LocalDateTime createdAt, LocalDateTime editedAt){
+        this.member = userId;
         this.postTitle = postTitle;
-        this.coverImage = coverImage;
         this.problem = problem;
         this.errorMessage = errorMessage;
         this.environment = environment;
