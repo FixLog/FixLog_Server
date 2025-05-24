@@ -53,7 +53,7 @@ public class PostService {
 
         String coverImageUrl = postRequestDto.getCoverImageUrl();
         if (coverImageUrl == null || coverImageUrl.isBlank())
-            coverImageUrl = "url";
+            coverImageUrl = "https://example.com/default-cover-image.png";
 
         // Todo : 북마크 카테고리별로 선택 제한 두기
 
