@@ -26,15 +26,9 @@ public class FollowService {
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
         Member follower = memberRepository.findByEmail(requesterEmail)
-<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
-        Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_ID_NOT_FOUND));
-=======
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
->>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
         // 자기 자신은 팔로우 불가
         if (follower.getUserId().equals(following.getUserId())) {
@@ -56,17 +50,10 @@ public class FollowService {
     @Transactional
     public void unfollow(String requesterEmail, Long targetMemberId) {
         Member follower = memberRepository.findByEmail(requesterEmail)
-<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
-
-        Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_ID_NOT_FOUND));
-=======
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
 
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
->>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
         // 자기 자신은 팔로우 불가
         if (follower.getUserId().equals(following.getUserId())) {
@@ -83,11 +70,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
-=======
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
->>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
         List<Follow> follows = followRepository.findByFollowingId(me);
 
@@ -104,11 +87,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowingListResponseDto> getMyFollowings(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-<<<<<<< HEAD:src/main/java/com/example/fixlog/service/follow/FollowService.java
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
-=======
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
->>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c:src/main/java/com/example/FixLog/service/FollowService.java
 
         List<Follow> follows = followRepository.findByFollowerId(me);
 

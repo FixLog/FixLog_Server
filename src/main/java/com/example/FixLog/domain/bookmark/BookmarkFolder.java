@@ -29,19 +29,12 @@ public class BookmarkFolder {
     @OneToMany(mappedBy = "folderId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-<<<<<<< HEAD
-    public BookmarkFolder(String name, Member owner) {
-        this.name = name;
-        this.owner = owner;
-    }
-
     // 폴더 이름 수정 메서드
     public void updateName(String newName) {
-        this.name = newName;
-=======
+        this.folderName = newName;
+    }
     public BookmarkFolder(Member userId){
         this.userId = userId;
         this.folderName = "default folder";
->>>>>>> b32ddb2b758a53e321c9ae679c23589f56f3b63c
     }
 }
