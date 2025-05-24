@@ -25,6 +25,10 @@ public class Bookmark {
     @JoinColumn(name = "folder_id")
     private BookmarkFolder folderId;
 
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private Member member;  // 삭제해야함
+
     private boolean isMarked;
 
     public Bookmark(BookmarkFolder folderId, Post postId){
