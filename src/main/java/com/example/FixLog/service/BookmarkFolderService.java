@@ -73,7 +73,7 @@ public class BookmarkFolderService {
         folder.updateName(newName);
     }
 
-    // 북마크 폴더 삭제
+    // 북마크 폴더 삭제 -> 기본 폴더는 삭제 불가인지?
     public void deleteFolder(Long folderId, String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_EMAIL_NOT_FOUND));
