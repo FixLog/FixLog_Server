@@ -26,7 +26,7 @@ public class FollowService {
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
 
@@ -50,14 +50,14 @@ public class FollowService {
     @Transactional
     public void unfollow(String requesterEmail, Long targetMemberId) {
         Member follower = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         Member following = memberRepository.findById(targetMemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
 
-        // 자기 자신은 팔로우 불가
+        // 자기 자신은 언팔로우 불가
         if (follower.getUserId().equals(following.getUserId())) {
-            throw new CustomException(ErrorCode.SELF_FOLLOW_NOT_ALLOWED);
+            throw new CustomException(ErrorCode.SELF_UNFOLLOW_NOT_ALLOWED);
         }
 
         Follow follow = followRepository.findByFollowerIdAndFollowingId(follower, following)
@@ -70,7 +70,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowerListResponseDto> getMyFollowers(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         List<Follow> follows = followRepository.findByFollowingId(me);
 
@@ -87,7 +87,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<FollowingListResponseDto> getMyFollowings(String requesterEmail) {
         Member me = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         List<Follow> follows = followRepository.findByFollowerId(me);
 

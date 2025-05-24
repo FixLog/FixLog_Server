@@ -1,7 +1,5 @@
 package com.example.fixlog.domain.tag;
 
-import com.example.fixlog.domain.member.Member;
-import com.example.fixlog.domain.member.SocialType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
