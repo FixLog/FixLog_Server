@@ -2,6 +2,7 @@ package com.example.fixlog.controller;
 
 import com.example.fixlog.dto.Response;
 import com.example.fixlog.dto.bookmark.request.BookmarkFolderCreateRequest;
+import com.example.fixlog.dto.bookmark.request.BookmarkFolderUpdateRequest;
 import com.example.fixlog.dto.bookmark.response.BookmarkFolderCreateResponse;
 import com.example.fixlog.dto.bookmark.response.BookmarkFolderPageResponse;
 import com.example.fixlog.service.BookmarkFolderService;
@@ -36,5 +37,17 @@ public class BookmarkFolderController {
         return ResponseEntity.ok(Response.success("북마크 폴더 목록 전체 조회 성공", response));
     }
 
+    // 북마크 폴더 이름 수정
+    @PatchMapping("/{folder_id}")
+    public ResponseEntity<Response<Void>> updateFolderName(
+            @PathVariable Long folderId,
+            @RequestParam String requesterEmail,
+            @RequestBody BookmarkFolderUpdateRequest request
+    ) {
+        bookmarkFolderService.updateFolderName(folderId, requesterEmail, request.name());
+        return ResponseEntity.ok(Response.success("폴더 이름 수정 완료", null));
+    }
+
+    
 
 }
