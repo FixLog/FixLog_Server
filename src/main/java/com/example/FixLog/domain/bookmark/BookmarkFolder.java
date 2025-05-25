@@ -29,6 +29,16 @@ public class BookmarkFolder {
     @OneToMany(mappedBy = "folderId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
+    // 폴더 이름 수정 메서드
+    public void updateName(String newName) {
+        this.folderName = newName;
+    }
+
+    public BookmarkFolder( Member userId, String name) {
+        this.userId = userId;
+        this.folderName = name;
+    }
+
     public BookmarkFolder(Member userId){
         this.userId = userId;
         this.folderName = "default folder";
