@@ -1,6 +1,7 @@
 package com.example.FixLog.domain.post;
 
 import com.example.FixLog.domain.bookmark.Bookmark;
+import com.example.FixLog.domain.like.PostLike;
 import com.example.FixLog.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -70,8 +71,13 @@ public class Post {
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
+    // 태그와의 관계
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
+
+    // 좋아요와의 관계
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
 
     public Post(Member userId, String postTitle, String coverImage, String problem, String errorMessage,
                 String environment, String reproduceCode, String solutionCode, String causeAnalysis,
@@ -89,7 +95,6 @@ public class Post {
         this.extraContent = extraContent;
         this.createdAt = createdAt;
         this.editedAt = editedAt;
-        // 게시글 이미지
         // 게시글 태그
     }
 }
