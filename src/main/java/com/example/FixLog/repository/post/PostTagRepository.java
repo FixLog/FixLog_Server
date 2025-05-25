@@ -1,6 +1,6 @@
-package com.example.fixlog.repository.post;
+package com.example.FixLog.repository.post;
 
-import com.example.fixlog.domain.post.PostTag;
+import com.example.FixLog.domain.post.PostTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostTagRepository extends JpaRepository<PostTag, Long> {
