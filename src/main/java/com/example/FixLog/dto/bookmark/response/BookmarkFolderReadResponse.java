@@ -1,4 +1,4 @@
-package com.example.fixlog.dto.bookmark.response;
+package com.example.FixLog.dto.bookmark.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

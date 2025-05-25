@@ -1,15 +1,14 @@
-package com.example.fixlog.mock;
+package com.example.FixLog.mock;
 
-import com.example.fixlog.domain.tag.Tag;
-import com.example.fixlog.domain.tag.TagCategory;
-import com.example.fixlog.repository.tag.TagRepository;
+import com.example.FixLog.domain.tag.Tag;
+import com.example.FixLog.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.example.fixlog.domain.tag.TagCategory.*;
+import static com.example.FixLog.domain.tag.TagCategory.*;
 
 @Component
 @RequiredArgsConstructor
