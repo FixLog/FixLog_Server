@@ -1,6 +1,6 @@
-package com.example.fixlog.domain.bookmark;
+package com.example.FixLog.domain.bookmark;
 
-import com.example.fixlog.domain.member.Member;
+import com.example.FixLog.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

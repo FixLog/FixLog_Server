@@ -1,7 +1,7 @@
-package com.example.fixlog.repository.bookmark;
+package com.example.FixLog.repository.bookmark;
 
-import com.example.fixlog.domain.bookmark.BookmarkFolder;
-import com.example.fixlog.domain.member.Member;
+import com.example.FixLog.domain.bookmark.BookmarkFolder;
+import com.example.FixLog.domain.member.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

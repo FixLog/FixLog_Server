@@ -1,9 +1,9 @@
-package com.example.fixlog.mock;
+package com.example.FixLog.mock;
 
-import com.example.fixlog.domain.bookmark.BookmarkFolder;
-import com.example.fixlog.domain.member.Member;
-import com.example.fixlog.repository.MemberRepository;
-import com.example.fixlog.repository.bookmark.BookmarkFolderRepository;
+import com.example.FixLog.domain.bookmark.BookmarkFolder;
+import com.example.FixLog.domain.member.Member;
+import com.example.FixLog.repository.MemberRepository;
+import com.example.FixLog.repository.bookmark.BookmarkFolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
