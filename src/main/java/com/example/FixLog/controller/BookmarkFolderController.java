@@ -1,13 +1,13 @@
-package com.example.fixlog.controller;
+package com.example.FixLog.controller;
 
-import com.example.fixlog.dto.Response;
-import com.example.fixlog.dto.bookmark.request.BookmarkFolderCreateRequest;
-import com.example.fixlog.dto.bookmark.request.BookmarkFolderUpdateRequest;
-import com.example.fixlog.dto.bookmark.request.BookmarkMoveRequest;
-import com.example.fixlog.dto.bookmark.response.BookmarkFolderCreateResponse;
-import com.example.fixlog.dto.bookmark.response.BookmarkFolderPageResponse;
-import com.example.fixlog.service.BookmarkFolderService;
-import com.example.fixlog.service.BookmarkService;
+import com.example.FixLog.dto.Response;
+import com.example.FixLog.dto.bookmark.request.BookmarkFolderCreateRequest;
+import com.example.FixLog.dto.bookmark.request.BookmarkFolderUpdateRequest;
+import com.example.FixLog.dto.bookmark.request.BookmarkMoveRequest;
+import com.example.FixLog.dto.bookmark.response.BookmarkFolderCreateResponse;
+import com.example.FixLog.dto.bookmark.response.BookmarkFolderPageResponse;
+import com.example.FixLog.service.BookmarkFolderService;
+import com.example.FixLog.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

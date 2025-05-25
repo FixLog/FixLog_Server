@@ -1,13 +1,13 @@
-//package com.example.fixlog.service;
+//package com.example.FixLog.service;
 //
-//import com.example.fixlog.domain.bookmark.BookmarkFolder;
-//import com.example.fixlog.domain.member.Member;
-//import com.example.fixlog.domain.member.SocialType;
-//import com.example.fixlog.dto.member.SignupRequestDto;
-//import com.example.fixlog.exception.CustomException;
-//import com.example.fixlog.exception.ErrorCode;
-//import com.example.fixlog.repository.MemberRepository;
-//import com.example.fixlog.repository.bookmark.BookmarkFolderRepository;
+//import com.example.FixLog.domain.bookmark.BookmarkFolder;
+//import com.example.FixLog.domain.member.Member;
+//import com.example.FixLog.domain.member.SocialType;
+//import com.example.FixLog.dto.member.SignupRequestDto;
+//import com.example.FixLog.exception.CustomException;
+//import com.example.FixLog.exception.ErrorCode;
+//import com.example.FixLog.repository.MemberRepository;
+//import com.example.FixLog.repository.bookmark.BookmarkFolderRepository;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.stereotype.Service;
