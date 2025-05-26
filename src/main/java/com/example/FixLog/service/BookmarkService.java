@@ -22,7 +22,7 @@ public class BookmarkService {
     // 북마크 폴더 이동
     public void moveBookmarkToFolder(Long bookmarkId, Long newFolderId, String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOKMARK_NOT_FOUND));
