@@ -1,9 +1,9 @@
 package com.example.fixlog.controller;
 
-import com.example.FixLog.dto.UserIdDto;
-import com.example.FixLog.dto.post.PostRequestDto;
-import com.example.FixLog.dto.Response;
-import com.example.FixLog.service.PostService;
+import com.example.fixlog.dto.UserIdDto;
+import com.example.fixlog.dto.post.PostRequestDto;
+import com.example.fixlog.dto.Response;
+import com.example.fixlog.service.PostService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
