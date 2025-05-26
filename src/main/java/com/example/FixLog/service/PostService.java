@@ -52,8 +52,6 @@ public class PostService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
 
         String coverImageUrl = postRequestDto.getCoverImageUrl();
-        if (coverImageUrl == null || coverImageUrl.isBlank())
-            coverImageUrl = "https://example.com/default-cover-image.png";
 
         // Todo : 북마크 카테고리별로 선택 제한 두기
 
@@ -92,7 +90,7 @@ public class PostService {
 //    }
 
     // 게시글 좋아요
-    public void togglePostLike(Long postIdInput, UserIdDto userIdDto){
+    public String togglePostLike(Long postIdInput, UserIdDto userIdDto){
         Long userIdInput = userIdDto.getUserId();
         Member userId = memberRepository.findById(userIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
@@ -105,16 +103,20 @@ public class PostService {
         if (optionalLike.isEmpty()){ // 객체 없는 경우
             PostLike newLike = new PostLike(userId, postId);
             postLikeRepository.save(newLike);
+            return "게시글 좋아요 성공";
         } else { // 객체 있는 경우
             PostLike postLike = optionalLike.get();
             postLike.ToggleLike(!postLike.isLiked());
             postLikeRepository.save(postLike);
-            // Todo : 좋아요 한 건지 삭제한 건지 message로 알 수 있게 하면 좋을듯
+            if (postLike.isLiked() == true)
+                return "게시글 좋아요 성공";
+            else
+                return "게시글 좋아요 삭제 성공";
         }
     }
 
     // 게시글 북마크
-    public void toggleBookmark(Long postIdInput, UserIdDto userIdDto){
+    public String toggleBookmark(Long postIdInput, UserIdDto userIdDto){
         Long userIdInput = userIdDto.getUserId();
         Member userId = memberRepository.findById(userIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
@@ -125,16 +127,21 @@ public class PostService {
         BookmarkFolder folderId = bookmarkFolderRepository.findByUserId(userId); // 이 코드는 폴더가 하나일 때만 적용됨
         Optional<Bookmark> optionalBookmark = bookmarkRepository.findByFolderIdAndPostId(folderId, postId);
 
+        // 본인 글은 북마크 못하도록
+        if (userId == folderId.getUserId())
+            throw new CustomException(ErrorCode.SELF_BOOKMARK_NOT_ALLOWED);
+
+        // 북마크 처리
         if (optionalBookmark.isEmpty()){ // 객체 없는 경우
             Bookmark newBookmark = new Bookmark(folderId, postId);
             bookmarkRepository.save(newBookmark);
+            return "게시글 북마크 성공";
         } else { // 객체 있는 경우
             Bookmark bookmark = optionalBookmark.get();
             bookmark.ToggleBookmark(!bookmark.isMarked());
             bookmarkRepository.save(bookmark);
-            // Todo : 북마크 한 건지 삭제한 건지 message로 알 수 있게 하면 좋을듯
+            System.out.println(bookmark.isMarked());
+            return (bookmark.isMarked() == true) ? "게시글 북마크 성공" : "게시글 북마크 삭제 성공";
         }
-
-        // Fixme : 본인 글은 북마크 못하려나?
     }
 }

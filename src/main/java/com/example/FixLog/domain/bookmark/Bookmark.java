@@ -35,6 +35,7 @@ public class Bookmark {
     public Bookmark(BookmarkFolder folderId, Post postId){
         this.folderId = folderId;
         this.postId = postId;
+        this.isMarked = true; // 객체 생성 시 true
     }
 
     public void ToggleBookmark(boolean state){

@@ -29,14 +29,14 @@ public class PostController {
     @PostMapping("/{postId}/like")
     public Response<Object> togglePostLike(@PathVariable("postId") Long postId,
                                            @RequestBody UserIdDto userIdDto){
-        postService.togglePostLike(postId, userIdDto);
-        return Response.success("게시글 좋아요 변경 성공", null);
+        String message = postService.togglePostLike(postId, userIdDto);
+        return Response.success(message, null);
     }
 
     @PostMapping("/{postId}/bookmark")
     public Response<Object> toggleBookmark(@PathVariable("postId") Long postId,
                                            @RequestBody UserIdDto userIdDto) {
-        postService.toggleBookmark(postId, userIdDto);
-        return Response.success("게시글 북마크 변경 성공", null);
+        String message = postService.toggleBookmark(postId, userIdDto);
+        return Response.success(message, null);
     }
 }
