@@ -15,4 +15,5 @@ public class MainPagePostResponseDto {
     private String writerProfileImageUrl;
     private String nickname;
     private LocalDate createdAt; // 여기서는 LocalDateTime 까진 필요 없으니까
+    private int likeCount;
 }

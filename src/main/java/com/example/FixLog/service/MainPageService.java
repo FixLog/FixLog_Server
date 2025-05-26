@@ -67,7 +67,8 @@ public class MainPageService {
                                 .collect(Collectors.toList()),
                         getDefaultImage(post.getUserId().getProfileImageUrl()),
                         post.getUserId().getNickname(),
-                        post.getCreatedAt().toLocalDate()
+                        post.getCreatedAt().toLocalDate(),
+                        post.getPostLikes().size()
                 ))
                 .collect(Collectors.toList());
 
@@ -101,7 +102,8 @@ public class MainPageService {
                                 .collect(Collectors.toList()),
                         getDefaultImage(post.getUserId().getProfileImageUrl()),
                         post.getUserId().getNickname(),
-                        post.getCreatedAt().toLocalDate()
+                        post.getCreatedAt().toLocalDate(),
+                        post.getPostLikes().size()
                 ))
                 .collect(Collectors.toList());
 
