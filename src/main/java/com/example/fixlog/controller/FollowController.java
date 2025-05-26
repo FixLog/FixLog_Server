@@ -1,12 +1,12 @@
 package com.example.fixlog.controller;
 
-import com.example.fixlog.dto.Response;
-import com.example.fixlog.dto.follow.request.FollowRequestDto;
-import com.example.fixlog.dto.follow.request.UnfollowRequestDto;
-import com.example.fixlog.dto.follow.response.FollowResponseDto;
-import com.example.fixlog.dto.follow.response.FollowerListResponseDto;
-import com.example.fixlog.dto.follow.response.FollowingListResponseDto;
-import com.example.fixlog.service.FollowService;
+import com.example.FixLog.dto.Response;
+import com.example.FixLog.dto.follow.request.FollowRequestDto;
+import com.example.FixLog.dto.follow.request.UnfollowRequestDto;
+import com.example.FixLog.dto.follow.response.FollowResponseDto;
+import com.example.FixLog.dto.follow.response.FollowerListResponseDto;
+import com.example.FixLog.dto.follow.response.FollowingListResponseDto;
+import com.example.FixLog.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

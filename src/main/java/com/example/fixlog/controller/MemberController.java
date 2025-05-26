@@ -1,10 +1,10 @@
 //package com.example.fixlog.controller;
 //
 //
-//import com.example.fixlog.dto.Response;
-//import com.example.fixlog.dto.member.SignupRequestDto;
-//import com.example.fixlog.dto.member.DuplicateCheckResponseDto;
-//import com.example.fixlog.service.MemberService;
+//import com.example.FixLog.dto.Response;
+//import com.example.FixLog.dto.member.SignupRequestDto;
+//import com.example.FixLog.dto.member.DuplicateCheckResponseDto;
+//import com.example.FixLog.service.MemberService;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,6 @@
 package com.example.fixlog.mock;
 
 import com.example.fixlog.domain.tag.Tag;
-import com.example.fixlog.domain.tag.TagCategory;
 import com.example.fixlog.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
