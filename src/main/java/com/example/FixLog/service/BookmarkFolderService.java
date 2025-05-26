@@ -27,7 +27,7 @@ public class BookmarkFolderService {
     // 북마크 폴더 생성
     public BookmarkFolderCreateResponse createFolder(String folderName, String requesterEmail) {
         Member member = memberRepository.findByEmail(requesterEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         BookmarkFolder folder = new BookmarkFolder(member, folderName);
         BookmarkFolder saved = bookmarkFolderRepository.save(folder);
@@ -38,7 +38,7 @@ public class BookmarkFolderService {
     // 북마크 폴더 목록 전체 조회
     public BookmarkFolderPageResponse getFoldersByEmail(String email, int page) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page - 1, 10); // 기본 size = 10
         Page<BookmarkFolder> folderPage = bookmarkFolderRepository.findAllByUserId(member, pageable);
@@ -60,7 +60,7 @@ public class BookmarkFolderService {
     // 북마크 폴더 이름 수정
     public void updateFolderName(Long folderId, String email, String newName) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         BookmarkFolder folder = bookmarkFolderRepository.findById(folderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FOLDER_NOT_FOUND));
@@ -76,7 +76,7 @@ public class BookmarkFolderService {
     // 북마크 폴더 삭제 -> 기본 폴더는 삭제 불가인지?
     public void deleteFolder(Long folderId, String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         BookmarkFolder folder = bookmarkFolderRepository.findById(folderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FOLDER_NOT_FOUND));
