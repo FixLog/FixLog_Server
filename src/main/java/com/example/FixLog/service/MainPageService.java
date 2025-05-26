@@ -2,7 +2,6 @@ package com.example.FixLog.service;
 
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.post.Post;
-import com.example.FixLog.domain.post.PostTag;
 import com.example.FixLog.dto.UserIdDto;
 import com.example.FixLog.dto.main.MainPagePostResponseDto;
 import com.example.FixLog.dto.main.MainPageResponseDto;
@@ -31,11 +30,20 @@ public class MainPageService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
     }
 
+    // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
+    public String getDefaultImage(String image){
+        String imageUrl = (image == null || image.isBlank())
+                ? "https://example.com/default-cover-image.png" : image;
+        System.out.println(imageUrl);
+        return imageUrl;
+    }
+
     // 메인페이지 보기
     public MainPageResponseDto mainPageView(int sort, UserIdDto userIddto){
         // 사용자 정보 불러오기
         Member member = getMemberOrThrow(userIddto.getUserId());
-        String profileImageUrl = member.getProfileImageUrl();
+        String imageUrl = member.getProfileImageUrl();
+        String profileImageUrl = getDefaultImage(imageUrl);
 
         // 페이지 (글 12개) 불러오기
         List<Post> posts;
@@ -50,9 +58,11 @@ public class MainPageService {
         List<MainPagePostResponseDto> postList = posts.stream()
                 .map(post -> new MainPagePostResponseDto(
                         post.getPostTitle(),
-                        post.getCoverImage(),
-                        post.getPostTags(), // Todo : 여기서 무한루프로 불러오는 거 해결해야 함
-                        post.getUserId().getProfileImageUrl(),
+                        getDefaultImage(post.getCoverImage()),
+                        post.getPostTags().stream()
+                                .map(postTag -> postTag.getTagId().getTagName())
+                                .collect(Collectors.toList()),
+                        getDefaultImage(post.getUserId().getProfileImageUrl()),
                         post.getUserId().getNickname(),
                         post.getCreatedAt().toLocalDate()
                 ))
@@ -64,7 +74,7 @@ public class MainPageService {
     // 메인페이지 전체보기
 //    public MainPageResponseDto mainPageFullView(int sort, int page, UserIdDto userIddto){
 //        // 사용자 정보 불러오기
-//        Member member = getMemberOrThrow(userIddto.getUserId());
+//        Member member = getMemberOrThrow(userIdDto.getUserId());
 //        String profileImageUrl = member.getProfileImageUrl();
 //
 //        // 페이지 (글 12개) 불러오기

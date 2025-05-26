@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class MainPageResponseDto {
-    private String profileImageUrl;
+    private String UserProfileImageUrl;
     private List<MainPagePostResponseDto> posts;
 }

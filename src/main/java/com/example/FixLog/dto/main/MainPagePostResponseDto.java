@@ -1,6 +1,5 @@
 package com.example.FixLog.dto.main;
 
-import com.example.FixLog.domain.post.PostTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,8 +11,8 @@ import java.util.List;
 public class MainPagePostResponseDto {
     private String postTitle;
     private String coverImage;
-    private List<PostTag> tags; // private List<Long> tags;
-    private String profileImageUrl;
+    private List<String> tags;
+    private String writerProfileImageUrl;
     private String nickname;
-    private LocalDate createdAt; // 여기서는 LocalDateTime까진 필요 없으니까
+    private LocalDate createdAt; // 여기서는 LocalDateTime 까진 필요 없으니까
 }
