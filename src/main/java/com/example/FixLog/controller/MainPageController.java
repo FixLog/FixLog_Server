@@ -21,10 +21,10 @@ public class MainPageController {
         return Response.success("메인페이지 불러오기 성공", mainPageView);
     }
 
-//    @GetMapping("/full")
-//    public Response<Object> mainPageFullView(@RequestParam int sort, @RequestParam int page,
-//                                             @RequestBody UserIdDto userIddto){
-//        MainPageResponseDto mainPageFullView = mainPageService.mainPageFullView(sort, page, userIddto);
-//        return Response.success("메인페이지 전체보기 성공", mainPageFullView);
-//    }
+    @GetMapping("/full")
+    public Response<Object> mainPageFullView(@RequestParam("sort") int sort, @RequestParam("page") int page,
+                                             @RequestBody UserIdDto userIddto){
+        MainPageResponseDto mainPageFullView = mainPageService.mainPageFullView(sort, page, userIddto);
+        return Response.success("메인페이지 전체보기 성공", mainPageFullView);
+    }
 }

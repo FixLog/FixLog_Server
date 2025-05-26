@@ -9,6 +9,9 @@ import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
 import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.post.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,21 +75,38 @@ public class MainPageService {
     }
 
     // 메인페이지 전체보기
-//    public MainPageResponseDto mainPageFullView(int sort, int page, UserIdDto userIddto){
-//        // 사용자 정보 불러오기
-//        Member member = getMemberOrThrow(userIdDto.getUserId());
-//        String profileImageUrl = member.getProfileImageUrl();
-//
-//        // 페이지 (글 12개) 불러오기
-//        List<MainPagePostResponseDto> posts;
-//
-//        if (sort == 0) { // 최신순 정렬
-//            posts = postRepository.findTop12ByOrderByCreatedAtDesc();
-//        } else if (sort == 1) { // 인기순 정렬
-//            posts = postRepository.findTop12ByOrderByPostLikesDesc();
-//        } else
-//            throw new CustomException(ErrorCode.SORT_NOT_EXIST);
-//
-//        return new MainPageResponseDto(profileImageUrl, posts);
-//    }
+    public MainPageResponseDto mainPageFullView(int sort, int page, UserIdDto userIddto){
+        // 사용자 정보 불러오기
+        Member member = getMemberOrThrow(userIddto.getUserId());
+        String imageUrl = member.getProfileImageUrl();
+        String profileImageUrl = getDefaultImage(imageUrl);
+
+        // 페이지 설정 (한 페이지당 12개)
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        Page<Post> postPage;
+
+        if (sort == 0) { // 최신순 정렬
+            postPage = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+        } else if (sort == 1) { // 인기순 정렬
+            postPage = postRepository.findAllByOrderByPostLikesDesc(pageable);
+        } else
+            throw new CustomException(ErrorCode.SORT_NOT_EXIST);
+
+        List<MainPagePostResponseDto> postList = postPage.stream()
+                .map(post -> new MainPagePostResponseDto(
+                        post.getPostTitle(),
+                        getDefaultImage(post.getCoverImage()),
+                        post.getPostTags().stream()
+                                .map(postTag -> postTag.getTagId().getTagName())
+                                .collect(Collectors.toList()),
+                        getDefaultImage(post.getUserId().getProfileImageUrl()),
+                        post.getUserId().getNickname(),
+                        post.getCreatedAt().toLocalDate()
+                ))
+                .collect(Collectors.toList());
+
+        int totalPages = postPage.getTotalPages(); // 전체 페이지 수 출력
+
+        return new MainPageResponseDto(profileImageUrl, postList, totalPages);
+    }
 }
