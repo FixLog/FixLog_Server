@@ -3,6 +3,7 @@ package com.example.FixLog.controller;
 import com.example.FixLog.dto.UserIdDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.Response;
+import com.example.FixLog.dto.post.PostResponseDto;
 import com.example.FixLog.service.PostService;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,22 +22,24 @@ public class PostController {
         return Response.success("게시글 작성 성공.", null);
     }
 
-//    @GetMapping("/{postId}")
-//    public Response<postResponseDto> viewPost(@RequestParam Long postId){
-//        return Response.success("게시글 조회하기 성공", postService.viewPost(postId));
-//    }
+    @GetMapping("/{postId}")
+    public Response<Object> viewPost(@PathVariable("postId") Long postId,
+                                     @RequestBody UserIdDto userIdDto){
+        PostResponseDto viewPost = postService.viewPost(postId, userIdDto);
+        return Response.success("게시글 조회하기 성공", viewPost);
+    }
 
     @PostMapping("/{postId}/like")
     public Response<Object> togglePostLike(@PathVariable("postId") Long postId,
                                            @RequestBody UserIdDto userIdDto){
         String message = postService.togglePostLike(postId, userIdDto);
-        return Response.success(message, null);
+        return Response.success(message, null); // 좋아요 수정하기
     }
 
     @PostMapping("/{postId}/bookmark")
     public Response<Object> toggleBookmark(@PathVariable("postId") Long postId,
                                            @RequestBody UserIdDto userIdDto) {
         String message = postService.toggleBookmark(postId, userIdDto);
-        return Response.success(message, null);
+        return Response.success(message, null); // 북마크 수정하기
     }
 }
