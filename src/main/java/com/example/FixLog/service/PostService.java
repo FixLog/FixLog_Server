@@ -8,7 +8,9 @@ import com.example.FixLog.domain.post.Post;
 import com.example.FixLog.domain.post.PostTag;
 import com.example.FixLog.domain.tag.Tag;
 import com.example.FixLog.dto.UserIdDto;
+import com.example.FixLog.dto.post.PostDto;
 import com.example.FixLog.dto.post.PostRequestDto;
+import com.example.FixLog.dto.post.PostResponseDto;
 import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
 import com.example.FixLog.repository.MemberRepository;
@@ -20,9 +22,11 @@ import com.example.FixLog.repository.tag.TagRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -44,12 +48,24 @@ public class PostService {
         this.bookmarkFolderRepository = bookmarkFolderRepository;
     }
 
+    // 회원 정보 불러오기
+    public Member getMemberOrThrow(Long userId) {
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+    }
+
+    // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
+    public String getDefaultImage(String image){
+        String imageUrl = (image == null || image.isBlank())
+                ? "https://example.com/default-cover-image.png" : image;
+        System.out.println(imageUrl);
+        return imageUrl;
+    }
+
     // 게시글 생성하기
     @Transactional
     public void createPost(PostRequestDto postRequestDto){
-        Long userIdInput = postRequestDto.getUserId();
-        Member userId = memberRepository.findById(userIdInput)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+        Member member = getMemberOrThrow(postRequestDto.getUserId());
 
         String coverImageUrl = postRequestDto.getCoverImageUrl();
 
@@ -57,7 +73,7 @@ public class PostService {
 
         // 게시글 발행
         Post newPost = new Post(
-                userId,
+                member,
                 postRequestDto.getPostTitle(),
                 coverImageUrl,
                 postRequestDto.getProblem(),
@@ -85,15 +101,41 @@ public class PostService {
     }
 
     // 게시글 조회하기
-//    public postResponseDto viewPost(@RequestParam Long postId){
-//        return new postResponseDto;
-//    }
+    public PostResponseDto viewPost(Long postId, UserIdDto userIdDto){
+        Member userId = getMemberOrThrow(userIdDto.getUserId());
+
+        Post currentPost = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        PostDto postInfo = new PostDto(
+                currentPost.getPostTitle(),
+                currentPost.getCoverImage(),
+                currentPost.getProblem(),
+                currentPost.getErrorMessage(),
+                currentPost.getEnvironment(),
+                currentPost.getReproduceCode(),
+                currentPost.getSolutionCode(),
+                currentPost.getCauseAnalysis(),
+                currentPost.getReferenceLink(),
+                currentPost.getExtraContent(),
+                currentPost.getPostTags().stream()
+                        .map(postTag -> postTag.getTagId().getTagName())
+                        .collect(Collectors.toList())
+        );
+
+        String nickname = userId.getNickname();
+        LocalDate createdAt = currentPost.getCreatedAt().toLocalDate();
+        boolean isLiked = currentPost.getPostLikes().stream()
+                .anyMatch(postLike -> postLike.getUserId().equals(userId));
+        boolean isMarked = currentPost.getBookmarks().stream()
+                .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(userId));
+
+        return new PostResponseDto(postInfo, nickname, createdAt, isLiked, isMarked);
+    }
 
     // 게시글 좋아요
     public String togglePostLike(Long postIdInput, UserIdDto userIdDto){
-        Long userIdInput = userIdDto.getUserId();
-        Member userId = memberRepository.findById(userIdInput)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+        Member userId = getMemberOrThrow(userIdDto.getUserId());
 
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -117,9 +159,7 @@ public class PostService {
 
     // 게시글 북마크
     public String toggleBookmark(Long postIdInput, UserIdDto userIdDto){
-        Long userIdInput = userIdDto.getUserId();
-        Member userId = memberRepository.findById(userIdInput)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+        Member userId = getMemberOrThrow(userIdDto.getUserId());
 
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
