@@ -68,7 +68,11 @@ public class MemberService {
     }
   
     // 회원탈퇴
-    public void withdraw(Member member) {
+    public void withdraw(Member member, String password) {
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
         member.setIsDeleted(true);
         memberRepository.save(member);
     }
