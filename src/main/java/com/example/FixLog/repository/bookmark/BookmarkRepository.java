@@ -15,15 +15,6 @@ import java.util.Optional;
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     Optional<Bookmark> findByFolderIdAndPostId(BookmarkFolder folderId, Post postId);
 
-//    @Query("""
-//    SELECT p FROM Post p
-//    JOIN FETCH p.postLikes
-//    WHERE p IN (
-//        SELECT b.postId FROM Bookmark b WHERE b.folderId = :folder
-//    )
-//""")
-//    Page<Post> findPostsByFolder(@Param("folder") BookmarkFolder folder, Pageable pageable);
-
     @EntityGraph(attributePaths = {"postId.postLikes"})  // 좋아요 수 때문
     Page<Bookmark> findByFolderId(BookmarkFolder folder, Pageable pageable);
 }
