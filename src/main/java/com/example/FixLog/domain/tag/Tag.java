@@ -21,10 +21,14 @@ public class Tag {
     @Column(length = 20, nullable = false)
     private String tagName;
 
-    public static Tag of(TagCategory tagCategory, String tagName) {
+    @Column(nullable = false)
+    private String tagInfo;
+
+    public static Tag of(TagCategory tagCategory, String tagName, String tagInfo) {
         Tag tag = new Tag();
         tag.tagCategory = tagCategory;
         tag.tagName = tagName;
+        tag.tagInfo = tagInfo;
         return tag;
     }
 }
