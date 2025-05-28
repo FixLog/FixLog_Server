@@ -27,10 +27,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/members/signup").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/members/check-email").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/members/check-nickname").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/members/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/members/check-email").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )

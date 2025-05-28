@@ -49,7 +49,6 @@ public class MemberService {
         BookmarkFolder newFolder = new BookmarkFolder(member);
         bookmarkFolderRepository.save(newFolder);
 
-
     }
 
     public boolean isEmailDuplicated(String email) {
@@ -59,13 +58,19 @@ public class MemberService {
     public boolean isNicknameDuplicated(String nickname) {
         return memberRepository.findByNickname(nickname).isPresent();
     }
-
+  
     // 현재 로그인한 사용자 정보 member 객체로 반환
     public Member getCurrentMemberInfo(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         return memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
+    }
+  
+    // 회원탈퇴
+    public void withdraw(Member member) {
+        member.setIsDeleted(true);
+        memberRepository.save(member);
     }
 }
 

@@ -1,6 +1,5 @@
 package com.example.FixLog.controller;
 
-
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.member.MemberInfoResponseDto;
@@ -13,7 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -49,5 +48,11 @@ public class MemberController {
                 member.getSocialType()
         );
         return ResponseEntity.ok(Response.success("회원 정보 조회 성공", responseDto));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Response<Void>> withdraw(@AuthenticationPrincipal Member member) {
+        memberService.withdraw(member);
+        return ResponseEntity.ok(Response.success("회원 탈퇴 성공", null));
     }
 }

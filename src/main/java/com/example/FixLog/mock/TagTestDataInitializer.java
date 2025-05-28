@@ -4,6 +4,7 @@ import com.example.FixLog.domain.tag.Tag;
 import com.example.FixLog.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import static com.example.FixLog.domain.tag.TagCategory.*;
 
 @Component
 @RequiredArgsConstructor
+@Order(3)
 public class TagTestDataInitializer implements CommandLineRunner {
 
     private final TagRepository tagRepository;

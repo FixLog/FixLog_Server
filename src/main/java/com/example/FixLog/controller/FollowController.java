@@ -9,6 +9,8 @@ import com.example.FixLog.dto.follow.response.FollowingListResponseDto;
 import com.example.FixLog.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +25,9 @@ public class FollowController {
     @PostMapping
     public ResponseEntity<Response<FollowResponseDto>> follow(
             @RequestBody FollowRequestDto followRequestDto,
-            @RequestParam String requesterEmail // jwt 구현 전까지 임시 사용 -> 이후 AuthenticationPrincipal 사용 예정
+            @AuthenticationPrincipal UserDetails userDetails  // jwt 구현 전까지 임시 사용 -> 이후 AuthenticationPrincipal 사용 예정
             ){
+        String requesterEmail = userDetails.getUsername();
         FollowResponseDto result = followService.follow(requesterEmail, followRequestDto.getTargetMemberId());
         return ResponseEntity.ok(Response.success("팔로우 완료", result));
     }
@@ -33,8 +36,9 @@ public class FollowController {
     @PostMapping("/unfollow")
     public ResponseEntity<Response<Void>> unfollow(
             @RequestBody UnfollowRequestDto requestDto,
-            @RequestParam String requesterEmail) {
-
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String requesterEmail = userDetails.getUsername();
         followService.unfollow(requesterEmail, requestDto.getTargetMemberId());
         return ResponseEntity.ok(Response.success("언팔로우 완료", null));
     }
@@ -42,8 +46,9 @@ public class FollowController {
     // 나를 팔로우하는 목록 조회
     @GetMapping("/followers")
     public ResponseEntity<Response<List<FollowerListResponseDto>>> getMyFollowers(
-            @RequestParam String requesterEmail) {
-
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String requesterEmail = userDetails.getUsername();
         List<FollowerListResponseDto> followers = followService.getMyFollowers(requesterEmail);
         return ResponseEntity.ok(Response.success("나를 팔로우하는 목록 조회 성공", followers));
     }
@@ -51,8 +56,9 @@ public class FollowController {
     // 내가 팔로우하는 목록 조회
     @GetMapping("/followings")
     public ResponseEntity<Response<List<FollowingListResponseDto>>> getMyFollowings(
-            @RequestParam String requesterEmail) {
-
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String requesterEmail = userDetails.getUsername();
         List<FollowingListResponseDto> followings = followService.getMyFollowings(requesterEmail);
         return ResponseEntity.ok(Response.success("내가 팔로우 중인 목록 조회 성공", followings));
     }
