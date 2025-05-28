@@ -39,7 +39,7 @@ public class MypagePostService {
     // 내가 쓴 글 보기
     public PageResponseDto<MyPostPageResponseDto> getMyPosts(String email, int page, int sort, int size) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         // 1: 오래된순, 0: 최신순
         Sort.Direction direction = (sort == 1) ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -65,7 +65,7 @@ public class MypagePostService {
     // 내가 좋아요한 글 보기
     public PageResponseDto<MyPostPageResponseDto> getLikedPosts(String email, int page, int sort, int size) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         // 1: 오래된순, 0: 최신순
         Sort.Direction direction = (sort == 1) ? Sort.Direction.ASC : Sort.Direction.DESC;
