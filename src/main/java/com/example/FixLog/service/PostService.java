@@ -51,7 +51,7 @@ public class PostService {
     // 회원 정보 불러오기
     public Member getMemberOrThrow(Long userId) {
         return memberRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
     }
 
     // 이미지 null일 때 default 사진으로 변경 (프로필 사진,

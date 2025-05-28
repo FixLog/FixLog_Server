@@ -28,7 +28,7 @@ public class FollowService {
         Member follower = memberRepository.findByEmail(requesterEmail)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
         Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
 
         // 자기 자신은 팔로우 불가
         if (follower.getUserId().equals(following.getUserId())) {
@@ -53,7 +53,7 @@ public class FollowService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
 
         Member following = memberRepository.findById(targetMemberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
 
         // 자기 자신은 팔로우 불가
         if (follower.getUserId().equals(following.getUserId())) {

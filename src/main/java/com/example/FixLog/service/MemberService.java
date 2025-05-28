@@ -57,5 +57,11 @@ public class MemberService {
     public boolean isNicknameDuplicated(String nickname) {
         return memberRepository.findByNickname(nickname).isPresent();
     }
+
+    // 회원탈퇴
+    public void withdraw(Member member) {
+        member.setIsDeleted(true);
+        memberRepository.save(member);
+    }
 }
 

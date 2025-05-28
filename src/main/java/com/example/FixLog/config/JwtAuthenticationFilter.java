@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtUtil.isTokenValid(token)) {
             String email = jwtUtil.getEmailFromToken(token);
             Member member = memberRepository.findByEmail(email)
-                    .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
 
             Authentication auth = new UsernamePasswordAuthenticationToken(member, null, member.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);

@@ -41,6 +41,10 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType = SocialType.EMAIL;
