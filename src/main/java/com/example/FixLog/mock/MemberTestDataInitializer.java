@@ -5,6 +5,8 @@ import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.bookmark.BookmarkFolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.member.SocialType;
@@ -12,17 +14,20 @@ import com.example.FixLog.domain.member.SocialType;
 import java.util.List;
 
 @Component
+@Order(1)
 @RequiredArgsConstructor
 public class MemberTestDataInitializer implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
     private final BookmarkFolderRepository bookmarkFolderRepository;
+    // 비밀번호 암호화 인코더
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
         if (memberRepository.count() == 0) {
-            Member member1 = Member.of("test1@example.com", "1234", "가나다", SocialType.EMAIL);
-            Member member2 = Member.of("test2@example.com", "1234", "라마바", SocialType.EMAIL);
+            Member member1 = Member.of("test1@example.com", passwordEncoder.encode("1234"), "가나다", SocialType.EMAIL);
+            Member member2 = Member.of("test2@example.com", passwordEncoder.encode("1234"), "라마바", SocialType.EMAIL);
             memberRepository.saveAll(List.of(member1, member2));
 
             BookmarkFolder folder1 = new BookmarkFolder(member1);

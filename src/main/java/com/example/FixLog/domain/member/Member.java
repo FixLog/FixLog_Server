@@ -9,16 +9,20 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Member {
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,6 +80,41 @@ public class Member {
         member.nickname = nickname;
         member.socialType = socialType;
         member.isDeleted = false;
+        member.profileImageUrl = "https://dummyimage.com/200x200/cccccc/ffffff&text=Profile"; // 기본 프로필 이미지(임시)
         return member;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER")); // 기본 권한
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email; // 로그인 시 사용할 사용자 식별자
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // 계정 만료 여부 (true = 사용 가능)
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // 계정 잠금 여부 (true = 잠금 아님)
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // 비밀번호 만료 여부
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !this.isDeleted; // 탈퇴 여부 기반 활성 상태
     }
 }
