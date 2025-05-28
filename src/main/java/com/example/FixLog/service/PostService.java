@@ -7,13 +7,11 @@ import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.post.Post;
 import com.example.FixLog.domain.post.PostTag;
 import com.example.FixLog.domain.tag.Tag;
-import com.example.FixLog.dto.UserIdDto;
 import com.example.FixLog.dto.post.PostDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.post.PostResponseDto;
 import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
-import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.bookmark.BookmarkFolderRepository;
 import com.example.FixLog.repository.bookmark.BookmarkRepository;
 import com.example.FixLog.repository.like.PostLikeRepository;
@@ -31,27 +29,21 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
     private final PostLikeRepository postLikeRepository;
     private final BookmarkRepository bookmarkRepository;
     private final TagRepository tagRepository;
     private final BookmarkFolderRepository bookmarkFolderRepository;
+    private final MemberService memberService;
 
-    public PostService(PostRepository postRepository, MemberRepository memberRepository,
-                       PostLikeRepository postLikeRepository, BookmarkRepository bookmarkRepository,
-                       TagRepository tagRepository, BookmarkFolderRepository bookmarkFolderRepository){
+    public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository,
+                       BookmarkRepository bookmarkRepository, TagRepository tagRepository,
+                       BookmarkFolderRepository bookmarkFolderRepository, MemberService memberService){
         this.postRepository = postRepository;
-        this.memberRepository = memberRepository;
         this.postLikeRepository = postLikeRepository;
         this.bookmarkRepository = bookmarkRepository;
         this.tagRepository = tagRepository;
         this.bookmarkFolderRepository = bookmarkFolderRepository;
-    }
-
-    // 회원 정보 불러오기
-    public Member getMemberOrThrow(Long userId) {
-        return memberRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_ID_NOT_FOUND));
+        this.memberService = memberService;
     }
 
     // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
@@ -65,7 +57,7 @@ public class PostService {
     // 게시글 생성하기
     @Transactional
     public void createPost(PostRequestDto postRequestDto){
-        Member member = getMemberOrThrow(postRequestDto.getUserId());
+        Member member = memberService.getCurrentMemberInfo();
 
         String coverImageUrl = postRequestDto.getCoverImageUrl();
 
@@ -101,15 +93,15 @@ public class PostService {
     }
 
     // 게시글 조회하기
-    public PostResponseDto viewPost(Long postId, UserIdDto userIdDto){
-        Member userId = getMemberOrThrow(userIdDto.getUserId());
+    public PostResponseDto viewPost(Long postId){
+        Member member = memberService.getCurrentMemberInfo();
 
         Post currentPost = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         PostDto postInfo = new PostDto(
                 currentPost.getPostTitle(),
-                currentPost.getCoverImage(),
+                getDefaultImage(currentPost.getCoverImage()),
                 currentPost.getProblem(),
                 currentPost.getErrorMessage(),
                 currentPost.getEnvironment(),
@@ -123,34 +115,34 @@ public class PostService {
                         .collect(Collectors.toList())
         );
 
-        String nickname = userId.getNickname();
+        String nickname = member.getNickname();
         LocalDate createdAt = currentPost.getCreatedAt().toLocalDate();
         boolean isLiked = currentPost.getPostLikes().stream()
-                .anyMatch(postLike -> postLike.getUserId().equals(userId));
+                .anyMatch(postLike -> postLike.getUserId().equals(member));
         boolean isMarked = currentPost.getBookmarks().stream()
-                .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(userId));
+                .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
 
         return new PostResponseDto(postInfo, nickname, createdAt, isLiked, isMarked);
     }
 
     // 게시글 좋아요
-    public String togglePostLike(Long postIdInput, UserIdDto userIdDto){
-        Member userId = getMemberOrThrow(userIdDto.getUserId());
+    public String togglePostLike(Long postIdInput){
+        Member member = memberService.getCurrentMemberInfo();
 
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Optional<PostLike> optionalLike = postLikeRepository.findByUserIdAndPostId(userId, postId);
+        Optional<PostLike> optionalLike = postLikeRepository.findByUserIdAndPostId(member, postId);
 
         if (optionalLike.isEmpty()){ // 객체 없는 경우
-            PostLike newLike = new PostLike(userId, postId);
+            PostLike newLike = new PostLike(member, postId);
             postLikeRepository.save(newLike);
             return "게시글 좋아요 성공";
         } else { // 객체 있는 경우
             PostLike postLike = optionalLike.get();
             postLike.ToggleLike(!postLike.isLiked());
             postLikeRepository.save(postLike);
-            if (postLike.isLiked() == true)
+            if (postLike.isLiked())
                 return "게시글 좋아요 성공";
             else
                 return "게시글 좋아요 삭제 성공";
@@ -158,17 +150,17 @@ public class PostService {
     }
 
     // 게시글 북마크
-    public String toggleBookmark(Long postIdInput, UserIdDto userIdDto){
-        Member userId = getMemberOrThrow(userIdDto.getUserId());
+    public String toggleBookmark(Long postIdInput){
+        Member member = memberService.getCurrentMemberInfo();
 
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        BookmarkFolder folderId = bookmarkFolderRepository.findByUserId(userId); // 이 코드는 폴더가 하나일 때만 적용됨
+        BookmarkFolder folderId = bookmarkFolderRepository.findByUserId(member); // 이 코드는 폴더가 하나일 때만 적용됨
         Optional<Bookmark> optionalBookmark = bookmarkRepository.findByFolderIdAndPostId(folderId, postId);
 
         // 본인 글은 북마크 못하도록
-        if (userId == folderId.getUserId())
+        if (member == folderId.getUserId())
             throw new CustomException(ErrorCode.SELF_BOOKMARK_NOT_ALLOWED);
 
         // 북마크 처리
@@ -181,7 +173,7 @@ public class PostService {
             bookmark.ToggleBookmark(!bookmark.isMarked());
             bookmarkRepository.save(bookmark);
             System.out.println(bookmark.isMarked());
-            return (bookmark.isMarked() == true) ? "게시글 북마크 성공" : "게시글 북마크 삭제 성공";
+            return (bookmark.isMarked()) ? "게시글 북마크 성공" : "게시글 북마크 삭제 성공";
         }
     }
 }
