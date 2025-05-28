@@ -2,12 +2,10 @@ package com.example.FixLog.service;
 
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.post.Post;
-import com.example.FixLog.dto.UserIdDto;
 import com.example.FixLog.dto.main.MainPagePostResponseDto;
 import com.example.FixLog.dto.main.MainPageResponseDto;
 import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
-import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.post.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,18 +17,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class MainPageService {
-    private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final MemberService memberService;
 
-    public MainPageService(MemberRepository memberRepository, PostRepository postRepository) {
-        this.memberRepository = memberRepository;
+    public MainPageService(PostRepository postRepository, MemberService memberService) {
         this.postRepository = postRepository;
-    }
-
-    // 회원 정보 불러오기
-    public Member getMemberOrThrow(Long userId) {
-        return memberRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
     }
 
     // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
@@ -42,9 +33,9 @@ public class MainPageService {
     }
 
     // 메인페이지 보기
-    public MainPageResponseDto mainPageView(int sort, UserIdDto userIddto){
+    public MainPageResponseDto mainPageView(int sort){
         // 사용자 정보 불러오기
-        Member member = getMemberOrThrow(userIddto.getUserId());
+        Member member = memberService.getCurrentMemberInfo();
         String imageUrl = member.getProfileImageUrl();
         String profileImageUrl = getDefaultImage(imageUrl);
 
@@ -76,9 +67,9 @@ public class MainPageService {
     }
 
     // 메인페이지 전체보기
-    public MainPageResponseDto mainPageFullView(int sort, int page, UserIdDto userIddto){
+    public MainPageResponseDto mainPageFullView(int sort, int page){
         // 사용자 정보 불러오기
-        Member member = getMemberOrThrow(userIddto.getUserId());
+        Member member = memberService.getCurrentMemberInfo();
         String imageUrl = member.getProfileImageUrl();
         String profileImageUrl = getDefaultImage(imageUrl);
 

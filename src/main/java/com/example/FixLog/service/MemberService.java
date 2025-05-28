@@ -9,6 +9,8 @@ import com.example.FixLog.exception.ErrorCode;
 import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.bookmark.BookmarkFolderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +49,6 @@ public class MemberService {
         BookmarkFolder newFolder = new BookmarkFolder(member);
         bookmarkFolderRepository.save(newFolder);
 
-
     }
 
     public boolean isEmailDuplicated(String email) {
@@ -57,7 +58,15 @@ public class MemberService {
     public boolean isNicknameDuplicated(String nickname) {
         return memberRepository.findByNickname(nickname).isPresent();
     }
-
+  
+    // 현재 로그인한 사용자 정보 member 객체로 반환
+    public Member getCurrentMemberInfo(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        return memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
+    }
+  
     // 회원탈퇴
     public void withdraw(Member member) {
         member.setIsDeleted(true);

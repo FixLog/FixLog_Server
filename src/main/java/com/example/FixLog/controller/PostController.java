@@ -1,6 +1,5 @@
 package com.example.FixLog.controller;
 
-import com.example.FixLog.dto.UserIdDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.post.PostResponseDto;
@@ -23,23 +22,20 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public Response<Object> viewPost(@PathVariable("postId") Long postId,
-                                     @RequestBody UserIdDto userIdDto){
-        PostResponseDto viewPost = postService.viewPost(postId, userIdDto);
+    public Response<Object> viewPost(@PathVariable("postId") Long postId){
+        PostResponseDto viewPost = postService.viewPost(postId);
         return Response.success("게시글 조회하기 성공", viewPost);
     }
 
     @PostMapping("/{postId}/like")
-    public Response<Object> togglePostLike(@PathVariable("postId") Long postId,
-                                           @RequestBody UserIdDto userIdDto){
-        String message = postService.togglePostLike(postId, userIdDto);
+    public Response<Object> togglePostLike(@PathVariable("postId") Long postId){
+        String message = postService.togglePostLike(postId);
         return Response.success(message, null); // 좋아요 수정하기
     }
 
     @PostMapping("/{postId}/bookmark")
-    public Response<Object> toggleBookmark(@PathVariable("postId") Long postId,
-                                           @RequestBody UserIdDto userIdDto) {
-        String message = postService.toggleBookmark(postId, userIdDto);
+    public Response<Object> toggleBookmark(@PathVariable("postId") Long postId) {
+        String message = postService.toggleBookmark(postId);
         return Response.success(message, null); // 북마크 수정하기
     }
 }
