@@ -1,15 +1,19 @@
 package com.example.FixLog.controller;
 
+import com.example.FixLog.dto.PageResponseDto;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.bookmark.request.BookmarkFolderCreateRequest;
 import com.example.FixLog.dto.bookmark.request.BookmarkFolderUpdateRequest;
 import com.example.FixLog.dto.bookmark.request.BookmarkMoveRequest;
 import com.example.FixLog.dto.bookmark.response.BookmarkFolderCreateResponse;
-import com.example.FixLog.dto.bookmark.response.BookmarkFolderPageResponse;
+import com.example.FixLog.dto.bookmark.response.BookmarkFolderReadResponse;
+import com.example.FixLog.dto.post.MyPostPageResponseDto;
 import com.example.FixLog.service.BookmarkFolderService;
 import com.example.FixLog.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,16 +32,6 @@ public class BookmarkFolderController {
         BookmarkFolderCreateResponse response = bookmarkFolderService.createFolder(request.folderName(), requesterEmail);
 
         return ResponseEntity.ok(Response.success("북마크 폴더 생성 성공", response));
-    }
-
-    // 북마크 폴더 목록 전체 조회
-    @GetMapping
-    public ResponseEntity<Response<BookmarkFolderPageResponse>> getFolders(
-            @RequestParam String requesterEmail,
-            @RequestParam int page
-    ) {
-        BookmarkFolderPageResponse response = bookmarkFolderService.getFoldersByEmail(requesterEmail, page);
-        return ResponseEntity.ok(Response.success("북마크 폴더 목록 전체 조회 성공", response));
     }
 
     // 북마크 폴더 이름 수정
@@ -71,6 +65,32 @@ public class BookmarkFolderController {
     ) {
         bookmarkFolderService.deleteFolder(folderId, requesterEmail);
         return ResponseEntity.ok(Response.success("북마크 폴더 삭제 완료", null));
+    }
+
+    // 북마크 폴더 목록 전체 조회 - MVP
+    @GetMapping
+    public ResponseEntity<Response<PageResponseDto<BookmarkFolderReadResponse>>> getFolders(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        String email = userDetails.getUsername();
+        PageResponseDto<BookmarkFolderReadResponse> response = bookmarkFolderService.getFoldersByEmail(email, page, size);
+        return ResponseEntity.ok(Response.success("북마크 폴더 목록 전체 조회 성공", response));
+    }
+
+    // 특정 폴더의 북마크 목록 조회 -MVP
+    @GetMapping("/{folderId}/bookmarks")
+    public ResponseEntity<Response<PageResponseDto<MyPostPageResponseDto>>> getBookmarksByFolder(
+            @PathVariable Long folderId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "0") int sort
+    ) {
+        String email = userDetails.getUsername();
+        PageResponseDto<MyPostPageResponseDto> data = bookmarkService.getBookmarksInFolder(email, folderId, page, sort, size);
+        return ResponseEntity.ok(Response.success("특정 폴더의 북마크 목록 조회 성공", data));
     }
 
 
