@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -50,4 +50,6 @@ public class MemberController {
         );
         return ResponseEntity.ok(Response.success("회원 정보 조회 성공", responseDto));
     }
+
+
 }
