@@ -22,6 +22,7 @@ public class MainPageService {
 
     public MainPageService(PostRepository postRepository, MemberService memberService) {
         this.postRepository = postRepository;
+        this.memberService = memberService;
     }
 
     // 이미지 null일 때 default 사진으로 변경 (프로필 사진,

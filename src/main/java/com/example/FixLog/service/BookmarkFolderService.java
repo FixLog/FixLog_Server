@@ -2,8 +2,8 @@ package com.example.FixLog.service;
 
 import com.example.FixLog.domain.bookmark.BookmarkFolder;
 import com.example.FixLog.domain.member.Member;
+import com.example.FixLog.dto.PageResponseDto;
 import com.example.FixLog.dto.bookmark.response.BookmarkFolderCreateResponse;
-import com.example.FixLog.dto.bookmark.response.BookmarkFolderPageResponse;
 import com.example.FixLog.dto.bookmark.response.BookmarkFolderReadResponse;
 import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
@@ -36,25 +36,13 @@ public class BookmarkFolderService {
     }
 
     // 북마크 폴더 목록 전체 조회
-    public BookmarkFolderPageResponse getFoldersByEmail(String email, int page) {
+    public PageResponseDto<BookmarkFolderReadResponse> getFoldersByEmail(String email, int page, int size) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
-
-        Pageable pageable = PageRequest.of(page - 1, 10); // 기본 size = 10
+        Pageable pageable = PageRequest.of(page, size);
         Page<BookmarkFolder> folderPage = bookmarkFolderRepository.findAllByUserId(member, pageable);
 
-        List<BookmarkFolderReadResponse> content = folderPage.getContent().stream()
-                .map(folder -> new BookmarkFolderReadResponse(folder.getFolderId(), folder.getFolderName()))
-                .toList();
-
-        return new BookmarkFolderPageResponse(
-                content,
-                folderPage.getNumber() + 1,
-                folderPage.getSize(),
-                folderPage.getTotalPages(),
-                folderPage.getTotalElements()
-        );
-
+        return PageResponseDto.from(folderPage, folder -> new BookmarkFolderReadResponse(folder.getFolderId(), folder.getFolderName()));
     }
 
     // 북마크 폴더 이름 수정

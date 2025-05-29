@@ -2,7 +2,6 @@ package com.example.FixLog.service;
 
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.tag.Tag;
-import com.example.FixLog.dto.UserIdDto;
 import com.example.FixLog.dto.tag.TagDto;
 import com.example.FixLog.dto.tag.TagResponseDto;
 import com.example.FixLog.exception.CustomException;
