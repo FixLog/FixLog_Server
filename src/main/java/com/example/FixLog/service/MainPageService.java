@@ -10,6 +10,7 @@ import com.example.FixLog.repository.post.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,21 +35,25 @@ public class MainPageService {
     }
 
     // 메인페이지 보기
-    public MainPageResponseDto mainPageView(int sort){
+    public MainPageResponseDto mainPageView(int sort, int size){
         // 사용자 정보 불러오기
         Member member = memberService.getCurrentMemberInfo();
         String imageUrl = member.getProfileImageUrl();
         String profileImageUrl = getDefaultImage(imageUrl);
 
         // 페이지 (글 12개) 불러오기
-        List<Post> posts;
+        Page<Post> posts;
+        Sort sortOption;
 
         if (sort == 0) { // 최신순 정렬
-            posts = postRepository.findTop12ByOrderByCreatedAtDesc();
+            sortOption = Sort.by(Sort.Direction.DESC, "createdAt");
         } else if (sort == 1) { // 인기순 정렬
-            posts = postRepository.findTop12ByOrderByPostLikesDesc();
+            sortOption = Sort.by(Sort.Direction.DESC, "postLikes");
         } else
             throw new CustomException(ErrorCode.SORT_NOT_EXIST);
+
+        Pageable pageable = PageRequest.of(0, size, sortOption);
+        posts = postRepository.findAll(pageable);
 
         List<MainPagePostResponseDto> postList = posts.stream()
                 .map(post -> new MainPagePostResponseDto(
@@ -68,14 +73,14 @@ public class MainPageService {
     }
 
     // 메인페이지 전체보기
-    public MainPageResponseDto mainPageFullView(int sort, int page){
+    public MainPageResponseDto mainPageFullView(int sort, int page, int size){
         // 사용자 정보 불러오기
         Member member = memberService.getCurrentMemberInfo();
         String imageUrl = member.getProfileImageUrl();
         String profileImageUrl = getDefaultImage(imageUrl);
 
         // 페이지 설정 (한 페이지당 12개)
-        Pageable pageable = PageRequest.of(page - 1, 12);
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> postPage;
 
         if (sort == 0) { // 최신순 정렬

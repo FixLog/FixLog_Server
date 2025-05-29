@@ -1,12 +1,8 @@
 package com.example.FixLog.service;
 
-import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.tag.Tag;
 import com.example.FixLog.dto.tag.TagDto;
 import com.example.FixLog.dto.tag.TagResponseDto;
-import com.example.FixLog.exception.CustomException;
-import com.example.FixLog.exception.ErrorCode;
-import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.tag.TagRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +21,8 @@ public class TagService {
     }
 
     // 태그 모음 보기
-    public TagResponseDto viewTags(int page){
-        Pageable pageable = PageRequest.of(page - 1, 12);
+    public TagResponseDto viewTags(int page, int size){
+        Pageable pageable = PageRequest.of(page - 1, size);
 
         Page<Tag> tags = tagRepository.findAll(pageable);
 
