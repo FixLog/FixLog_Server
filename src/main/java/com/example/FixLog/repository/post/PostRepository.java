@@ -16,5 +16,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByOrderByPostLikesDesc(Pageable pageable);
 
     @EntityGraph(attributePaths = {"postLikes"})
-    Page<Post> findByUserId(Member userId, Pageable pageable);
+    Page<Post> findByUserId(Member userId, Pageable pageable); // 좋아요수 때문
 }
