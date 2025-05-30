@@ -29,7 +29,8 @@ public class TagService {
         List<TagDto> tagList = tags.stream()
                 .map(tag -> new TagDto(
                         tag.getTagName(),
-                        tag.getTagInfo()
+                        tag.getTagInfo().length() > 100
+                                ? tag.getTagInfo().substring(0, 100) + "..." : tag.getTagInfo()
                 ))
                 .collect(Collectors.toList());
 
