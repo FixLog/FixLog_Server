@@ -53,7 +53,6 @@ jobs:
 
     - name: Zip deploy package
       run: |
-        cd FixLog_Server
         zip -r ../${{ github.sha }}.zip . -x ".git/*"
 
     - name: Upload to S3
