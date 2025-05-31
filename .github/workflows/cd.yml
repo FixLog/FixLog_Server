@@ -46,7 +46,6 @@ jobs:
 
     - name: Create .env file from GitHub secrets
       run: |
-        cd FixLog_Server
         echo "mysql_url=${{ secrets.mysql_url }}" >> .env
         echo "mysql_username=${{ secrets.mysql_username }}" >> .env
         echo "mysql_password=${{ secrets.mysql_password }}" >> .env
