@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export $(grep -v '^#' /home/ec2-user/app/.env | xargs)
+
 BUILD_JAR=$(ls /home/ec2-user/app/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/app/deploy.log
