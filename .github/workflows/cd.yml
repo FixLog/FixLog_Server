@@ -51,16 +51,23 @@ jobs:
         echo "mysql_password=${{ secrets.mysql_password }}" >> .env
         echo "jwt_key=${{ secrets.jwt_key }}" >> .env
 
-    - name: Zip deploy package
+    - name: Prepare deployment package
       run: |
-        zip -r ../${{ github.sha }}.zip . -x ".git/*"
+        mkdir -p deploy
+        cp ./build/libs/*.jar ./deploy/
+        cp -r ./scripts ./deploy/
+        cp .env ./deploy/
+        cp appspec.yml ./deploy/
+        chmod +x ./deploy/scripts/deploy.sh
+        cd deploy
+        zip -r ../${{ github.sha }}.zip .
 
     - name: Upload to S3
       run: |
         aws deploy push \
           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
           --s3-location s3://${{ env.S3_BUCKET_NAME }}/${{ github.sha }}.zip \
-          --source . \
+          --source ./deploy \
           --region ${{ env.AWS_REGION }}
 
     - name: Deploy with CodeDeploy
