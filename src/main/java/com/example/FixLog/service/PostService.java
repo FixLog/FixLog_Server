@@ -7,6 +7,7 @@ import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.post.Post;
 import com.example.FixLog.domain.post.PostTag;
 import com.example.FixLog.domain.tag.Tag;
+import com.example.FixLog.domain.tag.TagCategory;
 import com.example.FixLog.dto.post.PostDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.post.PostResponseDto;
@@ -22,9 +23,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class PostService {
@@ -58,38 +60,85 @@ public class PostService {
     @Transactional
     public void createPost(PostRequestDto postRequestDto){
         Member member = memberService.getCurrentMemberInfo();
-
         String coverImageUrl = postRequestDto.getCoverImageUrl();
 
-        // Todo : 북마크 카테고리별로 선택 제한 두기
+        // 북마크 카테고리별로 선택 제한 두기
+        List<Tag> tags = fetchAndValidateTags(postRequestDto.getTags());
 
         // 게시글 발행
-        Post newPost = new Post(
-                member,
-                postRequestDto.getPostTitle(),
-                coverImageUrl,
-                postRequestDto.getProblem(),
-                postRequestDto.getErrorMessage(),
-                postRequestDto.getEnvironment(),
-                postRequestDto.getReproduceCode(),
-                postRequestDto.getSolutionCode(),
-                postRequestDto.getCauseAnalysis(),
-                postRequestDto.getReferenceLink(),
-                postRequestDto.getExtraContent(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
+        validatePost(postRequestDto); // 필수 항목 다 입력되었는지 확인
+        Post newPost = Post.builder()
+                .userId(member)
+                .postTitle(postRequestDto.getPostTitle())
+                .coverImage(coverImageUrl)
+                .problem(postRequestDto.getProblem())
+                .errorMessage(postRequestDto.getErrorMessage())
+                .environment(postRequestDto.getEnvironment())
+                .reproduceCode(postRequestDto.getReproduceCode())
+                .solutionCode(postRequestDto.getSolutionCode())
+                .causeAnalysis(postRequestDto.getCauseAnalysis())
+                .referenceLink(postRequestDto.getReferenceLink())
+                .extraContent(postRequestDto.getExtraContent())
+                .createdAt(LocalDateTime.now())
+                .editedAt(LocalDateTime.now())
+                .postTags(new ArrayList<>())
+                .build();
 
         // 태그 저장
-        List<Long> tagIds = postRequestDto.getTags(); // 이제 Long ID 목록임
-        for (Long tagId : tagIds) {
-            Tag tag = tagRepository.findById(tagId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND));
+        for (Tag tag : tags) {
             PostTag postTag = new PostTag(newPost, tag);
             newPost.getPostTags().add(postTag);
         }
-
         postRepository.save(newPost);
+    }
+
+    // 태그 다 선택 했는지
+    private List<Tag> fetchAndValidateTags(List<Long> tagIds){
+        // 태그 ID로 Tag 엔티티 조회
+        List<Tag> tags = tagIds.stream()
+                .map(tagId -> tagRepository.findById(tagId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND)))
+                .toList();
+
+        // 태그 종류별로 그룹화
+        Map<TagCategory, List<Tag>> tagCategoryMap = tags.stream()
+                .collect(Collectors.groupingBy(Tag::getTagCategory));
+
+        TagCategory[] requiredTypes = TagCategory.values();
+        List<String> issues = new ArrayList<>();
+
+        // 하나라도 빠졌다면 예외 처리
+        for (TagCategory type : requiredTypes){
+            List<Tag> categories = tagCategoryMap.get(type);
+
+            if (type == TagCategory.MINOR_CATEGORY){ // 소분류는 4개까지 선택 가능
+                if (categories == null)
+                    issues.add(type.name() + "태그가 선택되지 않았습니다.");
+                else if (categories.size() > 4)
+                    issues.add(type.name() + "태그는 최대 4개까지 선택 가능합니다.");
+
+            } else {
+                if (categories == null)
+                    issues.add(type.name() + "태그가 선택되지 않았습니다.");
+                else if (categories.size() > 1)
+                    issues.add(type.name() + "태그는 하나만 선택해야 합니다.");
+            }
+        }
+
+        if (!issues.isEmpty()) {
+            throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING);
+            // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING, String.join(", ", issues));
+            // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING.withDetail(missingTypes.toString()));
+        }
+        return tags;
+    }
+
+    // 게시글 필수 항목 다 작성했는지
+    private void validatePost(PostRequestDto postRequestDto){
+        if (postRequestDto.getPostTitle().isBlank() | postRequestDto.getProblem().isBlank()
+        | postRequestDto.getErrorMessage().isBlank() | postRequestDto.getEnvironment().isBlank()
+        | postRequestDto.getReproduceCode().isBlank() | postRequestDto.getSolutionCode().isBlank())
+            throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
     }
 
     // 게시글 조회하기
@@ -112,7 +161,7 @@ public class PostService {
                 currentPost.getExtraContent(),
                 currentPost.getPostTags().stream()
                         .map(postTag -> postTag.getTagId().getTagName())
-                        .collect(Collectors.toList())
+                        .collect(toList())
         );
 
         String nickname = member.getNickname();

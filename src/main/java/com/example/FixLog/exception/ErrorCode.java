@@ -22,7 +22,9 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "없는 태그 번호입니다."),
     SORT_NOT_EXIST(HttpStatus.BAD_REQUEST, "사용할 수 없는 정렬입니다."),
-    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    REQUIRED_TAGS_MISSING(HttpStatus.BAD_REQUEST, "태그를 선택해주세요."),
+    REQUIRED_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "필수 본문이 입력되지 않았습니다.");
 
     private final HttpStatus status;
     private final String message;

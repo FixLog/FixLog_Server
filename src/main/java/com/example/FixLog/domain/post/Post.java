@@ -79,22 +79,4 @@ public class Post {
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
-    public Post(Member userId, String postTitle, String coverImage, String problem, String errorMessage,
-                String environment, String reproduceCode, String solutionCode, String causeAnalysis,
-                String referenceLink, String extraContent, LocalDateTime createdAt, LocalDateTime editedAt){
-        this.userId = userId;
-        this.postTitle = postTitle;
-        this.coverImage = coverImage;
-        this.problem = problem;
-        this.errorMessage = errorMessage;
-        this.environment = environment;
-        this.reproduceCode = reproduceCode;
-        this.solutionCode = solutionCode;
-        this.causeAnalysis = causeAnalysis;
-        this.referenceLink = referenceLink;
-        this.extraContent = extraContent;
-        this.createdAt = createdAt;
-        this.editedAt = editedAt;
-        // 게시글 태그
-    }
 }
