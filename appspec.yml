@@ -1,0 +1,20 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /                        # S3 zip 내 루트
+    destination: /home/ubuntu/app   # EC2의 app 디렉토리로 압축 해제
+    overwrite: yes
+
+permissions:
+  - object: /home/ubuntu/app
+    pattern: '**'
+    owner: ubuntu
+    group: ubuntu
+    mode: 755
+
+hooks:
+  AfterInstall:
+    - location: scripts/deploy.sh   # 루트 기준으로 경로 설정
+      timeout: 180
+      runas: ubuntu                 # root 말고 ubuntu 권장 (실행 권한 관리 쉬움)
