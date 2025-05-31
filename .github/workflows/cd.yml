@@ -32,10 +32,12 @@ jobs:
         distribution: 'temurin'
 
     - name: Grant execute permission for gradlew
-      run: chmod +x ./gradlew
+      run: chmod +x ./FixLog_Server/gradlew
 
     - name: Build with Gradle
-      run: ./gradlew clean build -x test
+      run: |
+        cd FixLog_Server
+        ./gradlew clean build -x test
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -46,19 +48,16 @@ jobs:
 
     - name: Create .env file from GitHub secrets
       run: |
+        cd FixLog_Server
         echo "mysql_url=${{ secrets.mysql_url }}" >> .env
         echo "mysql_username=${{ secrets.mysql_username }}" >> .env
         echo "mysql_password=${{ secrets.mysql_password }}" >> .env
         echo "jwt_key=${{ secrets.jwt_key }}" >> .env
 
-    - name: Move appspec.yml to root if necessary
-      run: |
-        if [ -f ./FixLog_Server/appspec.yml ]; then
-          mv ./FixLog_Server/appspec.yml .
-        fi
-
     - name: Zip deploy package
-      run: zip -r ${{ github.sha }}.zip . -x ".git/*"
+      run: |
+        cd FixLog_Server
+        zip -r ../${{ github.sha }}.zip . -x ".git/*"
 
     - name: Upload to S3
       run: |
