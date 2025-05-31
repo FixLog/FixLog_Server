@@ -44,11 +44,21 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-    - name: Move appspec.yml to root
-      run: mv ./FixLog_Server/appspec.yml .
+    - name: Create .env file from GitHub secrets
+      run: |
+        echo "mysql_url=${{ secrets.mysql_url }}" >> .env
+        echo "mysql_username=${{ secrets.mysql_username }}" >> .env
+        echo "mysql_password=${{ secrets.mysql_password }}" >> .env
+        echo "jwt_key=${{ secrets.jwt_key }}" >> .env
+
+    - name: Move appspec.yml to root if necessary
+      run: |
+        if [ -f ./FixLog_Server/appspec.yml ]; then
+          mv ./FixLog_Server/appspec.yml .
+        fi
 
     - name: Zip deploy package
-      run: zip -r ${{ github.sha }}.zip .
+      run: zip -r ${{ github.sha }}.zip . -x ".git/*"
 
     - name: Upload to S3
       run: |
