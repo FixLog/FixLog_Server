@@ -45,7 +45,7 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Move appspec.yml to root
-      run: mv ./cicd/appspec.yml .
+      run: mv ./FixLog_Server/appspec.yml .
 
     - name: Zip deploy package
       run: zip -r ${{ github.sha }}.zip .
