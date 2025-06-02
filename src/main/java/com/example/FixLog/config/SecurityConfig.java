@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
                         //배포 확인용 임시 수정
-                        .requestMatchers("/main", "/test", "/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔용
