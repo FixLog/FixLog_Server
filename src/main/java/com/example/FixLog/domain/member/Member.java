@@ -57,7 +57,7 @@ public class Member implements UserDetails {
     @Column
     private LocalDateTime updatedAt;
 
-    // 프로필 사진 url, 지금은 nullable 이지만 나중에 기본값 설정
+    // 프로필 사진 url
     @Column
     private String profileImageUrl;
 
@@ -84,7 +84,7 @@ public class Member implements UserDetails {
         member.nickname = nickname;
         member.socialType = socialType;
         member.isDeleted = false;
-        member.profileImageUrl = "https://dummyimage.com/200x200/cccccc/ffffff&text=Profile"; // 기본 프로필 이미지(임시)
+        member.profileImageUrl = null; // 디폴트 이미지는 db에 null로 저장하고 프론트한테는 기본 이미지 링크로 반환하는 방향으로 통일
         return member;
     }
 

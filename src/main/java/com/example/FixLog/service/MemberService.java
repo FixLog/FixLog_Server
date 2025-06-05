@@ -33,22 +33,20 @@ public class MemberService {
             throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
         }
 
-        // 문제 없으면 저장
+        // 회원 객체 생성 (profileImageUrl = null)
         Member member = Member.of(
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
                 request.getNickname(),
                 SocialType.EMAIL
         );
-        // 기본 프로필 이미지 URL 생성
-        member.setProfileImageUrl("https://dummyimage.com/200x200/cccccc/ffffff&text=Profile");
-        // 먼저 회원 정보 저장
+
+        // 회원 저장
         memberRepository.save(member);
 
         // 기본 폴더 생성
         BookmarkFolder newFolder = new BookmarkFolder(member);
         bookmarkFolderRepository.save(newFolder);
-
     }
 
     public boolean isEmailDuplicated(String email) {
@@ -58,7 +56,7 @@ public class MemberService {
     public boolean isNicknameDuplicated(String nickname) {
         return memberRepository.findByNickname(nickname).isPresent();
     }
-  
+
     // 현재 로그인한 사용자 정보 member 객체로 반환
     public Member getCurrentMemberInfo(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -66,11 +64,14 @@ public class MemberService {
         return memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
     }
-  
+
     // 회원탈퇴
-    public void withdraw(Member member) {
+    public void withdraw(Member member, String password) {
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
         member.setIsDeleted(true);
         memberRepository.save(member);
     }
 }
-
