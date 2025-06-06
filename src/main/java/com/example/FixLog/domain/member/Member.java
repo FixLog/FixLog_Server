@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,6 +21,7 @@ import java.util.Collection;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Member implements UserDetails {
@@ -88,9 +90,6 @@ public class Member implements UserDetails {
         return member;
     }
 
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -121,4 +120,6 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return !this.isDeleted; // 탈퇴 여부 기반 활성 상태
     }
+
+
 }

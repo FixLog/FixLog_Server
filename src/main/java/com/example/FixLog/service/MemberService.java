@@ -4,6 +4,7 @@ import com.example.FixLog.domain.bookmark.BookmarkFolder;
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.member.SocialType;
 import com.example.FixLog.dto.member.SignupRequestDto;
+import com.example.FixLog.dto.member.edit.EditPasswordRequestDto;
 import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
 import com.example.FixLog.repository.MemberRepository;
@@ -73,5 +74,49 @@ public class MemberService {
 
         member.setIsDeleted(true);
         memberRepository.save(member);
+    }
+
+
+    public void editNickname(Member member, String newNickname) {
+        if (isNicknameDuplicated(newNickname)) {
+            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        }
+        member.setNickname(newNickname);
+        memberRepository.save(member);
+    }
+
+    public void editPassword(Member member, EditPasswordRequestDto dto) {
+        String currentPassword = dto.getCurrentPassword();
+        String newPassword = dto.getNewPassword();
+
+        // 1. 현재 비밀번호 일치 확인
+        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD); // 기존 비밀번호 불일치
+        }
+
+        // 2. 새 비밀번호가 기존과 동일한 경우
+        if (passwordEncoder.matches(newPassword, member.getPassword())) {
+            throw new CustomException(ErrorCode.SAME_AS_OLD_PASSWORD); // 동일한 비밀번호
+        }
+
+        // 3. 새 비밀번호로 변경
+        member.setPassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
+
+    public void editProfileImage(Member member, String newProfileImageUrl) {
+        member.setProfileImageUrl(newProfileImageUrl);
+        memberRepository.save(member);
+    }
+
+    public void editBio(Member member, String newBio) {
+        member.setBio(newBio);
+        memberRepository.save(member);
+    }
+
+    private void validateNickname(String nickname) {
+        if (isNicknameDuplicated(nickname)) {
+            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        }
     }
 }
