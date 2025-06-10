@@ -3,17 +3,24 @@ package com.example.FixLog.service;
 import com.example.FixLog.domain.bookmark.BookmarkFolder;
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.domain.member.SocialType;
+import com.example.FixLog.dto.member.LoginResponseDto;
+import com.example.FixLog.dto.member.MemberInfoResponseDto;
 import com.example.FixLog.dto.member.SignupRequestDto;
 import com.example.FixLog.dto.member.edit.EditPasswordRequestDto;
 import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
 import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.repository.bookmark.BookmarkFolderRepository;
+import com.example.FixLog.util.DefaultImage;
+import com.example.FixLog.util.DefaultText;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,18 +30,14 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final BookmarkFolderRepository bookmarkFolderRepository;
 
+    /**
+     * 회원가입 로직
+     */
+    @Transactional
     public void signup(SignupRequestDto request) {
-        // 이메일 중복 검사
-        if (isEmailDuplicated(request.getEmail())) {
-            throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
-        }
+        validateEmail(request.getEmail());
+        validateNickname(request.getNickname());
 
-        // 닉네임 중복 검사
-        if (isNicknameDuplicated(request.getNickname())) {
-            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
-        }
-
-        // 회원 객체 생성 (profileImageUrl = null)
         Member member = Member.of(
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
@@ -42,12 +45,119 @@ public class MemberService {
                 SocialType.EMAIL
         );
 
-        // 회원 저장
         memberRepository.save(member);
+        bookmarkFolderRepository.save(new BookmarkFolder(member));
+    }
 
-        // 기본 폴더 생성
-        BookmarkFolder newFolder = new BookmarkFolder(member);
-        bookmarkFolderRepository.save(newFolder);
+    /**
+     * 현재 로그인한 사용자 조회
+     */
+    @Transactional(readOnly = true)
+    public Member getCurrentMemberInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
+    }
+
+    /**
+     * 닉네임 수정
+     */
+    @Transactional
+    public void editNickname(Member member, String newNickname) {
+        validateNickname(newNickname);
+        member.updateNickname(newNickname);
+        memberRepository.save(member);
+    }
+
+    /**
+     * 비밀번호 수정
+     */
+    @Transactional
+    public void editPassword(Member member, EditPasswordRequestDto dto) {
+        validatePasswordChange(dto.getCurrentPassword(), dto.getNewPassword(), member.getPassword());
+        member.updatePassword(passwordEncoder.encode(dto.getNewPassword()));
+        memberRepository.save(member);
+    }
+
+    /**
+     * 프로필 이미지 수정
+     */
+    @Transactional
+    public void editProfileImage(Member member, String newProfileImageUrl) {
+        String finalImage = Optional.ofNullable(newProfileImageUrl).orElse(DefaultImage.PROFILE);
+        member.updateProfileImage(finalImage);
+        memberRepository.save(member);
+    }
+
+    /**
+     * 소개글 수정
+     */
+    @Transactional
+    public void editBio(Member member, String newBio) {
+        String finalBio = Optional.ofNullable(newBio).orElse(DefaultText.BIO);
+        member.updateBio(finalBio);
+        memberRepository.save(member);
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @Transactional
+    public void withdraw(Member member, String password) {
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+        member.markAsDeleted();
+        memberRepository.save(member);
+    }
+
+    /**
+     * 내 정보 조회 응답 DTO 생성
+     */
+    @Transactional(readOnly = true)
+    public MemberInfoResponseDto getMyInfo() {
+        Member member = getCurrentMemberInfo();
+
+        String profileImage = Optional.ofNullable(member.getProfileImageUrl()).orElse(DefaultImage.PROFILE);
+        String bio = Optional.ofNullable(member.getBio()).orElse(DefaultText.BIO);
+
+        return new MemberInfoResponseDto(
+                member.getEmail(),
+                member.getNickname(),
+                profileImage,
+                bio,
+                member.getSocialType()
+        );
+    }
+
+    /**
+     * 로그인 응답 DTO 생성
+     */
+    public LoginResponseDto getLoginResponse(Member member, String accessToken) {
+        String profileImage = Optional.ofNullable(member.getProfileImageUrl()).orElse(DefaultImage.PROFILE);
+
+        return new LoginResponseDto(
+                member.getUserId(),
+                accessToken,
+                member.getNickname(),
+                profileImage
+        );
+    }
+
+    // ========================== 검증 메서드 ==========================
+
+    public void validateEmail(String email) {
+        if (isEmailDuplicated(email)) {
+            throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
+        }
+    }
+
+    public void validateNickname(String nickname) {
+        if (isNicknameDuplicated(nickname)) {
+            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        }
     }
 
     public boolean isEmailDuplicated(String email) {
@@ -58,65 +168,12 @@ public class MemberService {
         return memberRepository.findByNickname(nickname).isPresent();
     }
 
-    // 현재 로그인한 사용자 정보 member 객체로 반환
-    public Member getCurrentMemberInfo(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        return memberRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
-    }
-
-    // 회원탈퇴
-    public void withdraw(Member member, String password) {
-        if (!passwordEncoder.matches(password, member.getPassword())) {
+    public void validatePasswordChange(String currentPassword, String newPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(currentPassword, encodedPassword)) {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
-
-        member.setIsDeleted(true);
-        memberRepository.save(member);
-    }
-
-
-    public void editNickname(Member member, String newNickname) {
-        if (isNicknameDuplicated(newNickname)) {
-            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
-        }
-        member.setNickname(newNickname);
-        memberRepository.save(member);
-    }
-
-    public void editPassword(Member member, EditPasswordRequestDto dto) {
-        String currentPassword = dto.getCurrentPassword();
-        String newPassword = dto.getNewPassword();
-
-        // 1. 현재 비밀번호 일치 확인
-        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
-            throw new CustomException(ErrorCode.INVALID_PASSWORD); // 기존 비밀번호 불일치
-        }
-
-        // 2. 새 비밀번호가 기존과 동일한 경우
-        if (passwordEncoder.matches(newPassword, member.getPassword())) {
-            throw new CustomException(ErrorCode.SAME_AS_OLD_PASSWORD); // 동일한 비밀번호
-        }
-
-        // 3. 새 비밀번호로 변경
-        member.setPassword(passwordEncoder.encode(newPassword));
-        memberRepository.save(member);
-    }
-
-    public void editProfileImage(Member member, String newProfileImageUrl) {
-        member.setProfileImageUrl(newProfileImageUrl);
-        memberRepository.save(member);
-    }
-
-    public void editBio(Member member, String newBio) {
-        member.setBio(newBio);
-        memberRepository.save(member);
-    }
-
-    private void validateNickname(String nickname) {
-        if (isNicknameDuplicated(nickname)) {
-            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        if (passwordEncoder.matches(newPassword, encodedPassword)) {
+            throw new CustomException(ErrorCode.SAME_AS_OLD_PASSWORD);
         }
     }
 }

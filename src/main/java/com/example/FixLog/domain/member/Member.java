@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,7 +20,6 @@ import java.util.Collection;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Member implements UserDetails {
@@ -43,10 +41,6 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    public void setIsDeleted(boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType = SocialType.EMAIL;
@@ -59,26 +53,22 @@ public class Member implements UserDetails {
     @Column
     private LocalDateTime updatedAt;
 
-    // 프로필 사진 url
+    // 프로필 사진 URL
     @Column
     private String profileImageUrl;
 
     @Column(length = 200)
     private String bio;
 
+    // 게시글 연관관계
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
-    // 북마크 폴더
+    // 북마크 폴더 (계정당 1개)
     @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private BookmarkFolder bookmarkFolderId;
-    // 우선은 계정 당 폴더 하나만 있는 걸로 생성
-    // @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<BookmarkFolder> bookmarkFolders = new ArrayList<>();
+    private BookmarkFolder bookmarkFolder;
 
-    // Member 객체를 정적 팩토리 방식으로 회원가입 시에 생성하는 메서드
-    // Member 객체를 정적 팩토리 방식으로 생성하는 메서드
-    // Creates a Member object using a static factory method
+    // 정적 팩토리 메서드
     public static Member of(String email, String password, String nickname, SocialType socialType) {
         Member member = new Member();
         member.email = email;
@@ -86,10 +76,33 @@ public class Member implements UserDetails {
         member.nickname = nickname;
         member.socialType = socialType;
         member.isDeleted = false;
-        member.profileImageUrl = null; // 디폴트 이미지는 db에 null로 저장하고 프론트한테는 기본 이미지 링크로 반환하는 방향으로 통일
+        member.profileImageUrl = null; // 기본 이미지는 응답 시 처리
         return member;
     }
 
+    // -------------------- 도메인 메서드 --------------------
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updateProfileImage(String url) {
+        this.profileImageUrl = url;
+    }
+
+    public void updateBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
+    }
+
+    // -------------------- Spring Security --------------------
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -98,28 +111,26 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email; // 로그인 시 사용할 사용자 식별자
+        return this.email; // 로그인 시 사용할 식별자
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // 계정 만료 여부 (true = 사용 가능)
+        return true; // 계정 만료 안 됨
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // 계정 잠금 여부 (true = 잠금 아님)
+        return true; // 잠금 아님
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // 비밀번호 만료 여부
+        return true; // 비밀번호 만료 안 됨
     }
 
     @Override
     public boolean isEnabled() {
-        return !this.isDeleted; // 탈퇴 여부 기반 활성 상태
+        return !this.isDeleted; // 탈퇴 계정은 비활성화
     }
-
-
 }

@@ -15,7 +15,6 @@ public class LoginResponseDto {
     private String nickname;
     private String profileImageUrl;
 
-    // 정적 팩토리 메서드
     public static LoginResponseDto from(Member member, String accessToken) {
         return new LoginResponseDto(
                 member.getUserId(),
