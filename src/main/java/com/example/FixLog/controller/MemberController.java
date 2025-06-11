@@ -4,6 +4,7 @@ import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.WithdrawRequestDto;
 import com.example.FixLog.dto.member.MemberInfoResponseDto;
+import com.example.FixLog.dto.member.ProfilePreviewResponseDto;
 import com.example.FixLog.dto.member.SignupRequestDto;
 import com.example.FixLog.dto.member.DuplicateCheckResponseDto;
 import com.example.FixLog.service.MemberService;
@@ -49,6 +50,16 @@ public class MemberController {
                 member.getSocialType()
         );
         return ResponseEntity.ok(Response.success("회원 정보 조회 성공", responseDto));
+    }
+
+    @GetMapping("/profile-preview")
+    public ResponseEntity<Response<ProfilePreviewResponseDto>> getProfilePreview() {
+        Member member = memberService.getCurrentMemberInfo();
+        ProfilePreviewResponseDto dto = new ProfilePreviewResponseDto(
+                member.getNickname(),
+                member.getProfileImageUrl()
+        );
+        return ResponseEntity.ok(Response.success("닉네임&프로필사진 조회 성공", dto));
     }
 
     @DeleteMapping("/me")
