@@ -27,16 +27,21 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // 비로그인 허용 경로
                         .requestMatchers(HttpMethod.POST, "/members/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/search/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                        // h2-console (로컬 테스트용)
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
-                        //배포 확인용 임시 수정
+                        // 배포 확인용 임시 허용
                         .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll()
+                        // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔용
+                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -52,7 +57,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 인증 매니저 (선택: 로그인 시 AuthenticationManager 사용 가능)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
