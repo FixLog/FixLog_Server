@@ -29,17 +29,7 @@ public class AuthService {
 
         String token = jwtUtil.createToken(member.getUserId(), member.getEmail());
 
-        // 로그인 응답 시에도 null-safe하게 처리
-        String profileUrl = member.getProfileImageUrl() != null
-                ? member.getProfileImageUrl()
-                : "https://dummyimage.com/200x200/cccccc/ffffff&text=Profile";
-
-        return new LoginResponseDto(
-                member.getUserId(),
-                token,
-                member.getNickname(),
-                member.getProfileImageUrl() != null
-                        ? member.getProfileImageUrl()
-                        : "https://your-cdn.com/images/default-profile.png");
+        // 응답에서 null-safe하게 기본 이미지 처리 포함
+        return LoginResponseDto.from(member, token);
     }
 }

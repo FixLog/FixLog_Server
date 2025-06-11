@@ -2,7 +2,9 @@ package com.example.FixLog.controller;
 
 import com.example.FixLog.domain.member.Member;
 import com.example.FixLog.dto.Response;
+import com.example.FixLog.dto.WithdrawRequestDto;
 import com.example.FixLog.dto.member.MemberInfoResponseDto;
+import com.example.FixLog.dto.member.ProfilePreviewResponseDto;
 import com.example.FixLog.dto.member.SignupRequestDto;
 import com.example.FixLog.dto.member.DuplicateCheckResponseDto;
 import com.example.FixLog.service.MemberService;
@@ -50,9 +52,22 @@ public class MemberController {
         return ResponseEntity.ok(Response.success("회원 정보 조회 성공", responseDto));
     }
 
+    @GetMapping("/profile-preview")
+    public ResponseEntity<Response<ProfilePreviewResponseDto>> getProfilePreview() {
+        Member member = memberService.getCurrentMemberInfo();
+        ProfilePreviewResponseDto dto = new ProfilePreviewResponseDto(
+                member.getNickname(),
+                member.getProfileImageUrl()
+        );
+        return ResponseEntity.ok(Response.success("닉네임&프로필사진 조회 성공", dto));
+    }
+
     @DeleteMapping("/me")
-    public ResponseEntity<Response<Void>> withdraw(@AuthenticationPrincipal Member member) {
-        memberService.withdraw(member);
+    public ResponseEntity<Response<Void>> withdraw(
+            @AuthenticationPrincipal Member member,
+            @RequestBody WithdrawRequestDto request
+    ) {
+        memberService.withdraw(member, request.getPassword());
         return ResponseEntity.ok(Response.success("회원 탈퇴 성공", null));
     }
 }

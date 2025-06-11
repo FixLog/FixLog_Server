@@ -1,5 +1,7 @@
 package com.example.FixLog.dto.member;
 
+import com.example.FixLog.domain.member.Member;
+import com.example.FixLog.util.DefaultImage;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,4 +14,15 @@ public class LoginResponseDto {
     private String accessToken;
     private String nickname;
     private String profileImageUrl;
+
+    public static LoginResponseDto from(Member member, String accessToken) {
+        return new LoginResponseDto(
+                member.getUserId(),
+                accessToken,
+                member.getNickname(),
+                member.getProfileImageUrl() != null
+                        ? member.getProfileImageUrl()
+                        : DefaultImage.PROFILE
+        );
+    }
 }

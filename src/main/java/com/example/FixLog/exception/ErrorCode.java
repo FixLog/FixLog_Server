@@ -24,7 +24,11 @@ public enum ErrorCode {
     SORT_NOT_EXIST(HttpStatus.BAD_REQUEST, "사용할 수 없는 정렬입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     REQUIRED_TAGS_MISSING(HttpStatus.BAD_REQUEST, "태그를 선택해주세요."),
-    REQUIRED_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "필수 본문이 입력되지 않았습니다.");
+    REQUIRED_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "필수 본문이 입력되지 않았습니다."),
+    SAME_AS_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "다른 비밀번호 입력 바랍니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "요청 데이터가 유효하지 않습니다."),
+    S3_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "S3 파일 업로드에 실패했습니다.");
 
     private final HttpStatus status;
     private final String message;
