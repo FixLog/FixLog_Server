@@ -38,10 +38,10 @@ jobs:
 
     - name: Replace application.properties secrets
       run: |
-        sed -i "s|\${mysql_url}|${{ secrets.MYSQL_URL }}|g" src/main/resources/application.properties
-        sed -i "s|\${mysql_username}|${{ secrets.MYSQL_USERNAME }}|g" src/main/resources/application.properties
-        sed -i "s|\${mysql_password}|${{ secrets.MYSQL_PASSWORD }}|g" src/main/resources/application.properties
-        sed -i "s|\${jwt_key}|${{ secrets.JWT_KEY }}|g" src/main/resources/application.properties
+        sed -i "s|\${MYSQL_URL}|${{ secrets.MYSQL_URL }}|g" src/main/resources/application.properties
+        sed -i "s|\${MYSQL_USERNAME}|${{ secrets.MYSQL_USERNAME }}|g" src/main/resources/application.properties
+        sed -i "s|\${MYSQL_PASSWORD}|${{ secrets.MYSQL_PASSWORD }}|g" src/main/resources/application.properties
+        sed -i "s|\${JWT_KEY}|${{ secrets.JWT_KEY }}|g" src/main/resources/application.properties
 
     - name: Build with Gradle
       run: ./gradlew clean build -x test
@@ -55,10 +55,10 @@ jobs:
 
     - name: Create .env file from GitHub secrets
       run: |
-        echo "mysql_url=${{ secrets.mysql_url }}" >> .env
-        echo "mysql_username=${{ secrets.MYSQL_USERNAME }}" >> .env
-        echo "mysql_password=${{ secrets.MYSQL_PASSWORD }}" >> .env
-        echo "jwt_key=${{ secrets.JWT_KEY }}" >> .env
+        echo "MYSQL_URL=${{ secrets.MYSQL_URL }}" >> .env
+        echo "MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}" >> .env
+        echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+        echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
 
     - name: Prepare deployment package
       run: |
