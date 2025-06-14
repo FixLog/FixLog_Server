@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/members/check-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/members/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll() // 테스트용 허용
                         .anyRequest().authenticated()
                 )
