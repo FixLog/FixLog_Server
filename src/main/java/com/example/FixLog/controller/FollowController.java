@@ -7,6 +7,7 @@ import com.example.FixLog.dto.follow.response.FollowResponseDto;
 import com.example.FixLog.dto.follow.response.FollowerListResponseDto;
 import com.example.FixLog.dto.follow.response.FollowingListResponseDto;
 import com.example.FixLog.service.FollowService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,17 +23,19 @@ public class FollowController {
     private final FollowService followService;
 
     // 팔로우하기
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<Response<FollowResponseDto>> follow(
             @RequestBody FollowRequestDto followRequestDto,
             @AuthenticationPrincipal UserDetails userDetails  // jwt 구현 전까지 임시 사용 -> 이후 AuthenticationPrincipal 사용 예정
-            ){
+    ){
         String requesterEmail = userDetails.getUsername();
         FollowResponseDto result = followService.follow(requesterEmail, followRequestDto.getTargetMemberId());
         return ResponseEntity.ok(Response.success("팔로우 완료", result));
     }
 
     // 언팔로우하기
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/unfollow")
     public ResponseEntity<Response<Void>> unfollow(
             @RequestBody UnfollowRequestDto requestDto,
@@ -44,6 +47,7 @@ public class FollowController {
     }
 
     // 나를 팔로우하는 목록 조회
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/followers")
     public ResponseEntity<Response<List<FollowerListResponseDto>>> getMyFollowers(
             @AuthenticationPrincipal UserDetails userDetails
@@ -54,6 +58,7 @@ public class FollowController {
     }
 
     // 내가 팔로우하는 목록 조회
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/followings")
     public ResponseEntity<Response<List<FollowingListResponseDto>>> getMyFollowings(
             @AuthenticationPrincipal UserDetails userDetails

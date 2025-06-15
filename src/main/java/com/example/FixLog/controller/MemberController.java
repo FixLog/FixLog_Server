@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/members")
@@ -40,8 +41,10 @@ public class MemberController {
         return ResponseEntity.ok(Response.success(msg, new DuplicateCheckResponseDto(exists)));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     public ResponseEntity<Response<MemberInfoResponseDto>> getMyInfo(@AuthenticationPrincipal Member member) {
+        System.out.println("회원 정보 조회 요청: " + member.getEmail()); //추후에 log.info()로 바꿀 예정
         MemberInfoResponseDto responseDto = new MemberInfoResponseDto(
                 member.getEmail(),
                 member.getNickname(),
@@ -49,6 +52,7 @@ public class MemberController {
                 member.getBio(),
                 member.getSocialType()
         );
+        System.out.println("회원 정보 조회 완료: " + member.getEmail());
         return ResponseEntity.ok(Response.success("회원 정보 조회 성공", responseDto));
     }
 
@@ -62,6 +66,7 @@ public class MemberController {
         return ResponseEntity.ok(Response.success("닉네임&프로필사진 조회 성공", dto));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/me")
     public ResponseEntity<Response<Void>> withdraw(
             @AuthenticationPrincipal Member member,
