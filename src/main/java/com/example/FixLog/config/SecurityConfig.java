@@ -30,13 +30,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults()) // CORS 설정 추가 (WebConfig와 연결됨)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/", "/main", "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll() // 테스트용 허용
                         .anyRequest().authenticated()
                 )
