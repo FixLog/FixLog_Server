@@ -1,5 +1,6 @@
 package com.example.FixLog.controller;
 
+import com.example.FixLog.dto.PageResponseDto;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.search.SearchPostDto;
 import com.example.FixLog.service.SearchService;
@@ -22,7 +23,7 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/search")
-    public Response<Page<SearchPostDto>> search(
+    public Response<PageResponseDto<SearchPostDto>> search(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) List<String> tags,
             @RequestParam(defaultValue = "0") int page,
@@ -30,6 +31,8 @@ public class SearchController {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<SearchPostDto> result = searchService.searchPosts(keyword, tags, pageable);
-        return Response.success("검색 성공", result);
+
+        PageResponseDto<SearchPostDto> responseDto = PageResponseDto.from(result, dto -> dto);
+        return Response.success("검색 성공", responseDto);
     }
 }

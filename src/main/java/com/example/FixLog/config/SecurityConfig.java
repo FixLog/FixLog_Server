@@ -32,7 +32,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-
                         .requestMatchers(HttpMethod.POST, "/members/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
@@ -43,7 +42,6 @@ public class SecurityConfig {
                         // 배포 확인용 임시 허용
                         .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll()
                         // 그 외 모든 요청은 인증 필요
-                        .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll() // 테스트용 허용
 
                         .anyRequest().authenticated()
                 )

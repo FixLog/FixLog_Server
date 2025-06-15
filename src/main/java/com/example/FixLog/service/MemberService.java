@@ -35,6 +35,8 @@ public class MemberService {
      */
     @Transactional
     public void signup(SignupRequestDto request) {
+        System.out.println("회원가입 요청 - 이메일: " + request.getEmail());
+        System.out.println("회원가입 요청 - 닉네임: " + request.getNickname());
         validateEmail(request.getEmail());
         validateNickname(request.getNickname());
 
@@ -47,6 +49,8 @@ public class MemberService {
 
         memberRepository.save(member);
         bookmarkFolderRepository.save(new BookmarkFolder(member));
+
+        System.out.println("회원가입 완료: " + request.getEmail());
     }
 
     /**
@@ -66,9 +70,11 @@ public class MemberService {
      */
     @Transactional
     public void editNickname(Member member, String newNickname) {
+        System.out.println("닉네임 수정 요청: " + member.getNickname() + " → " + newNickname);
         validateNickname(newNickname);
         member.updateNickname(newNickname);
         memberRepository.save(member);
+        System.out.println("닉네임 수정 완료: " + member.getNickname());
     }
 
     /**
@@ -76,9 +82,11 @@ public class MemberService {
      */
     @Transactional
     public void editPassword(Member member, EditPasswordRequestDto dto) {
+        System.out.println("비밀번호 수정 요청: 이메일 - " + member.getEmail());
         validatePasswordChange(dto.getCurrentPassword(), dto.getNewPassword(), member.getPassword());
         member.updatePassword(passwordEncoder.encode(dto.getNewPassword()));
         memberRepository.save(member);
+        System.out.println("비밀번호 수정 완료");
     }
 
     /**
@@ -86,19 +94,24 @@ public class MemberService {
      */
     @Transactional
     public void editProfileImage(Member member, String newProfileImageUrl) {
+        System.out.println("프로필 이미지 수정 요청: " + member.getEmail());
         String finalImage = Optional.ofNullable(newProfileImageUrl).orElse(DefaultImage.PROFILE);
         member.updateProfileImage(finalImage);
         memberRepository.save(member);
+        System.out.println("프로필 이미지 수정 완료");
     }
+
 
     /**
      * 소개글 수정
      */
     @Transactional
     public void editBio(Member member, String newBio) {
+        System.out.println("소개글 수정 요청: " + member.getEmail());
         String finalBio = Optional.ofNullable(newBio).orElse(DefaultText.BIO);
         member.updateBio(finalBio);
         memberRepository.save(member);
+        System.out.println("소개글 수정 완료");
     }
 
     /**
@@ -149,12 +162,14 @@ public class MemberService {
     // ========================== 검증 메서드 ==========================
 
     public void validateEmail(String email) {
+        System.out.println("이메일 중복 검사 진행 중: " + email);
         if (isEmailDuplicated(email)) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
         }
     }
 
     public void validateNickname(String nickname) {
+        System.out.println(" 닉네임 중복 검사 진행 중: " + nickname);
         if (isNicknameDuplicated(nickname)) {
             throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
         }

@@ -22,11 +22,17 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public Page<SearchPostDto> searchPosts(String keyword, List<String> tags, Pageable pageable) {
+        System.out.println("[검색 요청] 키워드: " + keyword + ", 태그: " + tags + ", 페이지 번호: " + pageable.getPageNumber());
+        Page<SearchPostDto> result;
+
         if (tags == null || tags.isEmpty()) {
-            return postRepository.searchByKeywordAndTags(keyword, null, pageable);
+            result = postRepository.searchByKeywordAndTags(keyword, null, pageable);
+        } else {
+            result = postRepository.searchByKeywordAndTags(keyword, tags, pageable);
         }
 
         // 검색 시 태그는 카테고리별로 1개씩만 전달되므로, 우선순위 계산 없이 그대로 전달
-        return postRepository.searchByKeywordAndTags(keyword, tags, pageable);
+        System.out.println("[검색 결과] 총 개수: " + result.getTotalElements());
+        return result;
     }
 }
