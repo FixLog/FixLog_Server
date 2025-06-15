@@ -33,18 +33,18 @@ public class MypagePostController {
         return ResponseEntity.ok(Response.success("내가 작성한 글 보기 성공", data));
     }
 
-//    // 내가 좋아요한 글
-//    @GetMapping("/likes")
-//    public ResponseEntity<Response<PageResponseDto<MyPostPageResponseDto>>> getLikedPosts(
-//            @AuthenticationPrincipal UserDetails userDetails,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "4") int size,
-//            @RequestParam(defaultValue = "0") int sort) {
-//
-//        String email = userDetails.getUsername();
-//        PageResponseDto<MyPostPageResponseDto> result = mypagePostService.getLikedPosts(email, page, sort, size);
-//        return ResponseEntity.ok(Response.success("내가 좋아요한 글 보기 성공", result));
-//    }
+   // 내가 좋아요한 글
+   @GetMapping("/likes")
+   public ResponseEntity<Response<PageResponseDto<MyPostPageResponseDto>>> getLikedPosts(
+           @AuthenticationPrincipal UserDetails userDetails,
+           @RequestParam(defaultValue = "0") int page,
+           @RequestParam(defaultValue = "4") int size,
+           @RequestParam(defaultValue = "0") int sort) {
+
+       String email = userDetails.getUsername();
+       PageResponseDto<MyPostPageResponseDto> result = mypagePostService.getLikedPosts(email, page, sort, size);
+       return ResponseEntity.ok(Response.success("내가 좋아요한 글 보기 성공", result));
+   }
 
 
 }
