@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/members/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/search/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         // h2-console (로컬 테스트용)
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
