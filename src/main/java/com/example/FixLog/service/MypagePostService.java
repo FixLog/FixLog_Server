@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class MypagePostService {
-
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final ForkRepository forkRepository;
@@ -35,6 +34,7 @@ public class MypagePostService {
         this.forkRepository = forkRepository;
         this.postLikeRepository = postLikeRepository;
     }
+
 
     // 내가 쓴 글 보기
     public PageResponseDto<MyPostPageResponseDto> getMyPosts(String email, int page, int sort, int size) {
@@ -61,7 +61,6 @@ public class MypagePostService {
                 )
         );
     }
-
     // 내가 좋아요한 글 보기
     public PageResponseDto<MyPostPageResponseDto> getLikedPosts(String email, int page, int sort, int size) {
         Member member = memberRepository.findByEmail(email)
@@ -86,6 +85,4 @@ public class MypagePostService {
                 MyPostPageResponseDto.from(post, forkCountMap.getOrDefault(post.getPostId(), 0))
         );
     }
-
-
 }
