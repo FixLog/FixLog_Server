@@ -36,7 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-### Environment variables ###
+### Environment variables ###::wq
+
  .env
  *.env
 .env

@@ -46,7 +46,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH,"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // 그 외 모든 요청은 인증 필요
 
-
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔
