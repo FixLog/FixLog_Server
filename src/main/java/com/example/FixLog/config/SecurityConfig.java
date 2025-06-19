@@ -2,7 +2,6 @@ package com.example.FixLog.config;
 
 import com.example.FixLog.repository.MemberRepository;
 import com.example.FixLog.util.JwtUtil;
-import com.example.FixLog.config.JwtAuthenticationFilter;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,18 +32,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/", "/main", "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-
                         .requestMatchers(HttpMethod.POST, "/members/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-email").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/search/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/main", "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         // h2-console (로컬 테스트용)
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
                         // 배포 확인용 임시 허용
                         .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll()
+                        // Swagger 허용
+                        .requestMatchers(HttpMethod.GET,"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.PATCH,"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // 그 외 모든 요청은 인증 필요
-                        .requestMatchers(HttpMethod.GET, "/test", "/test/**").permitAll() // 테스트용 허용
 
                         .anyRequest().authenticated()
                 )
@@ -56,7 +57,7 @@ public class SecurityConfig {
 
     @Bean
     public Filter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, memberRepository);
+        return new com.example.FixLog.config.JwtAuthenticationFilter(jwtUtil, memberRepository);
     }
 
     @Bean

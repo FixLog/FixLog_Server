@@ -10,6 +10,7 @@ import com.example.FixLog.exception.ErrorCode;
 import com.example.FixLog.service.S3Service;
 import com.example.FixLog.service.MemberService;
 import com.example.FixLog.domain.member.Member;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ public class MypageMemberController {
     private final MemberService memberService;
     private final S3Service s3Service;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/members/nickname")
     public ResponseEntity<Response<String>> editNickname(
             @RequestBody @Valid EditNicknameRequestDto requestDto
@@ -35,6 +37,7 @@ public class MypageMemberController {
         return ResponseEntity.ok(Response.success("닉네임 수정 성공", "SUCCESS"));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/members/password")
     public ResponseEntity<Response<String>> editPassword(
             @RequestBody @Valid EditPasswordRequestDto requestDto
@@ -44,6 +47,7 @@ public class MypageMemberController {
         return ResponseEntity.ok(Response.success("비밀번호 변경 성공", "SUCCESS"));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/members/profile-image/presign")
     public ResponseEntity<Response<PresignResponseDto>> presignProfileImage(
             @AuthenticationPrincipal Member member,
@@ -59,6 +63,7 @@ public class MypageMemberController {
         return ResponseEntity.ok(Response.success("Presigned URL 발급 성공", dto));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/members/profile-image")
     public ResponseEntity<Response<String>> updateProfileImageUrl(
             @AuthenticationPrincipal Member member,
@@ -72,6 +77,7 @@ public class MypageMemberController {
         return ResponseEntity.ok(Response.success("프로필 이미지 저장 성공", "SUCCESS"));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/members/bio")
     public ResponseEntity<Response<String>> editBio(
             @RequestBody @Valid EditBioRequestDto requestDto
