@@ -44,7 +44,7 @@ public class MypagePostController {
         String email = userDetails.getUsername();
         PageResponseDto<MyPostPageResponseDto> result = mypagePostService.getLikedPosts(email, page, sort, size);
         return ResponseEntity.ok(Response.success("내가 좋아요한 글 보기 성공", result));
-    }
+
 
 
 }

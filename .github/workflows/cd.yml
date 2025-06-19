@@ -42,7 +42,11 @@ jobs:
         sed -i "s|\${MYSQL_USERNAME}|${{ secrets.MYSQL_USERNAME }}|g" src/main/resources/application.properties
         sed -i "s|\${MYSQL_PASSWORD}|${{ secrets.MYSQL_PASSWORD }}|g" src/main/resources/application.properties
         sed -i "s|\${JWT_KEY}|${{ secrets.JWT_KEY }}|g" src/main/resources/application.properties
-
+        sed -i "s|\${AWS_ACCESS_KEY_ID}|${{ secrets.AWS_ACCESS_KEY_ID }}|g" src/main/resources/application.properties
+        sed -i "s|\${AWS_SECRET_ACCESS_KEY}|${{ secrets.AWS_SECRET_ACCESS_KEY }}|g" src/main/resources/application.properties
+        sed -i "s|\${AWS_REGION}|${{ env.AWS_REGION }}|g" src/main/resources/application.properties
+        sed -i "s|\${AWS_S3_BUCKET}|${{ env.S3_BUCKET_NAME }}|g" src/main/resources/application.properties
+        
     - name: Build with Gradle
       run: ./gradlew clean build -x test
 
@@ -59,6 +63,10 @@ jobs:
         echo "MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}" >> .env
         echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
         echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
+        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+        echo "AWS_REGION=${{ env.AWS_REGION }}" >> .env
+        echo "AWS_S3_BUCKET=${{ env.S3_BUCKET_NAME }}" >> .env
 
     - name: Prepare deployment package
       run: |
