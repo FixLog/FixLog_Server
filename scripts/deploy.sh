@@ -1,6 +1,8 @@
 #!/bin/bash
 
-export $(grep -v '^#' /home/ec2-user/app/.env | xargs)
+set -a
+source /home/ec2-user/app/.env
+set +a
 
 BUILD_JAR=$(ls /home/ec2-user/app/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
