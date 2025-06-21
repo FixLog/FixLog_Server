@@ -14,7 +14,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    @Value("${spring.jwt.secret}")
+    @Value("${jwt.secret}")
     private String secretKeyString;
 
     private Key secretKey;
