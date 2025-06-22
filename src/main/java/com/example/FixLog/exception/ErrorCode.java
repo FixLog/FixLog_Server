@@ -30,8 +30,8 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "요청 데이터가 유효하지 않습니다."),
     S3_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "S3 파일 업로드에 실패했습니다."),
-    IMAGE_UPLOAD_FAILED(HttpStatus.NOT_FOUND, "이미지 파일이 업로드되지 않았습니다."),
-    LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃이 정상적으로 처리되었습니다.");
+    IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "이미지 파일이 업로드되지 않았습니다."),
+    NO_CONTENT_CHANGED(HttpStatus.BAD_REQUEST, "변경된 내용이 없습니다.");
 
     private final HttpStatus status;
     private final String message;
