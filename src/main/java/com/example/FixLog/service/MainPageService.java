@@ -29,7 +29,7 @@ public class MainPageService {
     // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
     public String getDefaultImage(String image){
         String imageUrl = (image == null || image.isBlank())
-                ? "https://example.com/default-cover-image.png" : image;
+                ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
