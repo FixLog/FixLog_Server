@@ -165,6 +165,7 @@ public class PostService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         PostDto postInfo = new PostDto(
+                currentPost.getUserId().getUserId(),
                 currentPost.getUserId().getNickname(),
                 currentPost.getPostTitle(),
                 getDefaultImage(currentPost.getCoverImage()),
