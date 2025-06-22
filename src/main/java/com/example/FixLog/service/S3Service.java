@@ -4,6 +4,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.example.FixLog.dto.s3.PresignedUploadResponseDto;
 import com.example.FixLog.exception.CustomException;
 import com.example.FixLog.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class S3Service {
         return dirName + "/" + UUID.randomUUID() + "_" + filename;
     }
 
-    public String generatePresignedUrl(String dirName, String filename, int minutes) {
+    public PresignedUploadResponseDto generatePresignedUploadUrl(String dirName, String filename, int minutes) {
         String key = generateKey(dirName, filename);
         Date expiration = new Date(System.currentTimeMillis() + minutes * 60L * 1000L);
 
@@ -55,7 +56,8 @@ public class S3Service {
                 .withExpiration(expiration);
 
         URL url = amazonS3.generatePresignedUrl(request);
-        return url.toString();
+
+        return new PresignedUploadResponseDto(url.toString(), getObjectUrl(key));
     }
 
     public String getObjectUrl(String key) {
