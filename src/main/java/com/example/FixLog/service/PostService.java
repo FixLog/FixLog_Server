@@ -129,6 +129,7 @@ public class PostService {
             throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING);
             // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING, String.join(", ", issues));
             // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING.withDetail(missingTypes.toString()));
+            // Todo 어떤 태그가 선택 안된건지 보여지도록 수정
         }
         return tags;
     }
@@ -143,12 +144,13 @@ public class PostService {
 
     // 게시글 조회하기
     public PostResponseDto viewPost(Long postId){
-        Member member = memberService.getCurrentMemberInfo();
+        Optional<Member> optionalMember = memberService.getCurrentOptionalMemberInfo();
 
         Post currentPost = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         PostDto postInfo = new PostDto(
+                currentPost.getUserId().getNickname(),
                 currentPost.getPostTitle(),
                 getDefaultImage(currentPost.getCoverImage()),
                 currentPost.getProblem(),
@@ -164,14 +166,28 @@ public class PostService {
                         .collect(toList())
         );
 
-        String nickname = member.getNickname();
-        LocalDate createdAt = currentPost.getCreatedAt().toLocalDate();
-        boolean isLiked = currentPost.getPostLikes().stream()
-                .anyMatch(postLike -> postLike.getUserId().equals(member));
-        boolean isMarked = currentPost.getBookmarks().stream()
-                .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
+        String nickname; String profileImageUrl;
+        boolean isLiked; boolean isMarked;
+        if (optionalMember.isPresent()){
+            Member member = optionalMember.get();
+            nickname = member.getNickname();
+            String imageUrl = member.getProfileImageUrl();
+            profileImageUrl = getDefaultImage(imageUrl);
 
-        return new PostResponseDto(postInfo, nickname, createdAt, isLiked, isMarked);
+            isLiked = currentPost.getPostLikes().stream()
+                    .anyMatch(postLike -> postLike.getUserId().equals(member));
+            isMarked = currentPost.getBookmarks().stream()
+                    .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
+        } else {
+            nickname = "로그인하지 않았습니다.";
+            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+            isLiked = false;
+            isMarked = false;
+        }
+
+        LocalDate createdAt = currentPost.getCreatedAt().toLocalDate();
+
+        return new PostResponseDto(postInfo, createdAt, nickname, profileImageUrl, isLiked, isMarked);
     }
 
     // 게시글 좋아요
