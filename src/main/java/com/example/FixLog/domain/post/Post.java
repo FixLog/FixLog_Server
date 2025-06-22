@@ -79,4 +79,41 @@ public class Post {
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    public void clearTags(){
+        postTags.clear();
+    }
+
+    public void changeTitle(String newTitle){
+        this.postTitle = newTitle;
+    }
+    public void changeCoverImage(String newCoverImage){
+        this.coverImage=newCoverImage;
+    }
+    public void changeProblem(String newProblem){
+        this.problem = newProblem;
+    }
+    public void changeErrorMessage(String newErrorMessage){
+        this.errorMessage = newErrorMessage;
+    }
+    public void changeEnvironment(String newEnvironment){
+        this.environment = newEnvironment;
+    }
+    public void changeReproduceCode(String newReproduceCode){
+        this.reproduceCode = newReproduceCode;
+    }
+    public void changeSolutionCode(String newSolutionCode){
+        this.solutionCode = newSolutionCode;
+    }
+    public void changeCauseAnalysis(String newCauseAnalysis){
+        this.causeAnalysis = newCauseAnalysis;
+    }
+    public void changeReferenceLink(String newReferenceLink){
+        this.referenceLink = newReferenceLink;
+    }
+    public void changeExtraContent(String newExtraContent){
+        this.extraContent = newExtraContent;
+    }
+    public void updateEditedAt(LocalDateTime newLocalDateTime){
+        this.editedAt = newLocalDateTime;
+    }
 }
