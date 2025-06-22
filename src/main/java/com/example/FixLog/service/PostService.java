@@ -20,6 +20,7 @@ import com.example.FixLog.repository.post.PostRepository;
 import com.example.FixLog.repository.tag.TagRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,16 +37,19 @@ public class PostService {
     private final TagRepository tagRepository;
     private final BookmarkFolderRepository bookmarkFolderRepository;
     private final MemberService memberService;
+    private final S3Service s3Service;
 
     public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository,
                        BookmarkRepository bookmarkRepository, TagRepository tagRepository,
-                       BookmarkFolderRepository bookmarkFolderRepository, MemberService memberService){
+                       BookmarkFolderRepository bookmarkFolderRepository, MemberService memberService,
+                       S3Service s3Service){
         this.postRepository = postRepository;
         this.postLikeRepository = postLikeRepository;
         this.bookmarkRepository = bookmarkRepository;
         this.tagRepository = tagRepository;
         this.bookmarkFolderRepository = bookmarkFolderRepository;
         this.memberService = memberService;
+        this.s3Service = s3Service;
     }
 
     // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
@@ -83,6 +87,7 @@ public class PostService {
                 .editedAt(LocalDateTime.now())
                 .postTags(new ArrayList<>())
                 .build();
+        // Todo : 여기서 사진 발생하면 s3 처리하기
 
         // 태그 저장
         for (Tag tag : tags) {
@@ -90,6 +95,16 @@ public class PostService {
             newPost.getPostTags().add(postTag);
         }
         postRepository.save(newPost);
+    }
+
+    // 이미지 파일 마크다운으로 변경
+    public String uploadImage(MultipartFile imageFile){
+        if (imageFile == null || imageFile.isEmpty()){
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
+
+        String imageUrl = s3Service.upload(imageFile, "post-image");
+        return "![image](" + imageUrl + ")";
     }
 
     // 태그 다 선택 했는지
@@ -129,6 +144,7 @@ public class PostService {
             throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING);
             // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING, String.join(", ", issues));
             // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING.withDetail(missingTypes.toString()));
+            // Todo 어떤 태그가 선택 안된건지 보여지도록 수정
         }
         return tags;
     }
@@ -143,12 +159,14 @@ public class PostService {
 
     // 게시글 조회하기
     public PostResponseDto viewPost(Long postId){
-        Member member = memberService.getCurrentMemberInfo();
+        Optional<Member> optionalMember = memberService.getCurrentOptionalMemberInfo();
 
         Post currentPost = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         PostDto postInfo = new PostDto(
+                currentPost.getUserId().getUserId(),
+                currentPost.getUserId().getNickname(),
                 currentPost.getPostTitle(),
                 getDefaultImage(currentPost.getCoverImage()),
                 currentPost.getProblem(),
@@ -164,14 +182,28 @@ public class PostService {
                         .collect(toList())
         );
 
-        String nickname = member.getNickname();
-        LocalDate createdAt = currentPost.getCreatedAt().toLocalDate();
-        boolean isLiked = currentPost.getPostLikes().stream()
-                .anyMatch(postLike -> postLike.getUserId().equals(member));
-        boolean isMarked = currentPost.getBookmarks().stream()
-                .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
+        String nickname; String profileImageUrl;
+        boolean isLiked; boolean isMarked;
+        if (optionalMember.isPresent()){
+            Member member = optionalMember.get();
+            nickname = member.getNickname();
+            String imageUrl = member.getProfileImageUrl();
+            profileImageUrl = getDefaultImage(imageUrl);
 
-        return new PostResponseDto(postInfo, nickname, createdAt, isLiked, isMarked);
+            isLiked = currentPost.getPostLikes().stream()
+                    .anyMatch(postLike -> postLike.getUserId().equals(member));
+            isMarked = currentPost.getBookmarks().stream()
+                    .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
+        } else {
+            nickname = "로그인하지 않았습니다.";
+            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+            isLiked = false;
+            isMarked = false;
+        }
+
+        LocalDate createdAt = currentPost.getCreatedAt().toLocalDate();
+
+        return new PostResponseDto(postInfo, createdAt, nickname, profileImageUrl, isLiked, isMarked);
     }
 
     // 게시글 좋아요
@@ -201,7 +233,6 @@ public class PostService {
     // 게시글 북마크
     public String toggleBookmark(Long postIdInput){
         Member member = memberService.getCurrentMemberInfo();
-
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -209,9 +240,8 @@ public class PostService {
         Optional<Bookmark> optionalBookmark = bookmarkRepository.findByFolderIdAndPostId(folderId, postId);
 
         // 본인 글은 북마크 못하도록
-        if (member == folderId.getUserId())
+        if (member == postId.getUserId())
             throw new CustomException(ErrorCode.SELF_BOOKMARK_NOT_ALLOWED);
-
         // 북마크 처리
         if (optionalBookmark.isEmpty()){ // 객체 없는 경우
             Bookmark newBookmark = new Bookmark(folderId, postId);

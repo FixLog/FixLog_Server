@@ -8,6 +8,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class PostDto {
+    private Long userId;
+    private String nickname;
     private String postTitle;
     private String coverImageUrl;
     private String problem;

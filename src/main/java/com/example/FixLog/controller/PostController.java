@@ -4,21 +4,31 @@ import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.post.PostResponseDto;
 import com.example.FixLog.service.PostService;
+import com.example.FixLog.service.S3Service;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
+    private final S3Service s3Service;
 
-    public PostController(PostService postService){
+    public PostController(PostService postService, S3Service s3Service){
         this.postService = postService;
+        this.s3Service = s3Service;
     }
 
     @PostMapping
     public Response<Object> createPost(@RequestBody PostRequestDto postRequestDto){
         postService.createPost(postRequestDto);
         return Response.success("게시글 작성 성공.", null);
+    }
+
+    @PostMapping("/images")
+    public Response<String> uploadImage(@RequestPart("imageFile") MultipartFile imageFile){
+        String markdownImage = postService.uploadImage(imageFile);
+        return Response.success("이미지 마크다운 형식으로 변환", markdownImage);
     }
 
     @GetMapping("/{postId}")

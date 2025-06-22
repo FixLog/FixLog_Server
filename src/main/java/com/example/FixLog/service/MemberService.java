@@ -57,12 +57,20 @@ public class MemberService {
      * 현재 로그인한 사용자 조회
      */
     @Transactional(readOnly = true)
-    public Member getCurrentMemberInfo() {
+    public Member getCurrentMemberInfo() { // 예외 처리 O
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_EMAIL_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Member> getCurrentOptionalMemberInfo() { // 예외 처리 X
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        return memberRepository.findByEmail(email);
     }
 
     /**

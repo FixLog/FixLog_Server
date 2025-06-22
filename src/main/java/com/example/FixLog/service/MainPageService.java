@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,9 +38,16 @@ public class MainPageService {
     // 메인페이지 보기
     public MainPageResponseDto mainPageView(int sort, int size){
         // 사용자 정보 불러오기
-        Member member = memberService.getCurrentMemberInfo();
-        String imageUrl = member.getProfileImageUrl();
-        String profileImageUrl = getDefaultImage(imageUrl);
+        Optional<Member> optionalMember = memberService.getCurrentOptionalMemberInfo();
+        String profileImageUrl;
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            String imageUrl = member.getProfileImageUrl();
+            profileImageUrl = getDefaultImage(imageUrl);
+        } else {
+            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+        }
 
         // 페이지 (글 12개) 불러오기
         Page<Post> posts;
@@ -48,6 +56,7 @@ public class MainPageService {
         if (sort == 0) { // 최신순 정렬
             sortOption = Sort.by(Sort.Direction.DESC, "createdAt");
         } else if (sort == 1) { // 인기순 정렬
+            // Todo : 이거 정렬할 때 좋아요 0인거 이상하고, 이거랑 연결해서인지 totalpages 계산도 이상하게 됨 
             sortOption = Sort.by(Sort.Direction.DESC, "postLikes");
         } else
             throw new CustomException(ErrorCode.SORT_NOT_EXIST);
@@ -75,9 +84,16 @@ public class MainPageService {
     // 메인페이지 전체보기
     public MainPageResponseDto mainPageFullView(int sort, int page, int size){
         // 사용자 정보 불러오기
-        Member member = memberService.getCurrentMemberInfo();
-        String imageUrl = member.getProfileImageUrl();
-        String profileImageUrl = getDefaultImage(imageUrl);
+        Optional<Member> optionalMember = memberService.getCurrentOptionalMemberInfo();
+        String profileImageUrl;
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            String imageUrl = member.getProfileImageUrl();
+            profileImageUrl = getDefaultImage(imageUrl);
+        } else {
+            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+        }
 
         // 페이지 설정 (한 페이지당 12개)
         Pageable pageable = PageRequest.of(page - 1, size);
