@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/members/check-nickname").permitAll()
                         .requestMatchers(HttpMethod.GET, "/", "/main", "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/tags").permitAll()
                         // h2-console (로컬 테스트용)
                         .requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
                         // 배포 확인용 임시 허용
