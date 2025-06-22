@@ -19,6 +19,8 @@ import com.example.FixLog.repository.like.PostLikeRepository;
 import com.example.FixLog.repository.post.PostRepository;
 import com.example.FixLog.repository.tag.TagRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -99,6 +101,8 @@ public class PostService {
 
     // 이미지 파일 마크다운으로 변경
     public String uploadImage(MultipartFile imageFile){
+        SecurityContextHolder.getContext().getAuthentication();
+
         if (imageFile == null || imageFile.isEmpty()){
             throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }

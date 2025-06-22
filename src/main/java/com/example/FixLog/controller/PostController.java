@@ -4,7 +4,6 @@ import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.post.PostResponseDto;
 import com.example.FixLog.service.PostService;
-import com.example.FixLog.service.S3Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,11 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
-    private final S3Service s3Service;
 
-    public PostController(PostService postService, S3Service s3Service){
+    public PostController(PostService postService){
         this.postService = postService;
-        this.s3Service = s3Service;
     }
 
     @PostMapping
