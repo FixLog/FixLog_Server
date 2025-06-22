@@ -22,10 +22,12 @@ public class MyPostPageResponseDto {
     private LocalDateTime createdAt;
     private int likeCount;
     private int forkCount;
+    private String nickname;
 
     public static MyPostPageResponseDto from(Post post, int forkCount) {
         return MyPostPageResponseDto.builder()
                 .postId(post.getPostId())
+                .nickname(post.getUserId().getNickname())
                 .postTitle(post.getPostTitle())
                 .postSummary(generateSummary(post.getProblem()))
                 .imageUrl(post.getCoverImage())

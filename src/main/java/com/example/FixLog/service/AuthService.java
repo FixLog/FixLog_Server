@@ -26,6 +26,10 @@ public class AuthService {
         Member member = memberRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
 
+        if (member.getIsDeleted()) {
+            throw new CustomException(ErrorCode.USER_DELETED);
+        }
+
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
