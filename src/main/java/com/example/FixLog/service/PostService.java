@@ -201,7 +201,6 @@ public class PostService {
     // 게시글 북마크
     public String toggleBookmark(Long postIdInput){
         Member member = memberService.getCurrentMemberInfo();
-
         Post postId = postRepository.findById(postIdInput)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -209,9 +208,8 @@ public class PostService {
         Optional<Bookmark> optionalBookmark = bookmarkRepository.findByFolderIdAndPostId(folderId, postId);
 
         // 본인 글은 북마크 못하도록
-        if (member == folderId.getUserId())
+        if (member == postId.getUserId())
             throw new CustomException(ErrorCode.SELF_BOOKMARK_NOT_ALLOWED);
-
         // 북마크 처리
         if (optionalBookmark.isEmpty()){ // 객체 없는 경우
             Bookmark newBookmark = new Bookmark(folderId, postId);
