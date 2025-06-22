@@ -9,9 +9,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PostResponseDto {
     private PostDto postInfo;
+    private LocalDate createdAt;
 
     private String nickname;
-    private LocalDate createdAt;
+    private String profileImageUrl;
     private boolean isLiked;
     private boolean isMarked;
 }

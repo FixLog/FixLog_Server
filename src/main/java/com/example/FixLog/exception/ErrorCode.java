@@ -28,7 +28,8 @@ public enum ErrorCode {
     SAME_AS_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "다른 비밀번호 입력 바랍니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "요청 데이터가 유효하지 않습니다."),
-    S3_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "S3 파일 업로드에 실패했습니다.");
+    S3_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "S3 파일 업로드에 실패했습니다."),
+    IMAGE_UPLOAD_FAILED(HttpStatus.NOT_FOUND, "이미지 파일이 업로드되지 않았습니다.");
 
     private final HttpStatus status;
     private final String message;
