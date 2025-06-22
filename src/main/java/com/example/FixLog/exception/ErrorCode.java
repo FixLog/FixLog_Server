@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     USER_NICKNAME_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 사용자 아이디입니다."),
     USER_EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 이메일을 찾을 수 없습니다."),
+    USER_DELETED(HttpStatus.FORBIDDEN, "탈퇴한 회원입니다."),
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "중복된 이메일입니다"),
     NICKNAME_DUPLICATED(HttpStatus.CONFLICT, "중복된 닉네임입니다"),
     ALREADY_FOLLOWING(HttpStatus.CONFLICT, "이미 팔로우 중입니다"),
@@ -29,7 +30,11 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "요청 데이터가 유효하지 않습니다."),
     S3_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "S3 파일 업로드에 실패했습니다."),
+<<<<<<< HEAD
     IMAGE_UPLOAD_FAILED(HttpStatus.NOT_FOUND, "이미지 파일이 업로드되지 않았습니다.");
+=======
+    LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃이 정상적으로 처리되었습니다.");
+>>>>>>> 7375c5c (fix(auth): 로그인 시 탈퇴 사용자 처리 및 오류 코드 추가)
 
     private final HttpStatus status;
     private final String message;
