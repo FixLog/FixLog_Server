@@ -9,8 +9,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("https://fixlog.netlify.app", "http://localhost:3000") // 모든 경로에 대해
-                .allowedOriginPatterns("*") // 모든 도메인 허용 (개발용) → 배포 시 정확한 프론트 주소로 수정 권장
+        registry.addMapping("/**") // 모든 경로에 대해
+                .allowedOriginPatterns("https://fixlog.netlify.app", "http://localhost:3000") // 모든 도메인 허용 (개발용) → 배포 시 정확한 프론트 주소로 수정 권장
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true); // 인증정보(쿠키, Authorization) 허용
