@@ -20,6 +20,7 @@ import com.example.FixLog.repository.post.PostRepository;
 import com.example.FixLog.repository.tag.TagRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,16 +37,19 @@ public class PostService {
     private final TagRepository tagRepository;
     private final BookmarkFolderRepository bookmarkFolderRepository;
     private final MemberService memberService;
+    private final S3Service s3Service;
 
     public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository,
                        BookmarkRepository bookmarkRepository, TagRepository tagRepository,
-                       BookmarkFolderRepository bookmarkFolderRepository, MemberService memberService){
+                       BookmarkFolderRepository bookmarkFolderRepository, MemberService memberService,
+                       S3Service s3Service){
         this.postRepository = postRepository;
         this.postLikeRepository = postLikeRepository;
         this.bookmarkRepository = bookmarkRepository;
         this.tagRepository = tagRepository;
         this.bookmarkFolderRepository = bookmarkFolderRepository;
         this.memberService = memberService;
+        this.s3Service = s3Service;
     }
 
     // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
@@ -83,6 +87,7 @@ public class PostService {
                 .editedAt(LocalDateTime.now())
                 .postTags(new ArrayList<>())
                 .build();
+        // Todo : 여기서 사진 발생하면 s3 처리하기
 
         // 태그 저장
         for (Tag tag : tags) {
@@ -90,6 +95,16 @@ public class PostService {
             newPost.getPostTags().add(postTag);
         }
         postRepository.save(newPost);
+    }
+
+    // 이미지 파일 마크다운으로 변경
+    public String uploadImage(MultipartFile imageFile){
+        if (imageFile == null || imageFile.isEmpty()){
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
+
+        String imageUrl = s3Service.upload(imageFile, "post-image");
+        return "![image](" + imageUrl + ")";
     }
 
     // 태그 다 선택 했는지
