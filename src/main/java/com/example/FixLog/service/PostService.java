@@ -8,6 +8,7 @@ import com.example.FixLog.domain.post.Post;
 import com.example.FixLog.domain.post.PostTag;
 import com.example.FixLog.domain.tag.Tag;
 import com.example.FixLog.domain.tag.TagCategory;
+import com.example.FixLog.dto.post.NewPostRequestDto;
 import com.example.FixLog.dto.post.PostDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.post.PostResponseDto;
@@ -62,7 +63,7 @@ public class PostService {
         return imageUrl;
     }
 
-    // 게시글 생성하기
+    // 게시글 작성하기
     @Transactional
     public void createPost(PostRequestDto postRequestDto){
         Member member = memberService.getCurrentMemberInfo();
@@ -97,18 +98,6 @@ public class PostService {
             newPost.getPostTags().add(postTag);
         }
         postRepository.save(newPost);
-    }
-
-    // 이미지 파일 마크다운으로 변경
-    public String uploadImage(MultipartFile imageFile){
-        SecurityContextHolder.getContext().getAuthentication();
-
-        if (imageFile == null || imageFile.isEmpty()){
-            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
-        }
-
-        String imageUrl = s3Service.upload(imageFile, "post-image");
-        return "![image](" + imageUrl + ")";
     }
 
     // 태그 다 선택 했는지
@@ -159,6 +148,78 @@ public class PostService {
         | postRequestDto.getErrorMessage().isBlank() | postRequestDto.getEnvironment().isBlank()
         | postRequestDto.getReproduceCode().isBlank() | postRequestDto.getSolutionCode().isBlank())
             throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
+    }
+    private void validatePost(NewPostRequestDto newPostRequestDto){
+        if (newPostRequestDto.getPostTitle().isBlank() | newPostRequestDto.getProblem().isBlank()
+            | newPostRequestDto.getErrorMessage().isBlank() | newPostRequestDto.getEnvironment().isBlank()
+            | newPostRequestDto.getReproduceCode().isBlank() | newPostRequestDto.getSolutionCode().isBlank())
+            throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
+    }
+
+    // 이미지 파일 마크다운으로 변경
+    @Transactional
+    public String uploadImage(MultipartFile imageFile){
+        SecurityContextHolder.getContext().getAuthentication();
+
+        if (imageFile == null || imageFile.isEmpty()){
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
+
+        String imageUrl = s3Service.upload(imageFile, "post-image");
+        return "![image](" + imageUrl + ")";
+    }
+
+    @Transactional
+    public void editPost(Long postId, NewPostRequestDto newPostRequestDto) {
+        Member member = memberService.getCurrentMemberInfo();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        // 북마크 카테고리별로 선택 제한 두기
+        List<Tag> tags = fetchAndValidateTags(newPostRequestDto.getTags());
+
+        // 아무것도 변경이 없으면 예외처리
+        if (Objects.equals(post.getPostTitle(), newPostRequestDto.getPostTitle())
+            & Objects.equals(post.getCoverImage(), newPostRequestDto.getCoverImageUrl())
+            & Objects.equals(post.getProblem(), newPostRequestDto.getProblem())
+            & Objects.equals(post.getErrorMessage(), newPostRequestDto.getErrorMessage())
+            & Objects.equals(post.getEnvironment(), newPostRequestDto.getEnvironment())
+            & Objects.equals(post.getReproduceCode(), newPostRequestDto.getReproduceCode())
+            & Objects.equals(post.getSolutionCode(), newPostRequestDto.getSolutionCode())
+            & Objects.equals(post.getCauseAnalysis(), newPostRequestDto.getCauseAnalysis())
+            & Objects.equals(post.getReferenceLink(), newPostRequestDto.getReferenceLink())
+            & Objects.equals(post.getExtraContent(), newPostRequestDto.getExtraContent())
+            & compareTags(post.getPostTags(), tags)){
+            throw new CustomException(ErrorCode.NO_CONTENT_CHANGED);
+        }
+
+        // 필드 업데이트
+        post.changeTitle(newPostRequestDto.getPostTitle());
+        post.changeCoverImage(newPostRequestDto.getCoverImageUrl());
+        post.changeProblem(newPostRequestDto.getProblem());
+        post.changeErrorMessage(newPostRequestDto.getErrorMessage());
+        post.changeEnvironment(newPostRequestDto.getEnvironment());
+        post.changeReproduceCode(newPostRequestDto.getReproduceCode());
+        post.changeSolutionCode(newPostRequestDto.getSolutionCode());
+        post.changeCauseAnalysis(newPostRequestDto.getCauseAnalysis());
+        post.changeReferenceLink(newPostRequestDto.getReferenceLink());
+        post.changeExtraContent(newPostRequestDto.getExtraContent());
+        post.updateEditedAt(LocalDateTime.now());
+
+        // 태그 저장
+        post.clearTags(); // 기존 태그 다 제거
+        for (Tag tag : tags) {
+            PostTag postTag = new PostTag(post, tag);
+            post.getPostTags().add(postTag);
+        }
+    }
+
+    private boolean compareTags(List<PostTag> currentPostTags, List<Tag> newTags) {
+        List<Tag> currentTags = currentPostTags.stream()
+                .map(PostTag::getTagId)
+                .toList();
+
+        return new HashSet<>(currentTags).equals(new HashSet<>(newTags));
     }
 
     // 게시글 조회하기
