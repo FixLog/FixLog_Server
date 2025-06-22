@@ -1,5 +1,5 @@
 package com.example.FixLog.util;
 
 public class DefaultImage {
-    public static final String PROFILE = "https://dummyimage.com/200x200/cccccc/ffffff&text=Profile"; // 임시 기본 프로필 이미지
+    public static final String PROFILE = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png";
 }

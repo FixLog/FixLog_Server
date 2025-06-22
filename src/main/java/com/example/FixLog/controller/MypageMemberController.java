@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import com.example.FixLog.dto.s3.PresignedUploadResponseDto;
+
 
 import java.util.Map;
 
@@ -55,9 +57,9 @@ public class MypageMemberController {
     ) {
         if (member == null) throw new CustomException(ErrorCode.UNAUTHORIZED);
 
-        String key = s3Service.generateKey("profile", filename);
-        String uploadUrl = s3Service.generatePresignedUrl("profile", filename, 15);
-        String fileUrl = s3Service.getObjectUrl(key);
+        PresignedUploadResponseDto responseDto = s3Service.generatePresignedUploadUrl("profile", filename, 15);
+        String uploadUrl = responseDto.getPresignedUrl();
+        String fileUrl = responseDto.getFileUrl();
 
         PresignResponseDto dto = new PresignResponseDto(uploadUrl, fileUrl);
         return ResponseEntity.ok(Response.success("Presigned URL 발급 성공", dto));
