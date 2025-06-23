@@ -1,6 +1,5 @@
 package com.example.FixLog.controller;
 
-import com.example.FixLog.dto.post.NewPostRequestDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.Response;
 import com.example.FixLog.dto.post.PostResponseDto;
@@ -34,8 +33,8 @@ public class PostController {
     // 게시글 수정하기
     @PatchMapping("/{postId}/edit")
     public Response<Object> editPost(@PathVariable("postId") Long postId,
-                                     @RequestBody NewPostRequestDto newPostRequestDto){
-        postService.editPost(postId, newPostRequestDto);
+                                     @RequestBody PostRequestDto postRequestDto){
+        postService.editPost(postId, postRequestDto);
         return Response.success("게시글 수정 성공.", null);
     }
 

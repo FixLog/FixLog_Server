@@ -8,7 +8,6 @@ import com.example.FixLog.domain.post.Post;
 import com.example.FixLog.domain.post.PostTag;
 import com.example.FixLog.domain.tag.Tag;
 import com.example.FixLog.domain.tag.TagCategory;
-import com.example.FixLog.dto.post.NewPostRequestDto;
 import com.example.FixLog.dto.post.PostDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.post.PostResponseDto;
@@ -20,9 +19,9 @@ import com.example.FixLog.repository.like.PostLikeRepository;
 import com.example.FixLog.repository.post.PostRepository;
 import com.example.FixLog.repository.tag.TagRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -55,10 +54,17 @@ public class PostService {
         this.s3Service = s3Service;
     }
 
-    // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
-    public String getDefaultImage(String image){
+    // 이미지 null일 때 default 사진으로 변경 - 프로필 사진
+    public String getDefaultProfile(String image){
         String imageUrl = (image == null || image.isBlank())
                 ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" : image;
+        System.out.println(imageUrl);
+        return imageUrl;
+    }
+    // 이미지 null일 때 default 사진으로 변경 - 썸네일
+    public String getDefaultCover(String image){
+        String imageUrl = (image == null || image.isBlank())
+                ? "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaulThumnail.png" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
@@ -101,10 +107,10 @@ public class PostService {
     }
 
     // 태그 다 선택 했는지
-    private List<Tag> fetchAndValidateTags(List<Long> tagIds){
-        // 태그 ID로 Tag 엔티티 조회
-        List<Tag> tags = tagIds.stream()
-                .map(tagId -> tagRepository.findById(tagId)
+    private List<Tag> fetchAndValidateTags(List<String> tagNames){
+        // 태그 이름으로 Tag 엔티티 조회
+        List<Tag> tags = tagNames.stream()
+                .map(tagName -> tagRepository.findByTagName(tagName)
                         .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND)))
                 .toList();
 
@@ -134,25 +140,20 @@ public class PostService {
         }
 
         if (!issues.isEmpty()) {
-            throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING);
-            // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING, String.join(", ", issues));
-            // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING.withDetail(missingTypes.toString()));
-            // Todo 어떤 태그가 선택 안된건지 보여지도록 수정
+            String message = String.join(" / ", issues);
+            throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING, message);
         }
         return tags;
     }
 
     // 게시글 필수 항목 다 작성했는지
     private void validatePost(PostRequestDto postRequestDto){
-        if (postRequestDto.getPostTitle().isBlank() | postRequestDto.getProblem().isBlank()
-        | postRequestDto.getErrorMessage().isBlank() | postRequestDto.getEnvironment().isBlank()
-        | postRequestDto.getReproduceCode().isBlank() | postRequestDto.getSolutionCode().isBlank())
-            throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
-    }
-    private void validatePost(NewPostRequestDto newPostRequestDto){
-        if (newPostRequestDto.getPostTitle().isBlank() | newPostRequestDto.getProblem().isBlank()
-            | newPostRequestDto.getErrorMessage().isBlank() | newPostRequestDto.getEnvironment().isBlank()
-            | newPostRequestDto.getReproduceCode().isBlank() | newPostRequestDto.getSolutionCode().isBlank())
+        if (!StringUtils.hasText(postRequestDto.getPostTitle())
+                || !StringUtils.hasText(postRequestDto.getProblem())
+                || !StringUtils.hasText(postRequestDto.getErrorMessage())
+                || !StringUtils.hasText(postRequestDto.getEnvironment())
+                || !StringUtils.hasText(postRequestDto.getReproduceCode())
+                || !StringUtils.hasText(postRequestDto.getSolutionCode()))
             throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
     }
 
@@ -169,41 +170,49 @@ public class PostService {
         return "![image](" + imageUrl + ")";
     }
 
+    // 게시글 수정하기
     @Transactional
-    public void editPost(Long postId, NewPostRequestDto newPostRequestDto) {
+    public void editPost(Long postId, PostRequestDto postRequestDto) {
         Member member = memberService.getCurrentMemberInfo();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
+        // 게시글 작성자가 본인이 맞는지
+        if (!member.getUserId().equals(post.getUserId().getUserId())) {
+            throw new CustomException(ErrorCode.POST_UPDATE_FORBIDDEN);
+        }
+
         // 북마크 카테고리별로 선택 제한 두기
-        List<Tag> tags = fetchAndValidateTags(newPostRequestDto.getTags());
+        List<Tag> tags = fetchAndValidateTags(postRequestDto.getTags());
 
         // 아무것도 변경이 없으면 예외처리
-        if (Objects.equals(post.getPostTitle(), newPostRequestDto.getPostTitle())
-            & Objects.equals(post.getCoverImage(), newPostRequestDto.getCoverImageUrl())
-            & Objects.equals(post.getProblem(), newPostRequestDto.getProblem())
-            & Objects.equals(post.getErrorMessage(), newPostRequestDto.getErrorMessage())
-            & Objects.equals(post.getEnvironment(), newPostRequestDto.getEnvironment())
-            & Objects.equals(post.getReproduceCode(), newPostRequestDto.getReproduceCode())
-            & Objects.equals(post.getSolutionCode(), newPostRequestDto.getSolutionCode())
-            & Objects.equals(post.getCauseAnalysis(), newPostRequestDto.getCauseAnalysis())
-            & Objects.equals(post.getReferenceLink(), newPostRequestDto.getReferenceLink())
-            & Objects.equals(post.getExtraContent(), newPostRequestDto.getExtraContent())
-            & compareTags(post.getPostTags(), tags)){
+        if (Objects.equals(post.getPostTitle(), postRequestDto.getPostTitle())
+            && Objects.equals(post.getCoverImage(), postRequestDto.getCoverImageUrl())
+            && Objects.equals(post.getProblem(), postRequestDto.getProblem())
+            && Objects.equals(post.getErrorMessage(), postRequestDto.getErrorMessage())
+            && Objects.equals(post.getEnvironment(), postRequestDto.getEnvironment())
+            && Objects.equals(post.getReproduceCode(), postRequestDto.getReproduceCode())
+            && Objects.equals(post.getSolutionCode(), postRequestDto.getSolutionCode())
+            && Objects.equals(post.getCauseAnalysis(), postRequestDto.getCauseAnalysis())
+            && Objects.equals(post.getReferenceLink(), postRequestDto.getReferenceLink())
+            && Objects.equals(post.getExtraContent(), postRequestDto.getExtraContent())
+            && compareTags(post.getPostTags(), tags)){
             throw new CustomException(ErrorCode.NO_CONTENT_CHANGED);
         }
 
         // 필드 업데이트
-        post.changeTitle(newPostRequestDto.getPostTitle());
-        post.changeCoverImage(newPostRequestDto.getCoverImageUrl());
-        post.changeProblem(newPostRequestDto.getProblem());
-        post.changeErrorMessage(newPostRequestDto.getErrorMessage());
-        post.changeEnvironment(newPostRequestDto.getEnvironment());
-        post.changeReproduceCode(newPostRequestDto.getReproduceCode());
-        post.changeSolutionCode(newPostRequestDto.getSolutionCode());
-        post.changeCauseAnalysis(newPostRequestDto.getCauseAnalysis());
-        post.changeReferenceLink(newPostRequestDto.getReferenceLink());
-        post.changeExtraContent(newPostRequestDto.getExtraContent());
+        validatePost(postRequestDto);
+
+        post.changeTitle(postRequestDto.getPostTitle());
+        post.changeCoverImage(postRequestDto.getCoverImageUrl());
+        post.changeProblem(postRequestDto.getProblem());
+        post.changeErrorMessage(postRequestDto.getErrorMessage());
+        post.changeEnvironment(postRequestDto.getEnvironment());
+        post.changeReproduceCode(postRequestDto.getReproduceCode());
+        post.changeSolutionCode(postRequestDto.getSolutionCode());
+        post.changeCauseAnalysis(postRequestDto.getCauseAnalysis());
+        post.changeReferenceLink(postRequestDto.getReferenceLink());
+        post.changeExtraContent(postRequestDto.getExtraContent());
         post.updateEditedAt(LocalDateTime.now());
 
         // 태그 저장
@@ -233,7 +242,7 @@ public class PostService {
                 currentPost.getUserId().getUserId(),
                 currentPost.getUserId().getNickname(),
                 currentPost.getPostTitle(),
-                getDefaultImage(currentPost.getCoverImage()),
+                getDefaultCover(currentPost.getCoverImage()),
                 currentPost.getProblem(),
                 currentPost.getErrorMessage(),
                 currentPost.getEnvironment(),
@@ -253,7 +262,7 @@ public class PostService {
             Member member = optionalMember.get();
             nickname = member.getNickname();
             String imageUrl = member.getProfileImageUrl();
-            profileImageUrl = getDefaultImage(imageUrl);
+            profileImageUrl = getDefaultProfile(imageUrl);
 
             isLiked = currentPost.getPostLikes().stream()
                     .anyMatch(postLike -> postLike.getUserId().equals(member));
@@ -261,7 +270,7 @@ public class PostService {
                     .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
         } else {
             nickname = "로그인하지 않았습니다.";
-            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
             isLiked = false;
             isMarked = false;
         }
