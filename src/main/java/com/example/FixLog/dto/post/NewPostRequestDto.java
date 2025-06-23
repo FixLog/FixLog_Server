@@ -17,5 +17,5 @@ public class NewPostRequestDto {
     private String referenceLink;
     private String extraContent;
 
-    private List<Long> tags;
+    private List<String> tags;
 }
