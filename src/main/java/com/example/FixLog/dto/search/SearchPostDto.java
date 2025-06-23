@@ -12,6 +12,7 @@ public class SearchPostDto {
     private Long postId;
     private String title;
     private String content;
+    private String coverImageUrl;
     private String writerNickname;
     private String writerProfileImage;
     private List<String> tags; // 예: [“spring-boot”, “jwt”, “java”]

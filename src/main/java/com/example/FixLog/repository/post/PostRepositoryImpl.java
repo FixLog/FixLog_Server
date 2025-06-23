@@ -71,6 +71,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .postId(p.getPostId())
                 .title(p.getPostTitle())
                 .content(p.getProblem().length() > 200 ? p.getProblem().substring(0, 200) + "…" : p.getProblem())
+                .coverImageUrl(p.getCoverImage())
                 .writerNickname(p.getUserId().getNickname())
                 .writerProfileImage(p.getUserId().getProfileImageUrl())
                 .tags(p.getPostTags().stream().map(pt -> pt.getTagId().getTagName()).toList())

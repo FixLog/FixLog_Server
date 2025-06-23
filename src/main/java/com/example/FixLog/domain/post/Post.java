@@ -119,4 +119,6 @@ public class Post {
     public void updateEditedAt(LocalDateTime newLocalDateTime){
         this.editedAt = newLocalDateTime;
     }
+
+
 }
