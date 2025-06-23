@@ -151,15 +151,21 @@ public class PostService {
 
     // 게시글 필수 항목 다 작성했는지
     private void validatePost(PostRequestDto postRequestDto){
-        if (postRequestDto.getPostTitle().isBlank() | postRequestDto.getProblem().isBlank()
-        | postRequestDto.getErrorMessage().isBlank() | postRequestDto.getEnvironment().isBlank()
-        | postRequestDto.getReproduceCode().isBlank() | postRequestDto.getSolutionCode().isBlank())
+        if (!StringUtils.hasText(postRequestDto.getPostTitle())
+            || !StringUtils.hasText(postRequestDto.getProblem())
+            || !StringUtils.hasText(postRequestDto.getErrorMessage())
+            || !StringUtils.hasText(postRequestDto.getEnvironment())
+            || !StringUtils.hasText(postRequestDto.getReproduceCode())
+            || !StringUtils.hasText(postRequestDto.getSolutionCode()))
             throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
     }
     private void validatePost(NewPostRequestDto newPostRequestDto){
-        if (newPostRequestDto.getPostTitle().isBlank() | newPostRequestDto.getProblem().isBlank()
-            | newPostRequestDto.getErrorMessage().isBlank() | newPostRequestDto.getEnvironment().isBlank()
-            | newPostRequestDto.getReproduceCode().isBlank() | newPostRequestDto.getSolutionCode().isBlank())
+        if (!StringUtils.hasText(newPostRequestDto.getPostTitle())
+                || !StringUtils.hasText(newPostRequestDto.getProblem())
+                || !StringUtils.hasText(newPostRequestDto.getErrorMessage())
+                || !StringUtils.hasText(newPostRequestDto.getEnvironment())
+                || !StringUtils.hasText(newPostRequestDto.getReproduceCode())
+                || !StringUtils.hasText(newPostRequestDto.getSolutionCode()))
             throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
     }
 
@@ -176,11 +182,17 @@ public class PostService {
         return "![image](" + imageUrl + ")";
     }
 
+    // 게시글 수정하기
     @Transactional
     public void editPost(Long postId, NewPostRequestDto newPostRequestDto) {
         Member member = memberService.getCurrentMemberInfo();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        // 게시글 작성자가 본인이 맞는지
+        if (!member.getUserId().equals(post.getUserId().getUserId())) {
+            throw new CustomException(ErrorCode.POST_UPDATE_FORBIDDEN);
+        }
 
         // 북마크 카테고리별로 선택 제한 두기
         List<Tag> tags = fetchAndValidateTags(newPostRequestDto.getTags());
@@ -201,6 +213,8 @@ public class PostService {
         }
 
         // 필드 업데이트
+        validatePost(newPostRequestDto);
+
         post.changeTitle(newPostRequestDto.getPostTitle());
         post.changeCoverImage(newPostRequestDto.getCoverImageUrl());
         post.changeProblem(newPostRequestDto.getProblem());
