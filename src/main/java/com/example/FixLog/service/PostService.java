@@ -20,9 +20,9 @@ import com.example.FixLog.repository.like.PostLikeRepository;
 import com.example.FixLog.repository.post.PostRepository;
 import com.example.FixLog.repository.tag.TagRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -55,10 +55,17 @@ public class PostService {
         this.s3Service = s3Service;
     }
 
-    // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
-    public String getDefaultImage(String image){
+    // 이미지 null일 때 default 사진으로 변경 - 프로필 사진
+    public String getDefaultProfile(String image){
         String imageUrl = (image == null || image.isBlank())
                 ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" : image;
+        System.out.println(imageUrl);
+        return imageUrl;
+    }
+    // 이미지 null일 때 default 사진으로 변경 - 썸네일
+    public String getDefaultCover(String image){
+        String imageUrl = (image == null || image.isBlank())
+                ? "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaulThumnail.png" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
@@ -144,15 +151,21 @@ public class PostService {
 
     // 게시글 필수 항목 다 작성했는지
     private void validatePost(PostRequestDto postRequestDto){
-        if (postRequestDto.getPostTitle().isBlank() | postRequestDto.getProblem().isBlank()
-        | postRequestDto.getErrorMessage().isBlank() | postRequestDto.getEnvironment().isBlank()
-        | postRequestDto.getReproduceCode().isBlank() | postRequestDto.getSolutionCode().isBlank())
+        if (!StringUtils.hasText(postRequestDto.getPostTitle())
+            || !StringUtils.hasText(postRequestDto.getProblem())
+            || !StringUtils.hasText(postRequestDto.getErrorMessage())
+            || !StringUtils.hasText(postRequestDto.getEnvironment())
+            || !StringUtils.hasText(postRequestDto.getReproduceCode())
+            || !StringUtils.hasText(postRequestDto.getSolutionCode()))
             throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
     }
     private void validatePost(NewPostRequestDto newPostRequestDto){
-        if (newPostRequestDto.getPostTitle().isBlank() | newPostRequestDto.getProblem().isBlank()
-            | newPostRequestDto.getErrorMessage().isBlank() | newPostRequestDto.getEnvironment().isBlank()
-            | newPostRequestDto.getReproduceCode().isBlank() | newPostRequestDto.getSolutionCode().isBlank())
+        if (!StringUtils.hasText(newPostRequestDto.getPostTitle())
+                || !StringUtils.hasText(newPostRequestDto.getProblem())
+                || !StringUtils.hasText(newPostRequestDto.getErrorMessage())
+                || !StringUtils.hasText(newPostRequestDto.getEnvironment())
+                || !StringUtils.hasText(newPostRequestDto.getReproduceCode())
+                || !StringUtils.hasText(newPostRequestDto.getSolutionCode()))
             throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
     }
 
@@ -169,11 +182,17 @@ public class PostService {
         return "![image](" + imageUrl + ")";
     }
 
+    // 게시글 수정하기
     @Transactional
     public void editPost(Long postId, NewPostRequestDto newPostRequestDto) {
         Member member = memberService.getCurrentMemberInfo();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        // 게시글 작성자가 본인이 맞는지
+        if (!member.getUserId().equals(post.getUserId().getUserId())) {
+            throw new CustomException(ErrorCode.POST_UPDATE_FORBIDDEN);
+        }
 
         // 북마크 카테고리별로 선택 제한 두기
         List<Tag> tags = fetchAndValidateTags(newPostRequestDto.getTags());
@@ -194,6 +213,8 @@ public class PostService {
         }
 
         // 필드 업데이트
+        validatePost(newPostRequestDto);
+
         post.changeTitle(newPostRequestDto.getPostTitle());
         post.changeCoverImage(newPostRequestDto.getCoverImageUrl());
         post.changeProblem(newPostRequestDto.getProblem());
@@ -233,7 +254,7 @@ public class PostService {
                 currentPost.getUserId().getUserId(),
                 currentPost.getUserId().getNickname(),
                 currentPost.getPostTitle(),
-                getDefaultImage(currentPost.getCoverImage()),
+                getDefaultCover(currentPost.getCoverImage()),
                 currentPost.getProblem(),
                 currentPost.getErrorMessage(),
                 currentPost.getEnvironment(),
@@ -253,7 +274,7 @@ public class PostService {
             Member member = optionalMember.get();
             nickname = member.getNickname();
             String imageUrl = member.getProfileImageUrl();
-            profileImageUrl = getDefaultImage(imageUrl);
+            profileImageUrl = getDefaultProfile(imageUrl);
 
             isLiked = currentPost.getPostLikes().stream()
                     .anyMatch(postLike -> postLike.getUserId().equals(member));
@@ -261,7 +282,7 @@ public class PostService {
                     .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
         } else {
             nickname = "로그인하지 않았습니다.";
-            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
             isLiked = false;
             isMarked = false;
         }
