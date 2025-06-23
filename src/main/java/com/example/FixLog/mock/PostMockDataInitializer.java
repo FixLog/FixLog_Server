@@ -66,7 +66,7 @@ public class PostMockDataInitializer implements CommandLineRunner {
             Post post = Post.builder()
                     .userId(member)
                     .postTitle("테스트 업그레이드 " + (i + 2))
-                    .coverImage("https://cdn.example.com/images/test" + (i + 2) + ".jpg")
+                    .coverImage("https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" + (i + 2) + ".jpg")
                     .problem("이 게시물은 문제 설명이 200자를 넘도록 작성되었습니다. 문제 발생 상황, 재현 과정, 로그, 화면 캡처 등 다양한 정보가 포함될 수 있습니다. 이 텍스트는 말줄임표가 잘 붙는지 확인하기 위한 용도로 작성되었으며, 검색 결과에서는 200자까지만 보여야 합니다. 이후 내용은 생략될 수 있습니다. 추가 텍스트를 더 붙입니다. 더 붙입니다. 더 붙입니다.")
                     .errorMessage("이건 에러다 keyword 포함")
                     .environment("환경 정보")
