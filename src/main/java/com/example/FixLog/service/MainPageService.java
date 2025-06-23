@@ -30,7 +30,7 @@ public class MainPageService {
     // 이미지 null일 때 default 사진으로 변경 - 프로필 사진
     public String getDefaultProfile(String image){
         String imageUrl = (image == null || image.isBlank())
-                ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" : image;
+                ? "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
@@ -53,7 +53,7 @@ public class MainPageService {
             String imageUrl = member.getProfileImageUrl();
             profileImageUrl = getDefaultProfile(imageUrl);
         } else {
-            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png"; // 비로그인 기본 이미지
         }
 
         // 페이지 (글 12개) 불러오기
@@ -100,7 +100,7 @@ public class MainPageService {
             String imageUrl = member.getProfileImageUrl();
             profileImageUrl = getDefaultProfile(imageUrl);
         } else {
-            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png"; // 비로그인 기본 이미지
         }
 
         // 페이지 설정 (한 페이지당 12개)
