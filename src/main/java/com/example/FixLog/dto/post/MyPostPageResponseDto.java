@@ -23,6 +23,13 @@ public class MyPostPageResponseDto {
     private int likeCount;
     private int forkCount;
     private String nickname;
+    private String profileImageUrl;;
+
+    public static String getDefaultImage(String image) {
+        return (image == null || image.isBlank())
+                ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"
+                : image;
+    }
 
     public static MyPostPageResponseDto from(Post post, int forkCount) {
         return MyPostPageResponseDto.builder()
@@ -30,7 +37,8 @@ public class MyPostPageResponseDto {
                 .nickname(post.getUserId().getNickname())
                 .postTitle(post.getPostTitle())
                 .postSummary(generateSummary(post.getProblem()))
-                .imageUrl(post.getCoverImage())
+                .imageUrl(getDefaultImage(post.getCoverImage()))
+                .profileImageUrl(getDefaultImage(post.getUserId().getProfileImageUrl()))
                 .tags(post.getPostTags().stream().map(tag -> tag.getTagId().getTagName()).toList())
                 .createdAt(post.getCreatedAt())
                 .likeCount(post.getPostLikes().size())
