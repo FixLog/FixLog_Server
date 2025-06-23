@@ -18,7 +18,7 @@ public class Tag {
     @Enumerated(EnumType.STRING)
     private TagCategory tagCategory;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 50, nullable = false)
     private String tagName;
 
     private String tagInfo;

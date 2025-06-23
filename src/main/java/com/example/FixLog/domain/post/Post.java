@@ -33,32 +33,35 @@ public class Post {
     private String coverImage;
 
     @Lob // 텍스트가 길어질 수 있는 필드에 사용
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String problem;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String errorMessage;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String environment;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String reproduceCode;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String solutionCode;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String causeAnalysis;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String referenceLink;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String extraContent;
 
     @Column(nullable = false)
