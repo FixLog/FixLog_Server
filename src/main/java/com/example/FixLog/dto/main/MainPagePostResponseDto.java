@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class MainPagePostResponseDto {
+    private Long postId;
     private String postTitle;
     private String coverImage;
     private List<String> tags;
