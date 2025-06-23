@@ -22,6 +22,12 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
 
+    public String getDefaultProfile(String image) {
+        return (image == null || image.isBlank())
+                ? "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png"
+                : image;
+    }
+
     // 팔로우하기
     @Transactional
     public FollowResponseDto follow(String requesterEmail, Long targetMemberId){
@@ -78,7 +84,8 @@ public class FollowService {
                 .map(follow -> new FollowerListResponseDto(
                         follow.getFollowId(),
                         follow.getFollowerId().getUserId(),
-                        follow.getFollowerId().getNickname()
+                        follow.getFollowerId().getNickname(),
+                        getDefaultProfile(follow.getFollowerId().getProfileImageUrl())
                 ))
                 .toList();
     }
@@ -95,7 +102,8 @@ public class FollowService {
                 .map(follow -> new FollowingListResponseDto(
                         follow.getFollowId(),
                         follow.getFollowingId().getUserId(),
-                        follow.getFollowingId().getNickname()
+                        follow.getFollowingId().getNickname(),
+                        getDefaultProfile(follow.getFollowingId().getProfileImageUrl())
                 ))
                 .toList();
     }
