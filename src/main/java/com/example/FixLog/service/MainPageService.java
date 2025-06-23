@@ -73,6 +73,7 @@ public class MainPageService {
 
         List<MainPagePostResponseDto> postList = posts.stream()
                 .map(post -> new MainPagePostResponseDto(
+                        post.getPostId(),
                         post.getPostTitle(),
                         getDefaultCover(post.getCoverImage()),
                         post.getPostTags().stream()
@@ -115,6 +116,7 @@ public class MainPageService {
 
         List<MainPagePostResponseDto> postList = postPage.stream()
                 .map(post -> new MainPagePostResponseDto(
+                        post.getPostId(),
                         post.getPostTitle(),
                         getDefaultCover(post.getCoverImage()),
                         post.getPostTags().stream()
