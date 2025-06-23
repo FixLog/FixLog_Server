@@ -53,12 +53,12 @@ public class PostMockDataInitializer implements CommandLineRunner {
                 .collect(Collectors.toMap(Tag::getTagName, tag -> tag));
 
         List<String[]> config = List.of(
-                new String[]{"백엔드", "스프링부트", "자바", "NullPointerException", "500 Internal Server Error"},
-                new String[]{"프론트엔드", "리액트", "자바스크립트", "Cannot read property of undefined", "상태(state) 업데이트 누락"},
-                new String[]{"머신러닝", "케라스", "파이썬", "OutOfMemoryError", "HTTP 에러"},
-                new String[]{"백엔드", "노드", "JSON", "CORS 정책 오류", "404 Not Found"},
-                new String[]{"프론트엔드", "넥스트", "CSS", "스타일 깨짐", "렌더링 무한 루프"},
-                new String[]{"머신러닝", "사이킷런", "R", "ClassNotFoundException", "Permission Error"}
+                new String[]{"backend", "spring-boot", "java", "null-pointer-exception", "500-error"},
+                new String[]{"frontend", "react", "javascript", "undefined-property", "state-missing"},
+                new String[]{"machine-learning", "keras", "python", "out-of-memory", "http-error"},
+                new String[]{"backend", "node.js", "json", "cors-error", "404-error"},
+                new String[]{"frontend", "next.js", "css", "style-break", "render-loop"},
+                new String[]{"machine-learning", "scikit-learn", "r", "class-not-found", "permission-error"}
         );
 
         for (int i = 0; i < config.size(); i++) {
