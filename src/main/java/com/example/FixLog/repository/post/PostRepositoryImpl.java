@@ -39,14 +39,19 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
         // 2. 태그 조건 (AND 조건)
         if (tags != null && !tags.isEmpty()) {
+            List<String> sanitizedTags = tags.stream()
+                    .filter(tag -> tag != null && !tag.trim().isEmpty())  // null/빈값 제거
+                    .map(String::trim)                                    // 공백 제거
+                    .toList();
+
             NumberExpression<Long> count = postTag.tagId.tagId.count();
 
             JPQLQuery<Long> subQuery = queryFactory
                     .select(postTag.postId.postId)
                     .from(postTag)
-                    .where(postTag.tagId.tagName.in(tags))
+                    .where(postTag.tagId.tagName.in(sanitizedTags))       // 이미 소문자면 lower() 생략 가능
                     .groupBy(postTag.postId.postId)
-                    .having(count.eq((long) tags.size()));
+                    .having(count.eq((long) sanitizedTags.size()));
 
             builder.and(post.postId.in(subQuery));
         }
