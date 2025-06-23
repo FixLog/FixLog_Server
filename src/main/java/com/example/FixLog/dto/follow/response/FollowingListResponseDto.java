@@ -14,4 +14,5 @@ public class FollowingListResponseDto {
     private Long followingId;
 
     private String nickname;
+    private String profileImage;
 }
