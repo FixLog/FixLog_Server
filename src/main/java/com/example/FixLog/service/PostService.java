@@ -20,9 +20,9 @@ import com.example.FixLog.repository.like.PostLikeRepository;
 import com.example.FixLog.repository.post.PostRepository;
 import com.example.FixLog.repository.tag.TagRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -55,10 +55,17 @@ public class PostService {
         this.s3Service = s3Service;
     }
 
-    // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
-    public String getDefaultImage(String image){
+    // 이미지 null일 때 default 사진으로 변경 - 프로필 사진
+    public String getDefaultProfile(String image){
         String imageUrl = (image == null || image.isBlank())
                 ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" : image;
+        System.out.println(imageUrl);
+        return imageUrl;
+    }
+    // 이미지 null일 때 default 사진으로 변경 - 썸네일
+    public String getDefaultCover(String image){
+        String imageUrl = (image == null || image.isBlank())
+                ? "https://core-cdn-fe.toss.im/image/optimize/?src=https://blog-cdn.tosspayments.com/wp-content/uploads/2021/08/28011146/semo9.png?&w=3840&q=75" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
@@ -233,7 +240,7 @@ public class PostService {
                 currentPost.getUserId().getUserId(),
                 currentPost.getUserId().getNickname(),
                 currentPost.getPostTitle(),
-                getDefaultImage(currentPost.getCoverImage()),
+                getDefaultCover(currentPost.getCoverImage()),
                 currentPost.getProblem(),
                 currentPost.getErrorMessage(),
                 currentPost.getEnvironment(),
@@ -253,7 +260,7 @@ public class PostService {
             Member member = optionalMember.get();
             nickname = member.getNickname();
             String imageUrl = member.getProfileImageUrl();
-            profileImageUrl = getDefaultImage(imageUrl);
+            profileImageUrl = getDefaultProfile(imageUrl);
 
             isLiked = currentPost.getPostLikes().stream()
                     .anyMatch(postLike -> postLike.getUserId().equals(member));
@@ -261,7 +268,7 @@ public class PostService {
                     .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
         } else {
             nickname = "로그인하지 않았습니다.";
-            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
             isLiked = false;
             isMarked = false;
         }

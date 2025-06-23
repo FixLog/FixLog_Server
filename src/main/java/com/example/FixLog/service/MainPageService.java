@@ -27,10 +27,17 @@ public class MainPageService {
         this.memberService = memberService;
     }
 
-    // 이미지 null일 때 default 사진으로 변경 (프로필 사진,
-    public String getDefaultImage(String image){
+    // 이미지 null일 때 default 사진으로 변경 - 프로필 사진
+    public String getDefaultProfile(String image){
         String imageUrl = (image == null || image.isBlank())
                 ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" : image;
+        System.out.println(imageUrl);
+        return imageUrl;
+    }
+    // 이미지 null일 때 default 사진으로 변경 - 썸네일
+    public String getDefaultCover(String image){
+        String imageUrl = (image == null || image.isBlank())
+                ? "https://core-cdn-fe.toss.im/image/optimize/?src=https://blog-cdn.tosspayments.com/wp-content/uploads/2021/08/28011146/semo9.png?&w=3840&q=75" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
@@ -44,9 +51,9 @@ public class MainPageService {
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             String imageUrl = member.getProfileImageUrl();
-            profileImageUrl = getDefaultImage(imageUrl);
+            profileImageUrl = getDefaultProfile(imageUrl);
         } else {
-            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
         }
 
         // 페이지 (글 12개) 불러오기
@@ -67,11 +74,11 @@ public class MainPageService {
         List<MainPagePostResponseDto> postList = posts.stream()
                 .map(post -> new MainPagePostResponseDto(
                         post.getPostTitle(),
-                        getDefaultImage(post.getCoverImage()),
+                        getDefaultCover(post.getCoverImage()),
                         post.getPostTags().stream()
                                 .map(postTag -> postTag.getTagId().getTagName())
                                 .collect(Collectors.toList()),
-                        getDefaultImage(post.getUserId().getProfileImageUrl()),
+                        getDefaultProfile(post.getUserId().getProfileImageUrl()),
                         post.getUserId().getNickname(),
                         post.getCreatedAt().toLocalDate(),
                         post.getPostLikes().size()
@@ -90,9 +97,9 @@ public class MainPageService {
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             String imageUrl = member.getProfileImageUrl();
-            profileImageUrl = getDefaultImage(imageUrl);
+            profileImageUrl = getDefaultProfile(imageUrl);
         } else {
-            profileImageUrl = "https://example.com/default-cover-image.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
         }
 
         // 페이지 설정 (한 페이지당 12개)
@@ -109,11 +116,11 @@ public class MainPageService {
         List<MainPagePostResponseDto> postList = postPage.stream()
                 .map(post -> new MainPagePostResponseDto(
                         post.getPostTitle(),
-                        getDefaultImage(post.getCoverImage()),
+                        getDefaultCover(post.getCoverImage()),
                         post.getPostTags().stream()
                                 .map(postTag -> postTag.getTagId().getTagName())
                                 .collect(Collectors.toList()),
-                        getDefaultImage(post.getUserId().getProfileImageUrl()),
+                        getDefaultProfile(post.getUserId().getProfileImageUrl()),
                         post.getUserId().getNickname(),
                         post.getCreatedAt().toLocalDate(),
                         post.getPostLikes().size()
