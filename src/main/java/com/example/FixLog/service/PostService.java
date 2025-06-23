@@ -57,7 +57,7 @@ public class PostService {
     // 이미지 null일 때 default 사진으로 변경 - 프로필 사진
     public String getDefaultProfile(String image){
         String imageUrl = (image == null || image.isBlank())
-                ? "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png" : image;
+                ? "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
@@ -270,7 +270,7 @@ public class PostService {
                     .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
         } else {
             nickname = "로그인하지 않았습니다.";
-            profileImageUrl = "https://fixlog-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.png"; // 비로그인 기본 이미지
+            profileImageUrl = "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png"; // 비로그인 기본 이미지
             isLiked = false;
             isMarked = false;
         }
