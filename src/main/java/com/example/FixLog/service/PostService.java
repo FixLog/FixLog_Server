@@ -8,7 +8,6 @@ import com.example.FixLog.domain.post.Post;
 import com.example.FixLog.domain.post.PostTag;
 import com.example.FixLog.domain.tag.Tag;
 import com.example.FixLog.domain.tag.TagCategory;
-import com.example.FixLog.dto.post.NewPostRequestDto;
 import com.example.FixLog.dto.post.PostDto;
 import com.example.FixLog.dto.post.PostRequestDto;
 import com.example.FixLog.dto.post.PostResponseDto;
@@ -173,7 +172,7 @@ public class PostService {
 
     // 게시글 수정하기
     @Transactional
-    public void editPost(Long postId, NewPostRequestDto newPostRequestDto) {
+    public void editPost(Long postId, PostRequestDto postRequestDto) {
         Member member = memberService.getCurrentMemberInfo();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -184,7 +183,7 @@ public class PostService {
         }
 
         // 북마크 카테고리별로 선택 제한 두기
-        List<Tag> tags = fetchAndValidateTags(newPostRequestDto.getTags());
+        List<Tag> tags = fetchAndValidateTags(postRequestDto.getTags());
 
         // 아무것도 변경이 없으면 예외처리
         if (Objects.equals(post.getPostTitle(), postRequestDto.getPostTitle())
@@ -202,18 +201,18 @@ public class PostService {
         }
 
         // 필드 업데이트
-        validatePost(newPostRequestDto);
+        validatePost(postRequestDto);
 
-        post.changeTitle(newPostRequestDto.getPostTitle());
-        post.changeCoverImage(newPostRequestDto.getCoverImageUrl());
-        post.changeProblem(newPostRequestDto.getProblem());
-        post.changeErrorMessage(newPostRequestDto.getErrorMessage());
-        post.changeEnvironment(newPostRequestDto.getEnvironment());
-        post.changeReproduceCode(newPostRequestDto.getReproduceCode());
-        post.changeSolutionCode(newPostRequestDto.getSolutionCode());
-        post.changeCauseAnalysis(newPostRequestDto.getCauseAnalysis());
-        post.changeReferenceLink(newPostRequestDto.getReferenceLink());
-        post.changeExtraContent(newPostRequestDto.getExtraContent());
+        post.changeTitle(postRequestDto.getPostTitle());
+        post.changeCoverImage(postRequestDto.getCoverImageUrl());
+        post.changeProblem(postRequestDto.getProblem());
+        post.changeErrorMessage(postRequestDto.getErrorMessage());
+        post.changeEnvironment(postRequestDto.getEnvironment());
+        post.changeReproduceCode(postRequestDto.getReproduceCode());
+        post.changeSolutionCode(postRequestDto.getSolutionCode());
+        post.changeCauseAnalysis(postRequestDto.getCauseAnalysis());
+        post.changeReferenceLink(postRequestDto.getReferenceLink());
+        post.changeExtraContent(postRequestDto.getExtraContent());
         post.updateEditedAt(LocalDateTime.now());
 
         // 태그 저장
