@@ -23,7 +23,7 @@ public class MyPostPageResponseDto {
     private int likeCount;
     private int forkCount;
     private String nickname;
-    private String profileImageUrl;;
+    private String profileImageUrl;
 
     // 이미지 null일 때 default 사진으로 변경 - 프로필 사진
     public static String getDefaultProfile(String image){

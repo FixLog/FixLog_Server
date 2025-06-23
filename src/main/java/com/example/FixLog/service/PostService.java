@@ -150,20 +150,11 @@ public class PostService {
     // 게시글 필수 항목 다 작성했는지
     private void validatePost(PostRequestDto postRequestDto){
         if (!StringUtils.hasText(postRequestDto.getPostTitle())
-            || !StringUtils.hasText(postRequestDto.getProblem())
-            || !StringUtils.hasText(postRequestDto.getErrorMessage())
-            || !StringUtils.hasText(postRequestDto.getEnvironment())
-            || !StringUtils.hasText(postRequestDto.getReproduceCode())
-            || !StringUtils.hasText(postRequestDto.getSolutionCode()))
-            throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
-    }
-    private void validatePost(NewPostRequestDto newPostRequestDto){
-        if (!StringUtils.hasText(newPostRequestDto.getPostTitle())
-                || !StringUtils.hasText(newPostRequestDto.getProblem())
-                || !StringUtils.hasText(newPostRequestDto.getErrorMessage())
-                || !StringUtils.hasText(newPostRequestDto.getEnvironment())
-                || !StringUtils.hasText(newPostRequestDto.getReproduceCode())
-                || !StringUtils.hasText(newPostRequestDto.getSolutionCode()))
+                || !StringUtils.hasText(postRequestDto.getProblem())
+                || !StringUtils.hasText(postRequestDto.getErrorMessage())
+                || !StringUtils.hasText(postRequestDto.getEnvironment())
+                || !StringUtils.hasText(postRequestDto.getReproduceCode())
+                || !StringUtils.hasText(postRequestDto.getSolutionCode()))
             throw new CustomException(ErrorCode.REQUIRED_CONTENT_MISSING);
     }
 
@@ -196,17 +187,17 @@ public class PostService {
         List<Tag> tags = fetchAndValidateTags(newPostRequestDto.getTags());
 
         // 아무것도 변경이 없으면 예외처리
-        if (Objects.equals(post.getPostTitle(), newPostRequestDto.getPostTitle())
-            & Objects.equals(post.getCoverImage(), newPostRequestDto.getCoverImageUrl())
-            & Objects.equals(post.getProblem(), newPostRequestDto.getProblem())
-            & Objects.equals(post.getErrorMessage(), newPostRequestDto.getErrorMessage())
-            & Objects.equals(post.getEnvironment(), newPostRequestDto.getEnvironment())
-            & Objects.equals(post.getReproduceCode(), newPostRequestDto.getReproduceCode())
-            & Objects.equals(post.getSolutionCode(), newPostRequestDto.getSolutionCode())
-            & Objects.equals(post.getCauseAnalysis(), newPostRequestDto.getCauseAnalysis())
-            & Objects.equals(post.getReferenceLink(), newPostRequestDto.getReferenceLink())
-            & Objects.equals(post.getExtraContent(), newPostRequestDto.getExtraContent())
-            & compareTags(post.getPostTags(), tags)){
+        if (Objects.equals(post.getPostTitle(), postRequestDto.getPostTitle())
+            && Objects.equals(post.getCoverImage(), postRequestDto.getCoverImageUrl())
+            && Objects.equals(post.getProblem(), postRequestDto.getProblem())
+            && Objects.equals(post.getErrorMessage(), postRequestDto.getErrorMessage())
+            && Objects.equals(post.getEnvironment(), postRequestDto.getEnvironment())
+            && Objects.equals(post.getReproduceCode(), postRequestDto.getReproduceCode())
+            && Objects.equals(post.getSolutionCode(), postRequestDto.getSolutionCode())
+            && Objects.equals(post.getCauseAnalysis(), postRequestDto.getCauseAnalysis())
+            && Objects.equals(post.getReferenceLink(), postRequestDto.getReferenceLink())
+            && Objects.equals(post.getExtraContent(), postRequestDto.getExtraContent())
+            && compareTags(post.getPostTags(), tags)){
             throw new CustomException(ErrorCode.NO_CONTENT_CHANGED);
         }
 
