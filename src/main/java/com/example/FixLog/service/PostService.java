@@ -108,10 +108,10 @@ public class PostService {
     }
 
     // 태그 다 선택 했는지
-    private List<Tag> fetchAndValidateTags(List<Long> tagIds){
-        // 태그 ID로 Tag 엔티티 조회
-        List<Tag> tags = tagIds.stream()
-                .map(tagId -> tagRepository.findById(tagId)
+    private List<Tag> fetchAndValidateTags(List<String> tagNames){
+        // 태그 이름으로 Tag 엔티티 조회
+        List<Tag> tags = tagNames.stream()
+                .map(tagName -> tagRepository.findByTagName(tagName)
                         .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND)))
                 .toList();
 
@@ -141,10 +141,8 @@ public class PostService {
         }
 
         if (!issues.isEmpty()) {
-            throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING);
-            // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING, String.join(", ", issues));
-            // throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING.withDetail(missingTypes.toString()));
-            // Todo 어떤 태그가 선택 안된건지 보여지도록 수정
+            String message = String.join(" / ", issues);
+            throw new CustomException(ErrorCode.REQUIRED_TAGS_MISSING, message);
         }
         return tags;
     }

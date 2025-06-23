@@ -32,45 +32,46 @@ public class TagMockDataInitializer implements CommandLineRunner {
         List<Tag> tagsToInsert = new ArrayList<>();
 
         // BIG_CATEGORY
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "백엔드", "backend"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "머신러닝", "machine learning"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "프론트엔드", "frontend"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "backend"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "machine-learning"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "frontend"));
 
         // MAJOR_CATEGORY
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "장고", "django"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "스프링부트", "spring-boot"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "넥스트", "next.js"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "케라스", "keras"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "파이토치", "pytorch"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "사이킷런", "scikit-learn"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "노드", "node.js"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "리액트", "react"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "리액트 네이티브", "react-native"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "django"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "spring-boot"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "next.js"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "keras"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "pytorch"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "scikit-learn"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "node.js"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "react"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "react-native"));
 
         // MIDDLE_CATEGORY
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "CSS", "css"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "자바스크립트", "javascript"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "R", "r"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "JSON", "json"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "자바", "java"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "Haskell", "haskell"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "파이썬", "python"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "C", "c"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "css"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "javascript"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "r"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "json"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "java"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "haskell"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "python"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "c"));
 
         // MINOR_CATEGORY
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "NullPointerException", "null-pointer-exception"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "500 Internal Server Error", "500-error"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "CORS 정책 오류", "cors-error"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "Database connection timeout", "db-timeout"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "ClassNotFoundException", "class-not-found"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "Cannot read property of undefined", "undefined-property"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "상태(state) 업데이트 누락", "state-missing"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "HTTP 에러", "http-error"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "렌더링 무한 루프", "render-loop"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "스타일 깨짐", "style-break"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "404 Not Found", "404-error"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "Permission Error", "permission-error"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "OutOfMemoryError", "out-of-memory"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "null-pointer-exception", "NullPointerException"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "500-error", "500 Internal Server Error"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "cors-error", "CORS 정책 오류"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "db-timeout", "Database connection timeout"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "class-not-found", "ClassNotFoundException"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "undefined-property", "Cannot read property of undefined"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "state-missing", "상태(state) 업데이트 누락"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "http-error", "HTTP 에러"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "render-loop", "렌더링 무한 루프"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "style-break", "스타일 깨짐"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "404-error", "404 Not Found"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "permission-error", "Permission Error"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "out-of-memory", "OutOfMemoryError"));
+
 
         if (!tagsToInsert.isEmpty()) {
             tagRepository.saveAll(tagsToInsert);
