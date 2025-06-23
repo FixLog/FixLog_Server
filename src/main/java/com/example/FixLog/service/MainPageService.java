@@ -37,7 +37,7 @@ public class MainPageService {
     // 이미지 null일 때 default 사진으로 변경 - 썸네일
     public String getDefaultCover(String image){
         String imageUrl = (image == null || image.isBlank())
-                ? "https://core-cdn-fe.toss.im/image/optimize/?src=https://blog-cdn.tosspayments.com/wp-content/uploads/2021/08/28011146/semo9.png?&w=3840&q=75" : image;
+                ? "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaulThumnail.png" : image;
         System.out.println(imageUrl);
         return imageUrl;
     }
