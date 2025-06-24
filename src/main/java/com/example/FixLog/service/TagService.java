@@ -1,6 +1,7 @@
 package com.example.FixLog.service;
 
 import com.example.FixLog.domain.tag.Tag;
+import com.example.FixLog.domain.tag.TagCategory;
 import com.example.FixLog.dto.tag.TagDto;
 import com.example.FixLog.dto.tag.TagResponseDto;
 import com.example.FixLog.repository.tag.TagRepository;
@@ -24,7 +25,7 @@ public class TagService {
     public TagResponseDto viewTags(int page, int size){
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<Tag> tags = tagRepository.findAll(pageable);
+        Page<Tag> tags = tagRepository.findAllByTagCategory(TagCategory.MINOR_CATEGORY, pageable);
 
         List<TagDto> tagList = tags.stream()
                 .map(tag -> new TagDto(

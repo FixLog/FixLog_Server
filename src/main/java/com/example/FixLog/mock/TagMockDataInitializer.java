@@ -34,7 +34,7 @@ public class TagMockDataInitializer implements CommandLineRunner {
         // BIG_CATEGORY
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "backend"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "machine-learning"));
-        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "frontend"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "web"));
 
         // MAJOR_CATEGORY
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "django"));
