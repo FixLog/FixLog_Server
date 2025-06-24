@@ -241,6 +241,7 @@ public class PostService {
         PostDto postInfo = new PostDto(
                 currentPost.getUserId().getUserId(),
                 currentPost.getUserId().getNickname(),
+                currentPost.getUserId().getProfileImageUrl(),
                 currentPost.getPostTitle(),
                 getDefaultCover(currentPost.getCoverImage()),
                 currentPost.getProblem(),
@@ -256,13 +257,13 @@ public class PostService {
                         .collect(toList())
         );
 
-        String nickname; String profileImageUrl;
+        String nickname; String userProfileImage;
         boolean isLiked; boolean isMarked;
         if (optionalMember.isPresent()){
             Member member = optionalMember.get();
             nickname = member.getNickname();
             String imageUrl = member.getProfileImageUrl();
-            profileImageUrl = getDefaultProfile(imageUrl);
+            userProfileImage = getDefaultProfile(imageUrl);
 
             isLiked = currentPost.getPostLikes().stream()
                     .anyMatch(postLike -> postLike.getUserId().equals(member));
@@ -270,14 +271,14 @@ public class PostService {
                     .anyMatch(bookmark -> bookmark.getFolderId().getUserId().equals(member));
         } else {
             nickname = "로그인하지 않았습니다.";
-            profileImageUrl = "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png"; // 비로그인 기본 이미지
+            userProfileImage = "https://fixlogsmwubucket.s3.ap-northeast-2.amazonaws.com/default/DefaultImage.png"; // 비로그인 기본 이미지
             isLiked = false;
             isMarked = false;
         }
 
         LocalDate createdAt = currentPost.getCreatedAt().toLocalDate();
 
-        return new PostResponseDto(postInfo, createdAt, nickname, profileImageUrl, isLiked, isMarked);
+        return new PostResponseDto(postInfo, createdAt, nickname, userProfileImage, isLiked, isMarked);
     }
 
     // 게시글 좋아요
