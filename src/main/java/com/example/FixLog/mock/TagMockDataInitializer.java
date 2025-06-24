@@ -35,6 +35,7 @@ public class TagMockDataInitializer implements CommandLineRunner {
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "backend"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "machine-learning"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "web"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(BIG_CATEGORY, "etc"));
 
         // MAJOR_CATEGORY
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "django"));
@@ -46,6 +47,7 @@ public class TagMockDataInitializer implements CommandLineRunner {
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "node.js"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "react"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "react-native"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MAJOR_CATEGORY, "etc"));
 
         // MIDDLE_CATEGORY
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "css"));
@@ -56,6 +58,7 @@ public class TagMockDataInitializer implements CommandLineRunner {
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "haskell"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "python"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "c"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MIDDLE_CATEGORY, "etc"));
 
         // MINOR_CATEGORY
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "null-pointer-exception", "NullPointerException"));
@@ -71,6 +74,7 @@ public class TagMockDataInitializer implements CommandLineRunner {
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "404-error", "404 Not Found"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "permission-error", "Permission Error"));
         addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "out-of-memory", "OutOfMemoryError"));
+        addIfNotExist(tagsToInsert, existingTagNames, Tag.of(MINOR_CATEGORY, "etc", "보기에 없는 에러 태그를 선택합니다."));
 
 
         if (!tagsToInsert.isEmpty()) {
