@@ -10,6 +10,7 @@ import java.util.List;
 public class PostDto {
     private Long userId;
     private String nickname;
+    private String writerProfileImage;
     private String postTitle;
     private String coverImageUrl;
     private String problem;
