@@ -8,8 +8,6 @@ import com.example.FixLog.domain.bookmark.dto.request.BookmarkMoveRequest;
 import com.example.FixLog.domain.bookmark.dto.response.BookmarkFolderCreateResponse;
 import com.example.FixLog.domain.bookmark.dto.response.BookmarkFolderReadResponse;
 import com.example.FixLog.domain.post.dto.MyPostPageResponseDto;
-import com.example.FixLog.domain.post.BookmarkFolderService;
-import com.example.FixLog.domain.post.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

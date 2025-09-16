@@ -2,16 +2,14 @@ package com.example.FixLog.domain.tag;
 
 import com.example.FixLog.common.exception.Response;
 import com.example.FixLog.domain.tag.dto.TagResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/tags")
 public class TagController {
     private final TagService tagService;
-
-    public TagController(TagService tagService){
-        this.tagService = tagService;
-    }
 
     @GetMapping
     public Response<Object> viewTags(@RequestParam("page") int page,

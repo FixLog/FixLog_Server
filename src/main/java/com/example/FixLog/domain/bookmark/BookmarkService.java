@@ -1,4 +1,4 @@
-package com.example.FixLog.domain.post;
+package com.example.FixLog.domain.bookmark;
 
 import com.example.FixLog.domain.bookmark.domain.Bookmark;
 import com.example.FixLog.domain.bookmark.domain.BookmarkFolder;

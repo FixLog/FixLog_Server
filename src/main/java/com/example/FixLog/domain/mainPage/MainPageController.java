@@ -3,16 +3,14 @@ package com.example.FixLog.domain.mainPage;
 import com.example.FixLog.common.exception.Response;
 import com.example.FixLog.domain.mainPage.dto.MainPageResponseDto;
 import com.example.FixLog.domain.mainPage.service.MainPageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/main")
 public class MainPageController {
     private final MainPageService mainPageService;
-
-    public MainPageController(MainPageService mainPageService){
-        this.mainPageService = mainPageService;
-    }
 
     @GetMapping
     public Response<Object> mainPageView(@RequestParam(value = "sort", defaultValue = "0") int sort,

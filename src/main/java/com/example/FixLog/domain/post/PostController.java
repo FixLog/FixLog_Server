@@ -3,17 +3,15 @@ package com.example.FixLog.domain.post;
 import com.example.FixLog.domain.post.dto.PostRequestDto;
 import com.example.FixLog.common.exception.Response;
 import com.example.FixLog.domain.post.dto.PostResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
-
-    public PostController(PostService postService){
-        this.postService = postService;
-    }
 
     // 게시글 작성하기
     @PostMapping
