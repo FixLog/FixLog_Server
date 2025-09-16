@@ -1,7 +1,7 @@
 package com.example.FixLog.mock;
 
-import com.example.FixLog.domain.tag.Tag;
-import com.example.FixLog.repository.tag.TagRepository;
+import com.example.FixLog.domain.tag.domain.Tag;
+import com.example.FixLog.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.example.FixLog.domain.tag.TagCategory.*;
+import static com.example.FixLog.domain.tag.domain.TagCategory.*;
 
 @Component
 @RequiredArgsConstructor

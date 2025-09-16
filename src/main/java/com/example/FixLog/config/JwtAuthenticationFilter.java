@@ -1,9 +1,9 @@
 package com.example.FixLog.config;
 
-import com.example.FixLog.domain.member.Member;
-import com.example.FixLog.exception.CustomException;
-import com.example.FixLog.repository.MemberRepository;
-import com.example.FixLog.util.JwtUtil;
+import com.example.FixLog.domain.member.domain.Member;
+import com.example.FixLog.common.exception.CustomException;
+import com.example.FixLog.domain.member.repository.MemberRepository;
+import com.example.FixLog.common.util.JwtUtil;
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.example.FixLog.exception.ErrorCode;
+import com.example.FixLog.common.response.ErrorStatus;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtUtil.isTokenValid(token)) {
             String email = jwtUtil.getEmailFromToken(token);
             Member member = memberRepository.findByEmail(email)
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(ErrorStatus.USER_NICKNAME_NOT_FOUND));
 
             Authentication auth = new UsernamePasswordAuthenticationToken(member, null, member.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
