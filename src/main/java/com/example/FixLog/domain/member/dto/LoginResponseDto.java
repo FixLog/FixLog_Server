@@ -1,0 +1,28 @@
+package com.example.FixLog.domain.member.dto;
+
+import com.example.FixLog.domain.member.domain.Member;
+import com.example.FixLog.common.util.DefaultImage;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@AllArgsConstructor
+public class LoginResponseDto {
+    private Long userId;
+    private String accessToken;
+    private String nickname;
+    private String profileImageUrl;
+
+    public static LoginResponseDto from(Member member, String accessToken) {
+        return new LoginResponseDto(
+                member.getUserId(),
+                accessToken,
+                member.getNickname(),
+                member.getProfileImageUrl() != null
+                        ? member.getProfileImageUrl()
+                        : DefaultImage.PROFILE
+        );
+    }
+}

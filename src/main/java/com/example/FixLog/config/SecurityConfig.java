@@ -1,7 +1,7 @@
 package com.example.FixLog.config;
 
-import com.example.FixLog.repository.MemberRepository;
-import com.example.FixLog.util.JwtUtil;
+import com.example.FixLog.domain.member.repository.MemberRepository;
+import com.example.FixLog.common.util.JwtUtil;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
